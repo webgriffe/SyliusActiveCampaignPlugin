@@ -12,6 +12,8 @@
                  class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaignContactFactory"/>
 
         <service id="webgriffe_sylius_active_campaign_plugin.mapper.contact"
-                 class="Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapper"/>
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapper">
+            <argument type="service" id="webgriffe_sylius_active_campaign_plugin.factory.active_campaign_contact"/>
+        </service>
     </services>
 </container>
