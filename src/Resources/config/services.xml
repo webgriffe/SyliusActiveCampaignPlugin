@@ -5,6 +5,7 @@
     <services>
         <service id="webgriffe_sylius_active_campaign_plugin.message_handler.contact_create"
                  class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\ContactCreateHandler">
+            <argument type="service" id="webgriffe_sylius_active_campaign_plugin.mapper.contact"/>
             <tag name="messenger.message_handler"/>
         </service>
 
