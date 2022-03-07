@@ -7,5 +7,8 @@
                  class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\ContactCreateHandler">
             <tag name="messenger.message_handler"/>
         </service>
+
+        <service id="webgriffe_sylius_active_campaign_plugin.mapper.contact"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapper"/>
     </services>
 </container>
