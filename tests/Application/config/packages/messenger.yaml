@@ -1,0 +1,4 @@
+framework:
+    messenger:
+        routing:
+            'Webgriffe\SyliusActiveCampaignPlugin\Message\ContactCreate': main
