@@ -8,6 +8,9 @@
             <tag name="messenger.message_handler"/>
         </service>
 
+        <service id="webgriffe_sylius_active_campaign_plugin.factory.active_campaign_contact"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaignContactFactory"/>
+
         <service id="webgriffe_sylius_active_campaign_plugin.mapper.contact"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapper"/>
     </services>
