@@ -10,7 +10,6 @@ use Webgriffe\SyliusActiveCampaignPlugin\Exception\CustomerDoesNotHaveEmailExcep
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaignContactFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapper;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapperInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignContact;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignContactInterface;
 
 class ContactMapperSpec extends ObjectBehavior
@@ -20,6 +19,9 @@ class ContactMapperSpec extends ObjectBehavior
         CustomerInterface $customer,
         ActiveCampaignContactInterface $contact
     ): void {
+        $customer->getFirstName()->willReturn('Samuel');
+        $customer->getLastName()->willReturn('Jackson');
+        $customer->getPhoneNumber()->willReturn('0324 213 231');
         $customer->getEmail()->willReturn('customer@domain.org');
 
         $contactFactory->createNewFromEmail('customer@domain.org')->willReturn($contact);
@@ -47,8 +49,16 @@ class ContactMapperSpec extends ObjectBehavior
         );
     }
 
-    public function it_returns_an_instance_of_active_campaign_contact(CustomerInterface $customer,): void
+    public function it_returns_an_instance_of_active_campaign_contact(CustomerInterface $customer): void
     {
         $this->mapFromCustomer($customer)->shouldReturnAnInstanceOf(ActiveCampaignContactInterface::class);
+    }
+
+    public function it_returns_an_active_campaign_contact_mapped_by_customer(CustomerInterface $customer, ActiveCampaignContactInterface $contact): void
+    {
+        $contact->setFirstName('Samuel')->shouldBeCalledOnce();
+        $contact->setLastName('Jackson')->shouldBeCalledOnce();
+        $contact->setPhone(324213231)->shouldBeCalledOnce();
+        $this->mapFromCustomer($customer)->shouldReturn($contact);
     }
 }
