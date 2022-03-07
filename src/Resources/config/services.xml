@@ -16,5 +16,13 @@
                  class="Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapper">
             <argument type="service" id="webgriffe_sylius_active_campaign_plugin.factory.active_campaign_contact"/>
         </service>
+
+        <service id="webgriffe_sylius_active_campaign_plugin.client.active_campaign"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClient">
+            <argument type="service" id="sylius.http_client"/>
+            <argument type="service" id="\Http\Message\MessageFactory\GuzzleMessageFactory"/>
+            <argument>%webgriffe_sylius_active_campaign.api_client.base_url%</argument>
+            <argument>%webgriffe_sylius_active_campaignapi_client.key%</argument>
+        </service>
     </services>
 </container>

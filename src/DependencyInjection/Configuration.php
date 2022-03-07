@@ -9,13 +9,20 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 final class Configuration implements ConfigurationInterface
 {
-    /**
-     * @psalm-suppress UnusedVariable
-     */
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder('webgriffe_sylius_active_campaign_plugin');
+        $treeBuilder = new TreeBuilder('webgriffe_sylius_active_campaign');
         $rootNode = $treeBuilder->getRootNode();
+
+        $rootNode
+            ->children()
+                ->arrayNode('api_client')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('base_url')->isRequired()->cannotBeEmpty()->defaultNull()->end()
+                        ->scalarNode('key')->isRequired()->cannotBeEmpty()->defaultNull()->end()
+                    ->end()
+                ->end();
 
         return $treeBuilder;
     }
