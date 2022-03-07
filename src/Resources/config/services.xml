@@ -3,7 +3,8 @@
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\ContactCreateHandler">
+        <service id="webgriffe_sylius_active_campaign_plugin.message_handler.contact_create"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\ContactCreateHandler">
             <tag name="messenger.message_handler"/>
         </service>
     </services>
