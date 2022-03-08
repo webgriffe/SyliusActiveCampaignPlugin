@@ -12,4 +12,21 @@
             <directory name="vendor" />
         </ignoreFiles>
     </projectFiles>
+    <issueHandlers>
+        <MixedMethodCall>
+            <errorLevel type="suppress">
+                <file name="src/DependencyInjection/Configuration.php" />
+            </errorLevel>
+        </MixedMethodCall>
+        <PossiblyNullReference>
+            <errorLevel type="suppress">
+                <file name="src/DependencyInjection/Configuration.php" />
+            </errorLevel>
+        </PossiblyNullReference>
+        <PossiblyUndefinedMethod>
+            <errorLevel type="suppress">
+                <file name="src/DependencyInjection/Configuration.php" />
+            </errorLevel>
+        </PossiblyUndefinedMethod>
+    </issueHandlers>
 </psalm>
