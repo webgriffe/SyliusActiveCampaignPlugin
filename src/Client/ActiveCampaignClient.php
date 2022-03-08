@@ -10,20 +10,15 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignContactInterface;
 
 final class ActiveCampaignClient implements ActiveCampaignClientInterface
 {
-    private ClientInterface $httpClient;
-
-    private MessageFactory $requestFactory;
-
     private string $apiVersionedUrl;
 
-    private string $apiKey;
-
-    public function __construct(ClientInterface $httpClient, MessageFactory $requestFactory, string $apiUrl, string $apiKey)
-    {
-        $this->httpClient = $httpClient;
-        $this->requestFactory = $requestFactory;
-        $this->apiVersionedUrl = rtrim($apiUrl, '/') . '/api/3';
-        $this->apiKey = $apiKey;
+    public function __construct(
+        private ClientInterface $httpClient,
+        private MessageFactory $requestFactory,
+        string $apiBaseUrl,
+        private string $apiKey
+    ) {
+        $this->apiVersionedUrl = rtrim($apiBaseUrl, '/') . '/api/3';
     }
 
     public function createContact(ActiveCampaignContactInterface $contact): void
