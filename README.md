@@ -8,15 +8,33 @@
 
 <p align="center">Sylius plugin to integrate the marketing #1 automation platform</p>
 
+## Quickstart Installation
+
+1. Run
+```shell
+composer require webgriffe/sylius-active-campaign-plugin
+```
+
+2. Configure your ActiveCampaign API connection parameters. Edit the `config/packages/webgriffe_sylius_active_campaign_plugin.yaml` file by adding the following content:
+```yaml
+webgriffe_sylius_active_campaign_plugin:
+    api_client:
+        base_url: 'https://www.activecampaign.com/'
+        key: 'SECRET'
+```
+Pay attention that among these parameters there are some sensitive configuration that you probably don't want to commit in your VCS. There are different solutions to this problem, like env configurations and secrets. Refer to [Symfony best practices doc](https://symfony.com/doc/current/best_practices.html#configuration) for more info.
+
+## Usage
+
+WIP
+
 ## Documentation
 
 WIP
 
-## Quickstart Installation
+## Development installation
 
-1. Run `composer require webgriffe/sylius-active-campaign-plugin`.
-
-## Usage
+Install the plugin to submit a Bug fix or a new feature.
 
 ### Running plugin tests
 
