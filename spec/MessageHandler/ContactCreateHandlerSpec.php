@@ -19,7 +19,7 @@ class ContactCreateHandlerSpec extends ObjectBehavior
     ): void {
         $contactMapper->mapFromCustomer($customer)->willReturn($contact);
 
-        $this->beConstructedWith();
+        $this->beConstructedWith($contactMapper);
     }
 
     public function it_is_initializable(): void
