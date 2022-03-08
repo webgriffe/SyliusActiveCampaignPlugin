@@ -17,7 +17,7 @@ composer require webgriffe/sylius-active-campaign-plugin
 
 2. Configure your ActiveCampaign API connection parameters. Edit the `config/packages/webgriffe_sylius_active_campaign_plugin.yaml` file by adding the following content:
 ```yaml
-webgriffe_sylius_active_campaign_plugin:
+webgriffe_sylius_active_campaign:
     api_client:
         base_url: 'https://www.activecampaign.com/'
         key: 'SECRET'

@@ -1,4 +1,4 @@
-webgriffe_sylius_active_campaign_plugin:
+webgriffe_sylius_active_campaign:
     api_client:
         base_url: '%env(WEBGRIFFE_SYLIUS_ACTIVE_CAMPAIGN_PLUGIN_BASE_URL)%'
         key: '%env(WEBGRIFFE_SYLIUS_ACTIVE_CAMPAIGN_PLUGIN_KEY)%'
