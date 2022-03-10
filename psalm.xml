@@ -28,5 +28,10 @@
                 <file name="src/DependencyInjection/Configuration.php" />
             </errorLevel>
         </PossiblyUndefinedMethod>
+        <MixedArrayAccess>
+            <errorLevel type="suppress">
+                <file name="src/DependencyInjection/WebgriffeSyliusActiveCampaignExtension.php" />
+            </errorLevel>
+        </MixedArrayAccess>
     </issueHandlers>
 </psalm>
