@@ -6,7 +6,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Client;
 
 use GuzzleHttp\ClientInterface;
 use Http\Message\MessageFactory;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignContactInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 
 final class ActiveCampaignClient implements ActiveCampaignClientInterface
 {
@@ -21,7 +21,7 @@ final class ActiveCampaignClient implements ActiveCampaignClientInterface
         $this->apiVersionedUrl = rtrim($apiBaseUrl, '/') . '/api/3';
     }
 
-    public function createContact(ActiveCampaignContactInterface $contact): void
+    public function createContact(ContactInterface $contact): void
     {
         $request = $this->requestFactory->createRequest(
             'POST',

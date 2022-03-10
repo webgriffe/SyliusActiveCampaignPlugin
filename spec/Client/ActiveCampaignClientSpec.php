@@ -10,7 +10,7 @@ use PhpSpec\ObjectBehavior;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignContactInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 
 final class ActiveCampaignClientSpec extends ObjectBehavior
 {
@@ -35,7 +35,7 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
         MessageFactory $requestFactory,
         RequestInterface $request,
         ResponseInterface $response,
-        ActiveCampaignContactInterface $contact,
+        ContactInterface $contact,
     ): void {
         $requestFactory
             ->createRequest(

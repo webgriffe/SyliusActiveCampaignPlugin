@@ -7,7 +7,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Mapper;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Exception\CustomerDoesNotHaveEmailException;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaignContactFactoryInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignContactInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 
 final class ContactMapper implements ContactMapperInterface
 {
@@ -16,7 +16,7 @@ final class ContactMapper implements ContactMapperInterface
     ) {
     }
 
-    public function mapFromCustomer(CustomerInterface $customer): ActiveCampaignContactInterface
+    public function mapFromCustomer(CustomerInterface $customer): ContactInterface
     {
         $customerEmail = $customer->getEmail();
         if ($customerEmail === null) {

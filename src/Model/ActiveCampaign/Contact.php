@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusActiveCampaignPlugin\Model;
+namespace Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign;
 
-final class ActiveCampaignContact implements ActiveCampaignContactInterface
+final class Contact implements ContactInterface
 {
     public function __construct(
         private string $email,

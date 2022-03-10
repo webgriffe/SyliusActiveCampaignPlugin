@@ -10,14 +10,14 @@ use Webgriffe\SyliusActiveCampaignPlugin\Exception\CustomerDoesNotHaveEmailExcep
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaignContactFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapper;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapperInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignContactInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 
 class ContactMapperSpec extends ObjectBehavior
 {
     public function let(
         ActiveCampaignContactFactoryInterface $contactFactory,
         CustomerInterface $customer,
-        ActiveCampaignContactInterface $contact
+        ContactInterface $contact
     ): void {
         $customer->getFirstName()->willReturn('Samuel');
         $customer->getLastName()->willReturn('Jackson');
@@ -51,10 +51,10 @@ class ContactMapperSpec extends ObjectBehavior
 
     public function it_returns_an_instance_of_active_campaign_contact(CustomerInterface $customer): void
     {
-        $this->mapFromCustomer($customer)->shouldReturnAnInstanceOf(ActiveCampaignContactInterface::class);
+        $this->mapFromCustomer($customer)->shouldReturnAnInstanceOf(ContactInterface::class);
     }
 
-    public function it_returns_an_active_campaign_contact_mapped_by_customer(CustomerInterface $customer, ActiveCampaignContactInterface $contact): void
+    public function it_returns_an_active_campaign_contact_mapped_by_customer(CustomerInterface $customer, ContactInterface $contact): void
     {
         $contact->setFirstName('Samuel')->shouldBeCalledOnce();
         $contact->setLastName('Jackson')->shouldBeCalledOnce();

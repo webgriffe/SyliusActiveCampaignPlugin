@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Client;
 
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignContactInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 
 interface ActiveCampaignClientInterface
 {
-    public function createContact(ActiveCampaignContactInterface $contact): void;
+    public function createContact(ContactInterface $contact): void;
 }

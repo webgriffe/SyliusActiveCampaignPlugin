@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusActiveCampaignPlugin\Model;
+namespace Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign;
 
-interface ActiveCampaignContactInterface
+interface ContactInterface
 {
     public function getEmail(): string;
 

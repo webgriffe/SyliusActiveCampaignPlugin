@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Factory;
 
-use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaignContactFactory;
 use PhpSpec\ObjectBehavior;
+use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaignContactFactory;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaignContactFactoryInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignContact;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\Contact;
 
 class ActiveCampaignContactFactorySpec extends ObjectBehavior
 {
@@ -28,7 +28,7 @@ class ActiveCampaignContactFactorySpec extends ObjectBehavior
 
     public function it_should_returns_an_active_campaign_contact_instance(): void
     {
-        $this->createNewFromEmail('info@domain.org')->shouldReturnAnInstanceOf(ActiveCampaignContact::class);
+        $this->createNewFromEmail('info@domain.org')->shouldReturnAnInstanceOf(Contact::class);
     }
 
     public function it_should_returns_an_active_campaign_contact_with_email(): void

@@ -8,13 +8,13 @@ use PhpSpec\ObjectBehavior;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\ContactCreateHandler;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignContactInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 
 class ContactCreateHandlerSpec extends ObjectBehavior
 {
     public function let(
         ContactMapperInterface $contactMapper,
-        ActiveCampaignContactInterface $contact,
+        ContactInterface $contact,
         CustomerInterface $customer
     ): void {
         $contactMapper->mapFromCustomer($customer)->willReturn($contact);
