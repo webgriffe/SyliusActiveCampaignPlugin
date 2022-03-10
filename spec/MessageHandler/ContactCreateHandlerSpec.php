@@ -13,7 +13,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\ContactCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\ContactCreateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\CreateContactResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 
 interface CustomerInterface extends SyliusCustomerInterface, ActiveCampaignAwareInterface
@@ -77,7 +77,7 @@ class ContactCreateHandlerSpec extends ObjectBehavior
     public function it_creates_contact_on_active_campaign(
         ContactInterface $contact,
         ActiveCampaignClientInterface $activeCampaignClient,
-        ContactResponseInterface $createContactResponse,
+        CreateContactResponseInterface $createContactResponse,
         CustomerInterface $customer,
         CustomerRepositoryInterface $customerRepository
     ): void {
