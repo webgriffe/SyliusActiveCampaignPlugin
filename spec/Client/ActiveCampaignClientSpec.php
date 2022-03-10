@@ -11,6 +11,7 @@ use Prophecy\Argument;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use RuntimeException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientInterface;
@@ -100,5 +101,19 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
         $response->getStatusCode()->willReturn(500);
 
         $this->shouldThrow(HttpException::class)->during('createContact', [$contact]);
+    }
+
+    public function it_throws_while_creating_a_contact_and_the_response_wasnt_deserialized_properly(
+        SerializerInterface $serializer,
+        ResponseInterface $response,
+        ContactInterface $contact,
+        StreamInterface $responseBody,
+    ): void
+    {
+        $response->getStatusCode()->willReturn(200);
+        $responseBody->getContents()->willReturn(self::CREATE_CONTACT_RESPONSE_PAYLOAD);
+        $serializer->deserialize(self::CREATE_CONTACT_RESPONSE_PAYLOAD, 'array', 'json')->willReturn('not an array');
+
+        $this->shouldThrow(RuntimeException::class)->during('createContact', [$contact]);
     }
 }

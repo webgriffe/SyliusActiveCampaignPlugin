@@ -6,6 +6,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Client;
 
 use GuzzleHttp\ClientInterface;
 use Http\Message\MessageFactory;
+use RuntimeException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaignContact\CreateContactResponseFactoryInterface;
@@ -46,11 +47,13 @@ final class ActiveCampaignClient implements ActiveCampaignClientInterface
         if (($statusCode = $response->getStatusCode()) !== 200) {
             throw new HttpException($statusCode);
         }
-        // todo: catch errors
 
         $body = $response->getBody();
         $payload = $body->getContents();
         $payloadArray = $this->serializer->deserialize($payload, 'array', 'json');
+        if (!is_array($payloadArray)) {
+            throw new RuntimeException(sprintf('Expected an array after serialization, got "%s"', gettype($payloadArray)));
+        }
 
         return $this->createContactResponseFactory->createNewFromPayload($payloadArray);
     }
