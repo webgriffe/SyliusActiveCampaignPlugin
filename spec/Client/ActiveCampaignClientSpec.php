@@ -7,10 +7,14 @@ namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Client;
 use GuzzleHttp\ClientInterface;
 use Http\Message\MessageFactory;
 use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaignContact\CreateContactResponseFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\CreateContactResponseInterface;
 
 final class ActiveCampaignClientSpec extends ObjectBehavior
 {
@@ -20,9 +24,12 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
 
     private const API_VERSIONED_URL = self::API_URL . '/api/3';
 
-    public function let(ClientInterface $httpClient, MessageFactory $requestFactory): void
-    {
-        $this->beConstructedWith($httpClient, $requestFactory, self::API_URL, self::API_KEY);
+    public function let(
+        ClientInterface $httpClient,
+        MessageFactory $requestFactory,
+        CreateContactResponseFactoryInterface $createContactResponseFactory
+    ): void {
+        $this->beConstructedWith($httpClient, $requestFactory, $createContactResponseFactory, self::API_URL, self::API_KEY);
     }
 
     public function it_implements_interface(): void
@@ -33,10 +40,17 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
     public function it_creates_a_contact_on_active_campaign(
         ClientInterface $httpClient,
         MessageFactory $requestFactory,
+        CreateContactResponseFactoryInterface $createContactResponseFactory,
         RequestInterface $request,
         ResponseInterface $response,
+        StreamInterface $responseBody,
         ContactInterface $contact,
+        CreateContactResponseInterface $contactResponse,
     ): void {
+        $payload = '{"fieldValues":[],"email":"test@email.com","cdate":"2022-03-07T10:16:24-06:00","udate":"2022-03-07T10:16:24-06:00","origid":"ABC123","organization":"Webgriffe SRL","links":[],"id":"1"}';
+        $response->getBody()->willReturn($responseBody);
+        $responseBody->getContents()->willReturn($payload);
+
         $requestFactory
             ->createRequest(
                 'POST',
@@ -52,8 +66,10 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
             ->shouldBeCalledOnce()
             ->willReturn($request);
 
-        $httpClient->send($request)->shouldBeCalledOnce()->willReturn($response);
 
-        $this->createContact($contact);
+        $httpClient->send($request)->shouldBeCalledOnce()->willReturn($response);
+        $createContactResponseFactory->createNewFromPayload(Argument::any())->willReturn($contactResponse);
+
+        $this->createContact($contact)->shouldReturn($contactResponse);
     }
 }
