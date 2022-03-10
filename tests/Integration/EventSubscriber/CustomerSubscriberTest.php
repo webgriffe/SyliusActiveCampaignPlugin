@@ -5,29 +5,21 @@ declare(strict_types=1);
 namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Integration\EventSubscriber;
 
 use App\Entity\Customer\Customer;
-use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Sylius\Bundle\ResourceBundle\Event\ResourceControllerEvent;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\InMemoryTransport;
+use Tests\Webgriffe\SyliusActiveCampaignPlugin\Integration\MessageHandler\AbstractEventDispatcherTest;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\ContactCreate;
 
-final class CustomerSubscriberTest extends KernelTestCase
+final class CustomerSubscriberTest extends AbstractEventDispatcherTest
 {
-    protected EventDispatcherInterface $eventDispatcher;
-
     private CustomerRepositoryInterface $customerRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->eventDispatcher = self::getContainer()->get('event_dispatcher');
         $this->customerRepository = self::getContainer()->get('sylius.repository.customer');
-        $entityManager = self::getContainer()->get('doctrine.orm.entity_manager');
-        $purger = new ORMPurger($entityManager);
-        $purger->purge();
     }
 
     public function test_that_it_creates_contact_on_active_campaign(): void
