@@ -11,6 +11,7 @@ use Prophecy\Argument;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaignContact\CreateContactResponseFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
@@ -27,9 +28,10 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
     public function let(
         ClientInterface $httpClient,
         MessageFactory $requestFactory,
-        CreateContactResponseFactoryInterface $createContactResponseFactory
+        CreateContactResponseFactoryInterface $createContactResponseFactory,
+        SerializerInterface $serializer,
     ): void {
-        $this->beConstructedWith($httpClient, $requestFactory, $createContactResponseFactory, self::API_URL, self::API_KEY);
+        $this->beConstructedWith($httpClient, $requestFactory, $createContactResponseFactory, $serializer, self::API_URL, self::API_KEY);
     }
 
     public function it_implements_interface(): void
@@ -41,15 +43,21 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
         ClientInterface $httpClient,
         MessageFactory $requestFactory,
         CreateContactResponseFactoryInterface $createContactResponseFactory,
+        SerializerInterface $serializer,
         RequestInterface $request,
         ResponseInterface $response,
         StreamInterface $responseBody,
         ContactInterface $contact,
         CreateContactResponseInterface $contactResponse,
     ): void {
-        $payload = '{"fieldValues":[],"email":"test@email.com","cdate":"2022-03-07T10:16:24-06:00","udate":"2022-03-07T10:16:24-06:00","origid":"ABC123","organization":"Webgriffe SRL","links":[],"id":"1"}';
+        $responsePayload = '{"fieldValues":[],"email":"test@email.com","cdate":"2022-03-07T10:16:24-06:00","udate":"2022-03-07T10:16:24-06:00","origid":"ABC123","organization":"Webgriffe SRL","links":[],"id":"1"}';
+        $requestPayload = '{"contact":{"email":"test@email.com","firstName":"John","lastName":"Wayne","phone":"0123456789","fieldValues":[]}}';
+
         $response->getBody()->willReturn($responseBody);
-        $responseBody->getContents()->willReturn($payload);
+        $responseBody->getContents()->willReturn($responsePayload);
+
+        $serializer->serialize($contact, 'json')->willReturn($requestPayload);
+        $serializer->deserialize($responsePayload, 'array', 'json')->willReturn(['email' => 'test@email.com']);
 
         $requestFactory
             ->createRequest(
@@ -60,7 +68,7 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
                         'Content-Type' => 'application/json',
                         'Api-Token' => self::API_KEY,
                     ],
-                    'body' => 'serialized contact',
+                    'body' => $requestPayload,
                 ]
             )
             ->shouldBeCalledOnce()
