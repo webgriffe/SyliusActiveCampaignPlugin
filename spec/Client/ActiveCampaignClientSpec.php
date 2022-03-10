@@ -11,6 +11,7 @@ use Prophecy\Argument;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaignContact\CreateContactResponseFactoryInterface;
@@ -25,13 +26,30 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
 
     private const API_VERSIONED_URL = self::API_URL . '/api/3';
 
+    private const CREATE_CONTACT_REQUEST_PAYLOAD = '{"contact":{"email":"test@email.com","firstName":"John","lastName":"Wayne","phone":"0123456789","fieldValues":[]}}';
+
+    private const CREATE_CONTACT_RESPONSE_PAYLOAD = '{"fieldValues":[],"email":"test@email.com","cdate":"2022-03-07T10:16:24-06:00","udate":"2022-03-07T10:16:24-06:00","origid":"ABC123","organization":"Webgriffe SRL","links":[],"id":"1"}';
+
     public function let(
         ClientInterface $httpClient,
         MessageFactory $requestFactory,
         CreateContactResponseFactoryInterface $createContactResponseFactory,
         SerializerInterface $serializer,
+        ContactInterface $contact,
+        RequestInterface $request,
+        ResponseInterface $response,
+        StreamInterface $responseBody,
     ): void {
         $this->beConstructedWith($httpClient, $requestFactory, $createContactResponseFactory, $serializer, self::API_URL, self::API_KEY);
+
+        $requestFactory
+            ->createRequest(Argument::any(), Argument::any(), Argument::any())
+            ->willReturn($request);
+
+        $serializer->serialize($contact, 'json')->willReturn(self::CREATE_CONTACT_REQUEST_PAYLOAD);
+
+        $httpClient->send($request)->willReturn($response);
+        $response->getBody()->willReturn($responseBody);
     }
 
     public function it_implements_interface(): void
@@ -50,14 +68,9 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
         ContactInterface $contact,
         CreateContactResponseInterface $contactResponse,
     ): void {
-        $responsePayload = '{"fieldValues":[],"email":"test@email.com","cdate":"2022-03-07T10:16:24-06:00","udate":"2022-03-07T10:16:24-06:00","origid":"ABC123","organization":"Webgriffe SRL","links":[],"id":"1"}';
-        $requestPayload = '{"contact":{"email":"test@email.com","firstName":"John","lastName":"Wayne","phone":"0123456789","fieldValues":[]}}';
-
-        $response->getBody()->willReturn($responseBody);
-        $responseBody->getContents()->willReturn($responsePayload);
-
-        $serializer->serialize($contact, 'json')->willReturn($requestPayload);
-        $serializer->deserialize($responsePayload, 'array', 'json')->willReturn(['email' => 'test@email.com']);
+        $response->getStatusCode()->willReturn(200);
+        $responseBody->getContents()->willReturn(self::CREATE_CONTACT_RESPONSE_PAYLOAD);
+        $serializer->deserialize(self::CREATE_CONTACT_RESPONSE_PAYLOAD, 'array', 'json')->willReturn(['email' => 'test@email.com']);
 
         $requestFactory
             ->createRequest(
@@ -68,16 +81,24 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
                         'Content-Type' => 'application/json',
                         'Api-Token' => self::API_KEY,
                     ],
-                    'body' => $requestPayload,
+                    'body' => self::CREATE_CONTACT_REQUEST_PAYLOAD,
                 ]
             )
             ->shouldBeCalledOnce()
             ->willReturn($request);
-
-
         $httpClient->send($request)->shouldBeCalledOnce()->willReturn($response);
         $createContactResponseFactory->createNewFromPayload(Argument::any())->willReturn($contactResponse);
 
         $this->createContact($contact)->shouldReturn($contactResponse);
+    }
+
+    public function it_throws_while_creating_a_contact_and_the_request_wasnt_successful(
+        ResponseInterface $response,
+        ContactInterface $contact,
+    ): void
+    {
+        $response->getStatusCode()->willReturn(500);
+
+        $this->shouldThrow(HttpException::class)->during('createContact', [$contact]);
     }
 }

@@ -6,6 +6,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Client;
 
 use GuzzleHttp\ClientInterface;
 use Http\Message\MessageFactory;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaignContact\CreateContactResponseFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
@@ -42,14 +43,15 @@ final class ActiveCampaignClient implements ActiveCampaignClientInterface
         );
 
         $response = $this->httpClient->send($request);
-        // todo: check status code
+        if (($statusCode = $response->getStatusCode()) !== 200) {
+            throw new HttpException($statusCode);
+        }
         // todo: catch errors
 
-        $payload = $response->getBody()->getContents();
-
+        $body = $response->getBody();
+        $payload = $body->getContents();
         $payloadArray = $this->serializer->deserialize($payload, 'array', 'json');
-        $createContactResponse = $this->createContactResponseFactory->createNewFromPayload($payloadArray);
 
-        return $createContactResponse;
+        return $this->createContactResponseFactory->createNewFromPayload($payloadArray);
     }
 }
