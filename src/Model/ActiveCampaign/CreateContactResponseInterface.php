@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign;
 
-interface ContactResponseInterface
+interface CreateContactResponseInterface
 {
     /** @return FieldValueInterface[] */
     public function getFieldValues(): array;
@@ -15,7 +15,7 @@ interface ContactResponseInterface
 
     public function getUpdatedAt(): string;
 
-    public function getOriginalId(): string;
+    public function getOriganizationId(): string;
 
     public function getLinks(): array;
 

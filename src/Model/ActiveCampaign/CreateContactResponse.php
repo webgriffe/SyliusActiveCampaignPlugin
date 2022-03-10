@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign;
 
-final class ContactResponse implements ContactResponseInterface
+final class CreateContactResponse implements CreateContactResponseInterface
 {
     /**
      * @param FieldValueInterface[] $fieldValues
@@ -15,7 +15,7 @@ final class ContactResponse implements ContactResponseInterface
         private string $email,
         private string $createdAt,
         private string $updatedAt,
-        private string $originalId,
+        private string $organizationId,
         private array $links,
         private string $id,
         private string $organization
@@ -42,9 +42,9 @@ final class ContactResponse implements ContactResponseInterface
         return $this->updatedAt;
     }
 
-    public function getOriginalId(): string
+    public function getOriganizationId(): string
     {
-        return $this->originalId;
+        return $this->organizationId;
     }
 
     public function getLinks(): array
