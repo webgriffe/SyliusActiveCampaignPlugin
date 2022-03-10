@@ -26,5 +26,11 @@
             <argument>%webgriffe_sylius_active_campaign.api_client.base_url%</argument>
             <argument>%webgriffe_sylius_active_campaign.api_client.key%</argument>
         </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.event_subscriber.customer"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\EventSubscriber\CustomerSubscriber">
+            <argument type="service" id="messenger.default_bus"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
     </services>
 </container>

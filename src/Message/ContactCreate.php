@@ -6,12 +6,14 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Message;
 
 final class ContactCreate
 {
+    /** @param string|int $customerId */
     public function __construct(
-        private int $customerId
+        private mixed $customerId
     ) {
     }
 
-    public function getCustomerId(): int
+    /** @return string|int */
+    public function getCustomerId(): mixed
     {
         return $this->customerId;
     }
