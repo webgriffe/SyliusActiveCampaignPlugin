@@ -20,6 +20,9 @@ final class WebgriffeSyliusActiveCampaignExtension extends Extension
         $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
 
+        $container->setParameter('webgriffe_sylius_active_campaign.api_client.base_url', $config['api_client']['base_url']);
+        $container->setParameter('webgriffe_sylius_active_campaign.api_client.key', $config['api_client']['key']);
+
         $loader->load('services.xml');
     }
 
