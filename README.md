@@ -32,6 +32,8 @@
    bin/console doctrine:migrations:migrate
    ```
 
+5. Your `CustomerRepository` class must implement the `Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignAwareRepositoryInterface`. You can use the `Webgriffe\SyliusActiveCampaignPlugin\Doctrine\ORM\ActiveCampaignCustomerRepositoryTrait` as implementation for the interface if you use Doctrine ORM and extends the Sylius Customer Repository.
+
 ## Usage
 
 WIP

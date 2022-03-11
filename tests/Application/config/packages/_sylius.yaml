@@ -19,3 +19,4 @@ sylius_customer:
         customer:
             classes:
                 model: App\Entity\Customer\Customer
+                repository: App\Doctrine\ORM\CustomerRepository

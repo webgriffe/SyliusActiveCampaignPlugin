@@ -18,6 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\ContactCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignAwareRepositoryInterface;
 use Webmozart\Assert\Assert;
 
 final class EnqueueContactCommand extends Command
@@ -34,7 +35,7 @@ final class EnqueueContactCommand extends Command
     private SymfonyStyle $io;
 
     public function __construct(
-        private CustomerRepositoryInterface $customerRepository,
+        private ActiveCampaignAwareRepositoryInterface $customerRepository,
         private MessageBusInterface $messageBus,
         private ?string $name = null
     ) {
@@ -99,10 +100,10 @@ final class EnqueueContactCommand extends Command
         $this->validateInputData($customerId, $exportAll);
 
         if ($exportAll) {
-            $customersToExport = $this->customerRepository->findAll();
+            $customersToExport = $this->customerRepository->findAllToEnqueue();
         } else {
             /** @var CustomerInterface|null $customer */
-            $customer = $this->customerRepository->find($customerId);
+            $customer = $this->customerRepository->findOneToEnqueue($customerId);
             if ($customer === null) {
                 throw new InvalidArgumentException(sprintf(
                     'Unable to find a customer with id "%s".',
