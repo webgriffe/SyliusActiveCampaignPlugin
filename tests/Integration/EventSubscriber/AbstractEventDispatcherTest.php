@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Integration\MessageHandler;
+namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Integration\EventSubscriber;
 
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;

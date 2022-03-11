@@ -2,6 +2,9 @@
 
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <parameters>
+        <parameter key="webgriffe_sylius_active_campaign.command.enqueue_contact.name">webgriffe:active-campaign:enqueue-contact</parameter>
+    </parameters>
     <services>
         <service id="webgriffe.sylius_active_campaign_plugin.message_handler.contact_create"
                  class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\ContactCreateHandler">
@@ -31,6 +34,14 @@
                  class="Webgriffe\SyliusActiveCampaignPlugin\EventSubscriber\CustomerSubscriber">
             <argument type="service" id="messenger.default_bus"/>
             <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.command.enqueue_contact"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Command\EnqueueContactCommand">
+            <argument type="service" id="sylius.repository.customer"/>
+            <argument type="service" id="messenger.default_bus"/>
+            <argument>%webgriffe_sylius_active_campaign.command.enqueue_contact.name%</argument>
+            <tag name="console.command"/>
         </service>
     </services>
 </container>
