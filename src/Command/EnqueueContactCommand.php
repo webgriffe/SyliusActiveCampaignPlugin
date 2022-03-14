@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Webgriffe\SyliusActiveCampaignPlugin\Command;
 
 use InvalidArgumentException;
-use Sylius\Component\Core\Model\CustomerInterface;
-use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -102,7 +100,6 @@ final class EnqueueContactCommand extends Command
         if ($exportAll) {
             $customersToExport = $this->customerRepository->findAllToEnqueue();
         } else {
-            /** @var CustomerInterface|null $customer */
             $customer = $this->customerRepository->findOneToEnqueue($customerId);
             if ($customer === null) {
                 throw new InvalidArgumentException(sprintf(
@@ -124,7 +121,6 @@ final class EnqueueContactCommand extends Command
         $progressBar->setMessage(sprintf('Starting the enqueue for %s customers...', count($customersToExport)), 'status');
         $progressBar->start();
 
-        /** @var CustomerInterface $customer */
         foreach ($customersToExport as $customer) {
             /** @var string|int|null $customerId */
             $customerId = $customer->getId();
