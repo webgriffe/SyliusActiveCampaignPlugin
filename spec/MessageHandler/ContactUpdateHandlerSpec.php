@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace spec\Webgriffe\SyliusActiveCampaignPlugin\MessageHandler;
 
+use App\Entity\Customer\CustomerInterface;
 use InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
 use Sylius\Component\Core\Model\CustomerInterface as SyliusCustomerInterface;
@@ -15,10 +16,6 @@ use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\ContactUpdateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\UpdateContactResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
-
-interface CustomerInterface extends SyliusCustomerInterface, ActiveCampaignAwareInterface
-{
-}
 
 class ContactUpdateHandlerSpec extends ObjectBehavior
 {
