@@ -12,6 +12,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaignContact\CreateContactResponseFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\CreateContactResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\UpdateContactResponseInterface;
 
 final class ActiveCampaignClient implements ActiveCampaignClientInterface
 {
@@ -56,5 +57,10 @@ final class ActiveCampaignClient implements ActiveCampaignClientInterface
         }
 
         return $this->createContactResponseFactory->createNewFromPayload($payloadArray);
+    }
+
+    public function updateContact(string $activeCampaignContactId, ContactInterface $contact): UpdateContactResponseInterface
+    {
+        throw new RuntimeException('TODO');
     }
 }

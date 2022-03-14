@@ -6,8 +6,11 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Client;
 
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\CreateContactResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\UpdateContactResponseInterface;
 
 interface ActiveCampaignClientInterface
 {
     public function createContact(ContactInterface $contact): CreateContactResponseInterface;
+
+    public function updateContact(string $activeCampaignContactId, ContactInterface $contact): UpdateContactResponseInterface;
 }

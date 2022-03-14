@@ -2,3 +2,4 @@ framework:
     messenger:
         routing:
             'Webgriffe\SyliusActiveCampaignPlugin\Message\ContactCreate': main
+            'Webgriffe\SyliusActiveCampaignPlugin\Message\ContactUpdate': main

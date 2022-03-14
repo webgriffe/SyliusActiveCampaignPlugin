@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Client;
 
+use RuntimeException;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\CreateContactResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\CreateContactResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\UpdateContactResponseInterface;
 
 final class ActiveCampaignClientStub implements ActiveCampaignClientInterface
 {
@@ -25,5 +27,10 @@ final class ActiveCampaignClientStub implements ActiveCampaignClientInterface
             $this->activeCampaignId,
             ''
         );
+    }
+
+    public function updateContact(string $activeCampaignContactId, ContactInterface $contact): UpdateContactResponseInterface
+    {
+        throw new RuntimeException('TODO');
     }
 }
