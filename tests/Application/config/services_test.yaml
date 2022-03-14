@@ -1,6 +1,5 @@
 imports:
     - { resource: "../../Behat/Resources/services.xml" }
-    - { resource: "./services_test.xml" }
     - { resource: "../../../vendor/sylius/sylius/src/Sylius/Behat/Resources/config/services.xml" }
 
 # workaround needed for strange "test.client.history" problem
@@ -8,5 +7,17 @@ imports:
 services:
     Symfony\Component\BrowserKit\AbstractBrowser: '@test.client'
 
-    webgriffe.sylius_active_campaign_plugin.client.active_campaign:
+    webgriffe.sylius_active_campaign_plugin.client.active_campaign_stub:
         class: Tests\Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientStub
+
+    webgriffe.sylius_active_campaign_plugin.client.active_campaign:
+        class: Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClient
+        arguments:
+            - '@test.http_client_stub'
+            - '@sylius.http_message_factory'
+            - '@serializer'
+            - '%webgriffe_sylius_active_campaign.api_client.base_url%'
+            - '%webgriffe_sylius_active_campaign.api_client.key%'
+
+    test.http_client_stub:
+        class: 'Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\HttpClientStub'

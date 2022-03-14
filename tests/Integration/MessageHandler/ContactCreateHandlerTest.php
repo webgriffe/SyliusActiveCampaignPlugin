@@ -28,7 +28,7 @@ final class ContactCreateHandlerTest extends KernelTestCase
         $this->customerRepository = self::getContainer()->get('sylius.repository.customer');
         $this->contactCreateHandler = new ContactCreateHandler(
             self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.mapper.contact'),
-            self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.client.active_campaign'),
+            self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.client.active_campaign_stub'),
             $this->customerRepository
         );
     }

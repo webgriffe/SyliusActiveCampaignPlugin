@@ -2,7 +2,9 @@
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <parameters>
-        <parameter key="webgriffe_sylius_active_campaign.command.enqueue_contact.name">webgriffe:active-campaign:enqueue-contact</parameter>
+        <parameter key="webgriffe_sylius_active_campaign.command.enqueue_contact.name">
+            webgriffe:active-campaign:enqueue-contact
+        </parameter>
     </parameters>
     <services>
         <service id="webgriffe.sylius_active_campaign_plugin.message_handler.contact_create"
@@ -16,9 +18,6 @@
         <service id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign_contact"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaignContactFactory"/>
 
-        <service id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign_contact.create_contact_response"
-                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaignContact\CreateContactResponseFactory"/>
-
         <service id="webgriffe.sylius_active_campaign_plugin.mapper.contact"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapper">
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign_contact"/>
@@ -28,8 +27,7 @@
                  class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClient">
             <argument type="service" id="sylius.http_client"/>
             <argument type="service" id="sylius.http_message_factory"/>
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign_contact.create_contact_response"/>
-            <argument type="service" id="serializer"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
             <argument>%webgriffe_sylius_active_campaign.api_client.base_url%</argument>
             <argument>%webgriffe_sylius_active_campaign.api_client.key%</argument>
         </service>
@@ -46,6 +44,34 @@
             <argument type="service" id="messenger.default_bus"/>
             <argument>%webgriffe_sylius_active_campaign.command.enqueue_contact.name%</argument>
             <tag name="console.command"/>
+        </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.serializer.mapping.loader.xml_file"
+                 class="Symfony\Component\Serializer\Mapping\Loader\XmlFileLoader">
+            <argument type="string">serialization.xml</argument>
+        </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.serializer.mapping.factory.class_metadata"
+                 class="Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory">
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer.mapping.loader.xml_file"/>
+        </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.serializer.name_converter.metadata_aware"
+                 class="Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter">
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer.mapping.factory.class_metadata"/>
+        </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.serializer.normalizer.object"
+                 class="Symfony\Component\Serializer\Normalizer\ObjectNormalizer">
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer.mapping.factory.class_metadata"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer.name_converter.metadata_aware"/>
+        </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.serializer"
+                 class="Symfony\Component\Serializer\Serializer">
+            <argument type="collection">
+                <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer.normalizer.object"/>
+            </argument>
         </service>
     </services>
 </container>
