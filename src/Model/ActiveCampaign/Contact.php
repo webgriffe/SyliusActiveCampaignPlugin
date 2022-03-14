@@ -10,7 +10,7 @@ final class Contact implements ContactInterface
         private string $email,
         private ?string $firstName = null,
         private ?string $lastName = null,
-        private ?int $phone = null,
+        private ?string $phone = null,
         private array $fieldValues = []
     ) {
     }
@@ -45,12 +45,12 @@ final class Contact implements ContactInterface
         $this->lastName = $lastName;
     }
 
-    public function getPhone(): ?int
+    public function getPhone(): ?string
     {
         return $this->phone;
     }
 
-    public function setPhone(?int $phone): void
+    public function setPhone(?string $phone): void
     {
         $this->phone = $phone;
     }

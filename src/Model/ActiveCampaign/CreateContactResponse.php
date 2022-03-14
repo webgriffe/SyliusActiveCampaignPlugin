@@ -17,7 +17,7 @@ final class CreateContactResponse implements CreateContactResponseInterface
         private string $updatedAt,
         private string $organizationId,
         private array $links,
-        private string $id,
+        private int $id,
         private string $organization
     ) {
     }
@@ -42,7 +42,7 @@ final class CreateContactResponse implements CreateContactResponseInterface
         return $this->updatedAt;
     }
 
-    public function getOriganizationId(): string
+    public function getOrganizationId(): string
     {
         return $this->organizationId;
     }
@@ -52,7 +52,7 @@ final class CreateContactResponse implements CreateContactResponseInterface
         return $this->links;
     }
 
-    public function getId(): string
+    public function getId(): int
     {
         return $this->id;
     }

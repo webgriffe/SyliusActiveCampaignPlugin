@@ -9,7 +9,7 @@ final class ContactUpdate
     /** @param string|int $customerId */
     public function __construct(
         private mixed $customerId,
-        private string $activeCampaignId
+        private int $activeCampaignId
     ) {
     }
 
@@ -19,7 +19,7 @@ final class ContactUpdate
         return $this->customerId;
     }
 
-    public function getActiveCampaignId(): string
+    public function getActiveCampaignId(): int
     {
         return $this->activeCampaignId;
     }

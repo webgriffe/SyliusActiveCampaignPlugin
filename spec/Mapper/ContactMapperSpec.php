@@ -58,7 +58,7 @@ class ContactMapperSpec extends ObjectBehavior
     {
         $contact->setFirstName('Samuel')->shouldBeCalledOnce();
         $contact->setLastName('Jackson')->shouldBeCalledOnce();
-        $contact->setPhone(324213231)->shouldBeCalledOnce();
+        $contact->setPhone('0324 213 231')->shouldBeCalledOnce();
         $this->mapFromCustomer($customer)->shouldReturn($contact);
     }
 }

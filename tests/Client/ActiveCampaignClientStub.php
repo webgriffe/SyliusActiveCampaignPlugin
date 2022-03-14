@@ -13,7 +13,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\UpdateContactRespo
 
 final class ActiveCampaignClientStub implements ActiveCampaignClientInterface
 {
-    public string $activeCampaignId = '1234';
+    public int $activeCampaignId = 1234;
 
     public function createContact(ContactInterface $contact): CreateContactResponseInterface
     {
@@ -29,7 +29,7 @@ final class ActiveCampaignClientStub implements ActiveCampaignClientInterface
         );
     }
 
-    public function updateContact(string $activeCampaignContactId, ContactInterface $contact): UpdateContactResponseInterface
+    public function updateContact(int $activeCampaignContactId, ContactInterface $contact): UpdateContactResponseInterface
     {
         throw new RuntimeException('TODO');
     }

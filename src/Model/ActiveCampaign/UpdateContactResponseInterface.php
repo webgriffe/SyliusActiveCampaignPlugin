@@ -66,7 +66,7 @@ interface UpdateContactResponseInterface
     /** @return array<string, string> */
     public function getLinks(): array;
 
-    public function getId(): string;
+    public function getId(): int;
 
     public function getOrganization(): ?string;
 }

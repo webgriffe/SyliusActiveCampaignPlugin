@@ -8,15 +8,15 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait ActiveCampaignAwareTrait
 {
-    /** @ORM\Column(name="active_campaign_id", type="string", nullable=true) */
-    protected ?string $activeCampaignId = null;
+    /** @ORM\Column(name="active_campaign_id", type="integer", nullable=true) */
+    protected ?int $activeCampaignId = null;
 
-    public function getActiveCampaignId(): ?string
+    public function getActiveCampaignId(): ?int
     {
         return $this->activeCampaignId;
     }
 
-    public function setActiveCampaignId(?string $activeCampaignId): void
+    public function setActiveCampaignId(?int $activeCampaignId): void
     {
         $this->activeCampaignId = $activeCampaignId;
     }

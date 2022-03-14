@@ -12,5 +12,5 @@ interface ActiveCampaignClientInterface
 {
     public function createContact(ContactInterface $contact): CreateContactResponseInterface;
 
-    public function updateContact(string $activeCampaignContactId, ContactInterface $contact): UpdateContactResponseInterface;
+    public function updateContact(int $activeCampaignContactId, ContactInterface $contact): UpdateContactResponseInterface;
 }

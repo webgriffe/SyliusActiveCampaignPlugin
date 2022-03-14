@@ -6,7 +6,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Model;
 
 interface ActiveCampaignAwareInterface
 {
-    public function getActiveCampaignId(): ?string;
+    public function getActiveCampaignId(): ?int;
 
-    public function setActiveCampaignId(?string $id): void;
+    public function setActiveCampaignId(?int $id): void;
 }

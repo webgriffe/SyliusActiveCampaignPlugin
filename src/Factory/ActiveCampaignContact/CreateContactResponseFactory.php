@@ -27,8 +27,7 @@ final class CreateContactResponseFactory implements CreateContactResponseFactory
         $organization = $payload['organization'];
         Assert::isArray($payload['links']);
         $links = $payload['links'];
-        Assert::string($payload['id']);
-        $id = $payload['id'];
+        $id = (int) $payload['id'];
 
         /** @psalm-suppress MixedArgumentTypeCoercion */
         return new CreateContactResponse($fieldValues, $email, $createdAt, $updatedAt, $organizationId, $links, $id, $organization);

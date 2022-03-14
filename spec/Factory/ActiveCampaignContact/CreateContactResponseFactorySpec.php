@@ -39,9 +39,9 @@ final class CreateContactResponseFactorySpec extends ObjectBehavior
         $result->getEmail()->shouldReturn('test@email.com');
         $result->getCreatedAt()->shouldReturn('2022-03-07T10:16:24-06:00');
         $result->getUpdatedAt()->shouldReturn('2022-03-07T10:16:24-06:00');
-        $result->getOriganizationId()->shouldReturn('ABC123');
+        $result->getOrganizationId()->shouldReturn('ABC123');
         $result->getLinks()->shouldReturn([]);
-        $result->getId()->shouldReturn('1');
+        $result->getId()->shouldReturn(1);
         $result->getOrganization()->shouldReturn('Webgriffe SRL');
     }
 }

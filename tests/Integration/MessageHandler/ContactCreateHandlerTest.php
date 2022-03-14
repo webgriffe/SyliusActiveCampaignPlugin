@@ -40,7 +40,7 @@ final class ContactCreateHandlerTest extends KernelTestCase
 
         /** @var CustomerInterface&ActiveCampaignAwareInterface $customer */
         $customer = $this->customerRepository->find($customer->getId());
-        $this->assertEquals('1234', $customer->getActiveCampaignId());
+        $this->assertEquals(1234, $customer->getActiveCampaignId());
     }
 
     private function createCustomer(): CustomerInterface

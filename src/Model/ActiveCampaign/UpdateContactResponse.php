@@ -33,7 +33,7 @@ final class UpdateContactResponse implements UpdateContactResponseInterface
         private string $createdAtUTCTimestamp,
         private string $updatedAtUTCTimestamp,
         private array $links,
-        private string $id,
+        private int $id,
         private ?string $bouncedDate = null,
         private ?string $ua = null,
         private ?string $socialDataLastCheck = null,
@@ -155,7 +155,7 @@ final class UpdateContactResponse implements UpdateContactResponseInterface
         return $this->links;
     }
 
-    public function getId(): string
+    public function getId(): int
     {
         return $this->id;
     }

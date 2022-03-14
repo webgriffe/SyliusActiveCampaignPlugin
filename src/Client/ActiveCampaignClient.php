@@ -59,7 +59,7 @@ final class ActiveCampaignClient implements ActiveCampaignClientInterface
         return $this->createContactResponseFactory->createNewFromPayload($payloadArray);
     }
 
-    public function updateContact(string $activeCampaignContactId, ContactInterface $contact): UpdateContactResponseInterface
+    public function updateContact(int $activeCampaignContactId, ContactInterface $contact): UpdateContactResponseInterface
     {
         throw new RuntimeException('TODO');
     }

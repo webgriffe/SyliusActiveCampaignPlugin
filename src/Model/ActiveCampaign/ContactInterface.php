@@ -22,7 +22,7 @@ interface ContactInterface
 
     public function setFieldValues(array $fieldValues): void;
 
-    public function getPhone(): ?int;
+    public function getPhone(): ?string;
 
-    public function setPhone(?int $phone): void;
+    public function setPhone(?string $phone): void;
 }

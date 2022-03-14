@@ -28,10 +28,7 @@ final class ContactMapper implements ContactMapperInterface
         $contact = $this->contactFactory->createNewFromEmail($customerEmail);
         $contact->setFirstName($customer->getFirstName());
         $contact->setLastName($customer->getLastName());
-        $customerPhoneNumber = $customer->getPhoneNumber();
-        if ($customerPhoneNumber !== null) {
-            $contact->setPhone((int) str_replace([' ', '-', '/', '*', '+'], '', $customerPhoneNumber));
-        }
+        $contact->setPhone($customer->getPhoneNumber());
 
         return $contact;
     }
