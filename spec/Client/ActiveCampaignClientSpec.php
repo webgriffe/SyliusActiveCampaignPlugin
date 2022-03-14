@@ -15,8 +15,8 @@ use RuntimeException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaignContact\CreateContactResponseFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\CreateContactResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\CreateContactResponseInterface;
 
 final class ActiveCampaignClientSpec extends ObjectBehavior
@@ -34,14 +34,13 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
     public function let(
         ClientInterface $httpClient,
         MessageFactory $requestFactory,
-        CreateContactResponseFactoryInterface $createContactResponseFactory,
         SerializerInterface $serializer,
         ContactInterface $contact,
         RequestInterface $request,
         ResponseInterface $response,
         StreamInterface $responseBody,
     ): void {
-        $this->beConstructedWith($httpClient, $requestFactory, $createContactResponseFactory, $serializer, self::API_URL, self::API_KEY);
+        $this->beConstructedWith($httpClient, $requestFactory, $serializer, self::API_URL, self::API_KEY);
 
         $requestFactory
             ->createRequest(Argument::any(), Argument::any(), Argument::any())
@@ -61,17 +60,16 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
     public function it_creates_a_contact_on_active_campaign(
         ClientInterface $httpClient,
         MessageFactory $requestFactory,
-        CreateContactResponseFactoryInterface $createContactResponseFactory,
         SerializerInterface $serializer,
         RequestInterface $request,
         ResponseInterface $response,
         StreamInterface $responseBody,
         ContactInterface $contact,
-        CreateContactResponseInterface $contactResponse,
+        CreateContactResponseInterface $createContactResponse,
     ): void {
-        $response->getStatusCode()->willReturn(200);
+        $response->getStatusCode()->willReturn(201);
         $responseBody->getContents()->willReturn(self::CREATE_CONTACT_RESPONSE_PAYLOAD);
-        $serializer->deserialize(self::CREATE_CONTACT_RESPONSE_PAYLOAD, 'array', 'json')->willReturn(['email' => 'test@email.com']);
+        $serializer->deserialize(self::CREATE_CONTACT_RESPONSE_PAYLOAD, CreateContactResponse::class, 'json')->shouldBeCalledOnce()->willReturn($createContactResponse);
 
         $requestFactory
             ->createRequest(
@@ -88,9 +86,8 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
             ->shouldBeCalledOnce()
             ->willReturn($request);
         $httpClient->send($request)->shouldBeCalledOnce()->willReturn($response);
-        $createContactResponseFactory->createNewFromPayload(Argument::any())->willReturn($contactResponse);
 
-        $this->createContact($contact)->shouldReturn($contactResponse);
+        $this->createContact($contact)->shouldReturn($createContactResponse);
     }
 
     public function it_throws_while_creating_a_contact_and_the_request_wasnt_successful(
