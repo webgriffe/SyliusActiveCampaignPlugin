@@ -22,19 +22,19 @@ final class ActiveCampaignClientTest extends KernelTestCase
 
     public function test_it_should_create_contact_on_active_campaign(): void
     {
-        HttpClientStub::$responseBodyContent = '{"fieldValues":[],"email":"test@email.com","cdate":"2022-03-07T10:16:24-06:00","udate":"2022-03-07T10:16:24-06:00","orgid":"ABC123","organization":"Webgriffe SRL","links":[],"id":1}';
-        $contact = new Contact('test@email.com', 'John', 'Wayne', '123456789', ['street' => 'Via Canale 1/P']);
+        HttpClientStub::$responseBodyContent = '{"fieldValues":[],"contact":{"email":"zachary.rippin@wisozk.com","phone":"+1-470-370-2694","firstName":"Bennett","lastName":"Hahn","email_empty":false,"cdate":"2022-03-15T12:01:48-05:00","udate":"2022-03-15T12:01:48-05:00","orgid":"","orgname":"","links":{"bounceLogs":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/bounceLogs","contactAutomations":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/contactAutomations?limit=1000&orders%5Blastdate%5D=DESC","contactData":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/contactData","contactGoals":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/contactGoals","contactLists":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/contactLists","contactLogs":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/contactLogs","contactTags":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/contactTags","contactDeals":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/contactDeals","deals":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/deals","fieldValues":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/fieldValues","geoIps":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/geoIps","notes":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/notes","organization":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/organization","plusAppend":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/plusAppend","trackingLogs":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/trackingLogs","scoreValues":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/scoreValues","accountContacts":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/accountContacts","automationEntryCounts":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/automationEntryCounts"},"hash":"97c021d40fa4b0b31924eb228c1b26bd","fieldValues":[],"id":"5","organization":""}}';
+        $contact = new Contact('zachary.rippin@wisozk.com', 'Bennett', 'Hahn', '+1-470-370-2694', ['street' => 'Via Canale 1/P']);
 
         $createdContact = $this->client->createContact($contact);
 
         self::assertNotNull($createdContact);
-        self::assertEquals(1, $createdContact->getId());
-        self::assertEquals('test@email.com', $createdContact->getEmail());
-        self::assertEquals('2022-03-07T10:16:24-06:00', $createdContact->getCreatedAt());
-        self::assertEquals('2022-03-07T10:16:24-06:00', $createdContact->getUpdatedAt());
+        self::assertEquals(5, $createdContact->getContact()->getId());
+        self::assertEquals('zachary.rippin@wisozk.com', $createdContact->getContact()->getEmail());
+        self::assertEquals('2022-03-15T12:01:48-05:00', $createdContact->getContact()->getCreatedAt());
+        self::assertEquals('2022-03-15T12:01:48-05:00', $createdContact->getContact()->getUpdatedAt());
         self::assertEquals([], $createdContact->getFieldValues());
-        self::assertCount(0, $createdContact->getLinks());
-        self::assertEquals('Webgriffe SRL', $createdContact->getOrganization());
-        self::assertEquals('ABC123', $createdContact->getOrganizationId());
+        self::assertCount(18, $createdContact->getContact()->getLinks());
+        self::assertEquals('', $createdContact->getContact()->getOrganization());
+        self::assertEquals('', $createdContact->getContact()->getOrganizationId());
     }
 }

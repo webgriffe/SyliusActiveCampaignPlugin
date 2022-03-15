@@ -4,7 +4,7 @@
             xsi:schemaLocation="http://symfony.com/schema/dic/serializer-mapping
         https://symfony.com/schema/dic/serializer-mapping/serializer-mapping-1.0.xsd"
 >
-    <class name="Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\CreateContactResponse">
+    <class name="Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactResponse">
         <attribute name="createdAt" serialized-name="cdate"/>
         <attribute name="updatedAt" serialized-name="udate"/>
         <attribute name="organizationId" serialized-name="orgid"/>

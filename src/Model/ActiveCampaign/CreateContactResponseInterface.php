@@ -9,18 +9,5 @@ interface CreateContactResponseInterface
     /** @return FieldValueInterface[] */
     public function getFieldValues(): array;
 
-    public function getEmail(): string;
-
-    public function getCreatedAt(): string;
-
-    public function getUpdatedAt(): string;
-
-    public function getOrganizationId(): string;
-
-    /** @return array<string, string> */
-    public function getLinks(): array;
-
-    public function getId(): int;
-
-    public function getOrganization(): string;
+    public function getContact(): ContactResponseInterface;
 }
