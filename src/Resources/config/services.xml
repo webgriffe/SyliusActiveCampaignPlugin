@@ -6,8 +6,10 @@
         <import resource="services/command.xml"/>
         <import resource="services/event_subscriber.xml"/>
         <import resource="services/factory.xml"/>
+        <import resource="services/http_client.xml"/>
         <import resource="services/mapper.xml"/>
         <import resource="services/message_handler.xml"/>
+        <import resource="services/middleware.xml"/>
         <import resource="services/serializer.xml"/>
     </imports>
 </container>

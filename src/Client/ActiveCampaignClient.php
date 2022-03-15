@@ -31,17 +31,12 @@ final class ActiveCampaignClient implements ActiveCampaignClientInterface
 
     public function createContact(ContactInterface $contact): CreateContactResponseInterface
     {
-        $serializedContact = $this->serializer->serialize($contact, 'json');
+        $serializedContact = $this->serializer->serialize(['contact' => $contact], 'json');
         $request = $this->requestFactory->createRequest(
             'POST',
-            $this->apiVersionedUrl . '/contacts',
-            [
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Api-Token' => $this->apiKey,
-                ],
-                'body' => $serializedContact,
-            ]
+            '/api/3/contacts',
+            [],
+            $serializedContact
         );
 
         $response = $this->httpClient->send($request);
