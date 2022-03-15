@@ -24,8 +24,7 @@ class ContactRemoveHandlerSpec extends ObjectBehavior
     }
 
     public function it_updates_contact_on_active_campaign(
-        ActiveCampaignClientInterface $activeCampaignClient,
-        RemoveContactResponseInterface $removeContactResponse
+        ActiveCampaignClientInterface $activeCampaignClient
     ): void {
         $activeCampaignClient->removeContact(1234)->shouldBeCalledOnce();
 
