@@ -3,3 +3,4 @@ framework:
         routing:
             'Webgriffe\SyliusActiveCampaignPlugin\Message\ContactCreate': main
             'Webgriffe\SyliusActiveCampaignPlugin\Message\ContactUpdate': main
+            'Webgriffe\SyliusActiveCampaignPlugin\Message\ContactRemove': main

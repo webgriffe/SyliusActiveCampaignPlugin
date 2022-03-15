@@ -9,6 +9,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\ContactCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\ContactRemove;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\ContactUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 
@@ -24,6 +25,7 @@ final class CustomerSubscriber implements EventSubscriberInterface
         return [
             'sylius.customer.post_create' => ['createContact'],
             'sylius.customer.post_update' => ['updateContact'],
+            'sylius.customer.post_delete' => ['removeContact'],
         ];
     }
 
@@ -65,5 +67,19 @@ final class CustomerSubscriber implements EventSubscriberInterface
         }
 
         $this->messageBus->dispatch(new ContactUpdate($customerId, $activeCampaignId));
+    }
+
+    public function removeContact(GenericEvent $event): void
+    {
+        $customer = $event->getSubject();
+        if (!$customer instanceof ActiveCampaignAwareInterface) {
+            return;
+        }
+        $activeCampaignId = $customer->getActiveCampaignId();
+        if ($activeCampaignId === null) {
+            return;
+        }
+
+        $this->messageBus->dispatch(new ContactRemove($activeCampaignId));
     }
 }
