@@ -9,6 +9,7 @@ services:
 
     webgriffe.sylius_active_campaign_plugin.client.active_campaign_stub:
         class: Tests\Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientStub
+        public: true
 
     webgriffe.sylius_active_campaign_plugin.client.active_campaign:
         class: Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClient
