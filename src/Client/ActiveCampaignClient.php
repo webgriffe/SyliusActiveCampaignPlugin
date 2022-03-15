@@ -22,6 +22,7 @@ final class ActiveCampaignClient implements ActiveCampaignClientInterface
         private ClientInterface $httpClient,
         private MessageFactory $requestFactory,
         private SerializerInterface $serializer,
+        private SerializerInterface $deserializer,
         string $apiBaseUrl,
         private string $apiKey
     ) {
@@ -52,7 +53,7 @@ final class ActiveCampaignClient implements ActiveCampaignClientInterface
         $payload = $body->getContents();
 
         /** @var CreateContactResponse $createContactResponse */
-        $createContactResponse = $this->serializer->deserialize($payload, CreateContactResponse::class, 'json');
+        $createContactResponse = $this->deserializer->deserialize($payload, CreateContactResponse::class, 'json');
 
         return $createContactResponse;
     }

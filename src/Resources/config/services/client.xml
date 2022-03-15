@@ -6,7 +6,8 @@
                  class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClient">
             <argument type="service" id="sylius.http_client"/>
             <argument type="service" id="sylius.http_message_factory"/>
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
+            <argument type="service" id="serializer"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.deserializer"/>
             <argument>%webgriffe_sylius_active_campaign.api_client.base_url%</argument>
             <argument>%webgriffe_sylius_active_campaign.api_client.key%</argument>
         </service>

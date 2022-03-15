@@ -18,8 +18,13 @@ final class WebgriffeSyliusActiveCampaignExtension extends Extension
     public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $fileLocator = new FileLocator(__DIR__ . '/../Resources/config');
+        $loader = new XmlFileLoader($container, $fileLocator);
 
+        $container->setParameter(
+            'webgriffe.sylius_active_campaign_plugin.serializer.mapping.xml_file_path',
+            $fileLocator->locate('serialization.xml')
+        );
         $container->setParameter('webgriffe_sylius_active_campaign.api_client.base_url', (string) $config['api_client']['base_url']);
         $container->setParameter('webgriffe_sylius_active_campaign.api_client.key', (string) $config['api_client']['key']);
 

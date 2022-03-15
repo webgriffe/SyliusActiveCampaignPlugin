@@ -17,6 +17,7 @@ services:
             - '@test.http_client_stub'
             - '@sylius.http_message_factory'
             - '@serializer'
+            - '@webgriffe.sylius_active_campaign_plugin.deserializer'
             - '%webgriffe_sylius_active_campaign.api_client.base_url%'
             - '%webgriffe_sylius_active_campaign.api_client.key%'
 
