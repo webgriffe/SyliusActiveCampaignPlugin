@@ -13,4 +13,6 @@ interface ActiveCampaignClientInterface
     public function createContact(ContactInterface $contact): CreateContactResponseInterface;
 
     public function updateContact(int $activeCampaignContactId, ContactInterface $contact): UpdateContactResponseInterface;
+
+    public function removeContact(int $activeCampaignContactId): void;
 }

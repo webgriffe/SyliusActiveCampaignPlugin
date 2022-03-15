@@ -15,6 +15,12 @@
             <tag name="messenger.message_handler"/>
         </service>
 
+        <service id="webgriffe.sylius_active_campaign_plugin.message_handler.contact_remove"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\ContactRemoveHandler">
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign"/>
+            <tag name="messenger.message_handler"/>
+        </service>
+
         <service id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign_contact"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaignContactFactory"/>
 
@@ -58,13 +64,16 @@
 
         <service id="webgriffe.sylius_active_campaign_plugin.serializer.name_converter.metadata_aware"
                  class="Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter">
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer.mapping.factory.class_metadata"/>
+            <argument type="service"
+                      id="webgriffe.sylius_active_campaign_plugin.serializer.mapping.factory.class_metadata"/>
         </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.serializer.normalizer.object"
                  class="Symfony\Component\Serializer\Normalizer\ObjectNormalizer">
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer.mapping.factory.class_metadata"/>
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer.name_converter.metadata_aware"/>
+            <argument type="service"
+                      id="webgriffe.sylius_active_campaign_plugin.serializer.mapping.factory.class_metadata"/>
+            <argument type="service"
+                      id="webgriffe.sylius_active_campaign_plugin.serializer.name_converter.metadata_aware"/>
         </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.serializer"
