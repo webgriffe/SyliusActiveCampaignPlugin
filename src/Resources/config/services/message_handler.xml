@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="webgriffe.sylius_active_campaign_plugin.message_handler.contact_create"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\ContactCreateHandler">
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.mapper.contact"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign"/>
+            <argument type="service" id="sylius.repository.customer"/>
+            <tag name="messenger.message_handler"/>
+        </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.message_handler.contact_update"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\ContactUpdateHandler">
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.mapper.contact"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign"/>
+            <argument type="service" id="sylius.repository.customer"/>
+            <tag name="messenger.message_handler"/>
+        </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.message_handler.contact_remove"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\ContactRemoveHandler">
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign"/>
+            <tag name="messenger.message_handler"/>
+        </service>
+
+    </services>
+</container>

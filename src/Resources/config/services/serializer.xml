@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="webgriffe.sylius_active_campaign_plugin.serializer.mapping.loader.xml_file"
+                 class="Symfony\Component\Serializer\Mapping\Loader\XmlFileLoader">
+            <argument type="string">serialization.xml</argument>
+        </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.serializer.mapping.factory.class_metadata"
+                 class="Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory">
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer.mapping.loader.xml_file"/>
+        </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.serializer.name_converter.metadata_aware"
+                 class="Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter">
+            <argument type="service"
+                      id="webgriffe.sylius_active_campaign_plugin.serializer.mapping.factory.class_metadata"/>
+        </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.serializer.normalizer.object"
+                 class="Symfony\Component\Serializer\Normalizer\ObjectNormalizer">
+            <argument type="service"
+                      id="webgriffe.sylius_active_campaign_plugin.serializer.mapping.factory.class_metadata"/>
+            <argument type="service"
+                      id="webgriffe.sylius_active_campaign_plugin.serializer.name_converter.metadata_aware"/>
+        </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.serializer"
+                 class="Symfony\Component\Serializer\Serializer">
+            <argument type="collection">
+                <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer.normalizer.object"/>
+            </argument>
+        </service>
+    </services>
+</container>
