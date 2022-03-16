@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Client;
+namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub;
 
 use RuntimeException;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientInterface;

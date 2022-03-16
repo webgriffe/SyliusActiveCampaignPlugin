@@ -9,7 +9,7 @@ use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Tests\Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientStub;
+use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\ActiveCampaignClientStub;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\ContactCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\ContactCreateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
