@@ -72,6 +72,5 @@ final class ActiveCampaignClientStub implements ActiveCampaignClientInterface
 
     public function removeContact(int $activeCampaignContactId): void
     {
-        throw new RuntimeException('TODO');
     }
 }

@@ -168,4 +168,38 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
 
         $this->shouldThrow(new HttpException(500, 'Internal Server Error'))->during('updateContact', [113, $contact]);
     }
+
+    public function it_removes_a_contact_on_active_campaign(
+        ResponseInterface $response,
+        StreamInterface $responseBody,
+    ): void {
+        $response->getStatusCode()->willReturn(200);
+        $response->getBody()->willReturn($responseBody);
+        $responseBody->getContents()->willReturn('{}');
+
+        $this->removeContact(113)->shouldReturn(null);
+    }
+
+    public function it_throws_while_removing_a_contact_when_the_response_is_not_found(
+        ResponseInterface $response,
+        ContactInterface $contact,
+        StreamInterface $stream
+    ): void {
+        $response->getStatusCode()->willReturn(404);
+        $response->getBody()->willReturn($stream);
+        $stream->getContents()->willReturn('{"message":"No Result found for Subscriber with id 1"}');
+
+        $this->shouldThrow(new NotFoundHttpException('No Result found for Subscriber with id 1'))->during('removeContact', [1]);
+    }
+
+    public function it_throws_while_removing_a_contact_when_the_response_is_not_recognized(
+        ResponseInterface $response,
+        ContactInterface $contact
+    ): void {
+        $response->getStatusCode()->willReturn(500);
+        $response->getHeaders()->willReturn([]);
+        $response->getReasonPhrase()->willReturn('Internal Server Error');
+
+        $this->shouldThrow(new HttpException(500, 'Internal Server Error'))->during('removeContact', [113]);
+    }
 }

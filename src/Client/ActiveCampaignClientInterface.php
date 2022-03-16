@@ -32,5 +32,11 @@ interface ActiveCampaignClientInterface
      */
     public function updateContact(int $activeCampaignContactId, ContactInterface $contact): UpdateContactResponse;
 
+    /**
+     * @throws GuzzleException
+     * @throws JsonException
+     * @throws HttpException
+     * @throws NotFoundHttpException
+     */
     public function removeContact(int $activeCampaignContactId): void;
 }

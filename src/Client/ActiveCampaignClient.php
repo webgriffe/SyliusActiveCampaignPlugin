@@ -6,7 +6,6 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Client;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
-use RuntimeException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -103,6 +102,20 @@ final class ActiveCampaignClient implements ActiveCampaignClientInterface
 
     public function removeContact(int $activeCampaignContactId): void
     {
-        throw new RuntimeException('TODO');
+        $response = $this->httpClient->send(new Request(
+            'DELETE',
+            self::API_ENDPOINT_VERSIONED . '/contacts/' . $activeCampaignContactId
+        ));
+        if (($statusCode = $response->getStatusCode()) === 200) {
+            return;
+        }
+        if ($statusCode === 404) {
+            /** @var array{message: string} $errorResponse */
+            $errorResponse = json_decode($response->getBody()->getContents(), true, 512, \JSON_THROW_ON_ERROR);
+
+            throw new NotFoundHttpException($errorResponse['message']);
+        }
+
+        throw new HttpException($statusCode, $response->getReasonPhrase(), null, $response->getHeaders());
     }
 }
