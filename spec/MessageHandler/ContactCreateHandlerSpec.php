@@ -14,8 +14,9 @@ use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\ContactCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\ContactCreateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\CreateContactResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateContactResponse;
 
 class ContactCreateHandlerSpec extends ObjectBehavior
 {
@@ -74,13 +75,11 @@ class ContactCreateHandlerSpec extends ObjectBehavior
     public function it_creates_contact_on_active_campaign(
         ContactInterface $contact,
         ActiveCampaignClientInterface $activeCampaignClient,
-        CreateContactResponseInterface $createContactResponse,
         CustomerInterface $customer,
         CustomerRepositoryInterface $customerRepository
     ): void {
-        $createContactResponse->getId()->willReturn('3423');
-        $activeCampaignClient->createContact($contact)->shouldBeCalledOnce()->willReturn($createContactResponse);
-        $customer->setActiveCampaignId('3423')->shouldBeCalledOnce();
+        $activeCampaignClient->createContact($contact)->shouldBeCalledOnce()->willReturn(new CreateContactResponse([], new ContactResponse('info@activecampaign.com', 'today', 'today', '', [], 3423, '')));
+        $customer->setActiveCampaignId(3423)->shouldBeCalledOnce();
         $customerRepository->add($customer)->shouldBeCalledOnce();
 
         $this->__invoke(new ContactCreate(12));
