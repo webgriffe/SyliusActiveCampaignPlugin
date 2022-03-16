@@ -15,6 +15,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Message\ContactUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\ContactUpdateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateContactContactResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateContactResponse;
 
 class ContactUpdateHandlerSpec extends ObjectBehavior
@@ -77,36 +78,38 @@ class ContactUpdateHandlerSpec extends ObjectBehavior
     ): void {
         $activeCampaignClient->updateContact(1234, $contact)->shouldBeCalledOnce()->willReturn(new UpdateContactResponse(
             [],
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            [],
-            1234,
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            ''
+            new UpdateContactContactResponse(
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                [],
+                1234,
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                ''
+            )
         ));
 
         $this->__invoke(new ContactUpdate(12, 1234));
