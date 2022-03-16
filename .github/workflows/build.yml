@@ -186,8 +186,13 @@ jobs:
         name: Backward Compatibility Check
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@master
-            - name: fetch tags
-              run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-            - name: Roave Backward Compatibility Check
-              uses: ./.github/actions/roave-bc-check
+            -
+                uses: actions/checkout@master
+
+            -
+                name: fetch tags
+                run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+
+            -
+                name: Roave Backward Compatibility Check
+                uses: ./.github/actions/roave-bc-check
