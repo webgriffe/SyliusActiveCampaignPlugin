@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace spec\Webgriffe\SyliusActiveCampaignPlugin\MessageHandler;
+namespace spec\Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact;
 
 use App\Entity\Customer\CustomerInterface;
 use InvalidArgumentException;
@@ -11,8 +11,8 @@ use Sylius\Component\Core\Model\CustomerInterface as SyliusCustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapperInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\ContactCreate;
-use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\ContactCreateHandler;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactCreateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateContactContactResponse;

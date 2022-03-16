@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusActiveCampaignPlugin\MessageHandler;
+namespace Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact;
 
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\ContactRemove;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactRemove;
 
 final class ContactRemoveHandler
 {

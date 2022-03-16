@@ -10,8 +10,8 @@ use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\ActiveCampaignClientStub;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\ContactCreate;
-use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\ContactCreateHandler;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactCreateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 
 final class ContactCreateHandlerTest extends KernelTestCase

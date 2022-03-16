@@ -8,7 +8,7 @@ use App\Entity\Customer\Customer;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Symfony\Component\Messenger\Envelope;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\ContactCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate;
 
 final class EnqueueContactCommandTest extends AbstractCommandTest
 {

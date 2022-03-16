@@ -9,9 +9,9 @@ use Sylius\Bundle\ResourceBundle\Event\ResourceControllerEvent;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\InMemoryTransport;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\ContactCreate;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\ContactRemove;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\ContactUpdate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactRemove;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactUpdate;
 
 final class CustomerSubscriberTest extends AbstractEventDispatcherTest
 {

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace spec\Webgriffe\SyliusActiveCampaignPlugin\MessageHandler;
+namespace spec\Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact;
 
 use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\ContactRemove;
-use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\ContactRemoveHandler;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactRemove;
+use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactRemoveHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\RemoveContactResponseInterface;
 
 class ContactRemoveHandlerSpec extends ObjectBehavior

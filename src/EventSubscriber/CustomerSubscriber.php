@@ -8,9 +8,9 @@ use Sylius\Component\Core\Model\CustomerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\ContactCreate;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\ContactRemove;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\ContactUpdate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactRemove;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 
 final class CustomerSubscriber implements EventSubscriberInterface
