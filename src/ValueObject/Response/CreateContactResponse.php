@@ -9,7 +9,7 @@ final class CreateContactResponse
     /** @param FieldValueResponse[] $fieldValues */
     public function __construct(
         private array $fieldValues,
-        private ContactResponse $contact
+        private CreateContactContactResponse $contact
     ) {
     }
 
@@ -19,7 +19,7 @@ final class CreateContactResponse
         return $this->fieldValues;
     }
 
-    public function getContact(): ContactResponse
+    public function getContact(): CreateContactContactResponse
     {
         return $this->contact;
     }

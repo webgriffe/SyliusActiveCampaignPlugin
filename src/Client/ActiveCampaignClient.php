@@ -69,7 +69,36 @@ final class ActiveCampaignClient implements ActiveCampaignClientInterface
 
     public function updateContact(int $activeCampaignContactId, ContactInterface $contact): UpdateContactResponse
     {
-        throw new RuntimeException('TODO');
+        $serializedContact = $this->serializer->serialize(
+            ['contact' => $contact],
+            'json'
+        );
+
+        $response = $this->httpClient->send(new Request(
+            'PUT',
+            self::API_ENDPOINT_VERSIONED . '/contacts/' . $activeCampaignContactId,
+            [],
+            $serializedContact
+        ));
+        if (($statusCode = $response->getStatusCode()) !== 200) {
+            if ($statusCode === 404) {
+                /** @var array{message: string} $errorResponse */
+                $errorResponse = json_decode($response->getBody()->getContents(), true, 512, \JSON_THROW_ON_ERROR);
+
+                throw new NotFoundHttpException($errorResponse['message']);
+            }
+
+            throw new HttpException($statusCode, $response->getReasonPhrase(), null, $response->getHeaders());
+        }
+
+        /** @var UpdateContactResponse $updateContactResponse */
+        $updateContactResponse = $this->deserializer->deserialize(
+            $response->getBody()->getContents(),
+            UpdateContactResponse::class,
+            'json'
+        );
+
+        return $updateContactResponse;
     }
 
     public function removeContact(int $activeCampaignContactId): void

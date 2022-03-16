@@ -4,9 +4,28 @@
             xsi:schemaLocation="http://symfony.com/schema/dic/serializer-mapping
         https://symfony.com/schema/dic/serializer-mapping/serializer-mapping-1.0.xsd"
 >
-    <class name="Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactResponse">
+    <class name="Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateContactContactResponse">
         <attribute name="createdAt" serialized-name="cdate"/>
         <attribute name="updatedAt" serialized-name="udate"/>
         <attribute name="organizationId" serialized-name="orgid"/>
+    </class>
+    <class name="Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateContactContactResponse">
+        <attribute name="createdAt" serialized-name="cdate"/>
+        <attribute name="organizationId" serialized-name="orgid"/>
+        <attribute name="segmentioId" serialized-name="segmentio_id"/>
+        <attribute name="bouncedHard" serialized-name="bounced_hard"/>
+        <attribute name="bouncedSoft" serialized-name="bounced_soft"/>
+        <attribute name="emailLocal" serialized-name="email_local"/>
+        <attribute name="emailDomain" serialized-name="email_domain"/>
+        <attribute name="sentCnt" serialized-name="sentcnt"/>
+        <attribute name="updatedAt" serialized-name="udate"/>
+        <attribute name="createdAtUTCTimestamp" serialized-name="created_utc_timestamp"/>
+        <attribute name="updatedAtUTCTimestamp" serialized-name="updated_utc_timestamp"/>
+        <attribute name="bouncedDate" serialized-name="bounced_date"/>
+        <attribute name="socialDataLastCheck" serialized-name="socialdata_lastcheck"/>
+        <attribute name="ratingTimestamp" serialized-name="rating_tstamp"/>
+        <attribute name="aDate" serialized-name="adate"/>
+        <attribute name="eDate" serialized-name="edate"/>
+        <attribute name="deletedAt" serialized-name="deleted_at"/>
     </class>
 </serializer>

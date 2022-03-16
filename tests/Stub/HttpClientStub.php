@@ -11,7 +11,7 @@ use RuntimeException;
 
 final class HttpClientStub implements ClientInterface
 {
-    public static int $responseStatusCode = 201;
+    public static int $responseStatusCode = 200;
 
     public static ?string $responseBodyContent = null;
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response;
 
-final class ContactResponse
+final class CreateContactContactResponse
 {
     /** @param array<string, string> $links */
     public function __construct(

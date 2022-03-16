@@ -7,8 +7,9 @@ namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Client;
 use RuntimeException;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateContactContactResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateContactResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateContactContactResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateContactResponse;
 
 final class ActiveCampaignClientStub implements ActiveCampaignClientInterface
@@ -19,7 +20,7 @@ final class ActiveCampaignClientStub implements ActiveCampaignClientInterface
     {
         return new CreateContactResponse(
             [],
-            new ContactResponse(
+            new CreateContactContactResponse(
                 $contact->getEmail(),
                 (new \DateTimeImmutable('now'))->format('c'),
                 (new \DateTimeImmutable('now'))->format('c'),
@@ -33,7 +34,40 @@ final class ActiveCampaignClientStub implements ActiveCampaignClientInterface
 
     public function updateContact(int $activeCampaignContactId, ContactInterface $contact): UpdateContactResponse
     {
-        throw new RuntimeException('TODO');
+        return new UpdateContactResponse([], new UpdateContactContactResponse(
+            (new \DateTimeImmutable('now'))->format('c'),
+            $contact->getEmail(),
+            '',
+            $contact->getFirstName(),
+            $contact->getLastName(),
+            '0',
+            '',
+            '0',
+            '0',
+            '0',
+            '8309146b50af1ed5f9cb40c7465a0315',
+            '',
+            '',
+            '0',
+            '0',
+            '0',
+            '0',
+            (new \DateTimeImmutable('now'))->format('c'),
+            (new \DateTimeImmutable('now'))->format('Y-m-d H:i:s'),
+            (new \DateTimeImmutable('now'))->format('Y-m-d H:i:s'),
+            [
+                'bounceLogs' => 'https://:account.api-us1.com/api/:version/contacts/113/bounceLogs'
+            ],
+            $activeCampaignContactId,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        ));
     }
 
     public function removeContact(int $activeCampaignContactId): void

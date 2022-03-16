@@ -15,7 +15,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Message\ContactCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\ContactCreateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateContactContactResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateContactResponse;
 
 class ContactCreateHandlerSpec extends ObjectBehavior
@@ -78,7 +78,7 @@ class ContactCreateHandlerSpec extends ObjectBehavior
         CustomerInterface $customer,
         CustomerRepositoryInterface $customerRepository
     ): void {
-        $activeCampaignClient->createContact($contact)->shouldBeCalledOnce()->willReturn(new CreateContactResponse([], new ContactResponse('info@activecampaign.com', 'today', 'today', '', [], 3423, '')));
+        $activeCampaignClient->createContact($contact)->shouldBeCalledOnce()->willReturn(new CreateContactResponse([], new CreateContactContactResponse('info@activecampaign.com', 'today', 'today', '', [], 3423, '')));
         $customer->setActiveCampaignId(3423)->shouldBeCalledOnce();
         $customerRepository->add($customer)->shouldBeCalledOnce();
 
