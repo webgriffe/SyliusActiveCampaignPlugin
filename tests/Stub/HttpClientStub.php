@@ -15,8 +15,17 @@ final class HttpClientStub implements ClientInterface
 
     public static ?string $responseBodyContent = null;
 
+    /** @var RequestInterface[] */
+    public static array $sendedRequests = [];
+
+    public static function setUp(): void
+    {
+        self::$sendedRequests = [];
+    }
+
     public function send(RequestInterface $request, array $options = [])
     {
+        self::$sendedRequests[] = $request;
         return new Response(self::$responseStatusCode, [], self::$responseBodyContent);
     }
 

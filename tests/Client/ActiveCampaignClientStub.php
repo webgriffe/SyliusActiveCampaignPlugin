@@ -7,29 +7,31 @@ namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Client;
 use RuntimeException;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\CreateContactResponseInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\UpdateContactResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateContactResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateContactResponse;
 
 final class ActiveCampaignClientStub implements ActiveCampaignClientInterface
 {
     public int $activeCampaignId = 1234;
 
-    public function createContact(ContactInterface $contact): CreateContactResponseInterface
+    public function createContact(ContactInterface $contact): CreateContactResponse
     {
         return new CreateContactResponse(
             [],
-            $contact->getEmail(),
-            (new \DateTimeImmutable('now'))->format('c'),
-            (new \DateTimeImmutable('now'))->format('c'),
-            '',
-            [],
-            $this->activeCampaignId,
-            ''
+            new ContactResponse(
+                $contact->getEmail(),
+                (new \DateTimeImmutable('now'))->format('c'),
+                (new \DateTimeImmutable('now'))->format('c'),
+                '',
+                [],
+                $this->activeCampaignId,
+                ''
+            )
         );
     }
 
-    public function updateContact(int $activeCampaignContactId, ContactInterface $contact): UpdateContactResponseInterface
+    public function updateContact(int $activeCampaignContactId, ContactInterface $contact): UpdateContactResponse
     {
         throw new RuntimeException('TODO');
     }

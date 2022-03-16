@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Integration\Client;
 
+use Psr\Http\Message\RequestInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\HttpClientStub;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\Contact;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\FieldValue;
 
 final class ActiveCampaignClientTest extends KernelTestCase
 {
@@ -16,24 +18,30 @@ final class ActiveCampaignClientTest extends KernelTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        HttpClientStub::setUp();
 
         $this->client = self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.client.active_campaign');
     }
 
-    public function test_it_should_create_contact_on_active_campaign(): void
+    public function test_it_creates_contact_on_active_campaign(): void
     {
-        HttpClientStub::$responseBodyContent = '{"fieldValues":[],"contact":{"email":"zachary.rippin@wisozk.com","phone":"+1-470-370-2694","firstName":"Bennett","lastName":"Hahn","email_empty":false,"cdate":"2022-03-15T12:01:48-05:00","udate":"2022-03-15T12:01:48-05:00","orgid":"","orgname":"","links":{"bounceLogs":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/bounceLogs","contactAutomations":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/contactAutomations?limit=1000&orders%5Blastdate%5D=DESC","contactData":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/contactData","contactGoals":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/contactGoals","contactLists":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/contactLists","contactLogs":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/contactLogs","contactTags":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/contactTags","contactDeals":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/contactDeals","deals":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/deals","fieldValues":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/fieldValues","geoIps":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/geoIps","notes":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/notes","organization":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/organization","plusAppend":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/plusAppend","trackingLogs":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/trackingLogs","scoreValues":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/scoreValues","accountContacts":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/accountContacts","automationEntryCounts":"https:\/\/webgriffe1646663336.api-us1.com\/api\/3\/contacts\/5\/automationEntryCounts"},"hash":"97c021d40fa4b0b31924eb228c1b26bd","fieldValues":[],"id":"5","organization":""}}';
-        $contact = new Contact('zachary.rippin@wisozk.com', 'Bennett', 'Hahn', '+1-470-370-2694', ['street' => 'Via Canale 1/P']);
+        HttpClientStub::$responseBodyContent = '{"fieldValues":[{"contact":"113","field":"1","value":"The Value for First Field","cdate":"2020-08-01T10:54:59-05:00","udate":"2020-08-01T14:13:34-05:00","links":{"owner":"https://:account.api-us1.com/api/3/fieldValues/11797/owner","field":"https://:account.api-us1.com/api/3/fieldValues/11797/field"},"id":"11797","owner":"113"},{"contact":"113","field":"6","value":"2008-01-20","cdate":"2020-08-01T10:54:59-05:00","udate":"2020-08-01T14:13:34-05:00","links":{"owner":"https://:account.api-us1.com/api/3/fieldValues/11798/owner","field":"https://:account.api-us1.com/api/3/fieldValues/11798/field"},"id":"11798","owner":"113"}],"contact":{"email":"johndoe@example.com","cdate":"2018-09-28T13:50:41-05:00","udate":"2018-09-28T13:50:41-05:00","orgid":"","links":{"bounceLogs":"https://:account.api-us1.com/api/:version/contacts/113/bounceLogs","contactAutomations":"https://:account.api-us1.com/api/:version/contacts/113/contactAutomations","contactData":"https://:account.api-us1.com/api/:version/contacts/113/contactData","contactGoals":"https://:account.api-us1.com/api/:version/contacts/113/contactGoals","contactLists":"https://:account.api-us1.com/api/:version/contacts/113/contactLists","contactLogs":"https://:account.api-us1.com/api/:version/contacts/113/contactLogs","contactTags":"https://:account.api-us1.com/api/:version/contacts/113/contactTags","contactDeals":"https://:account.api-us1.com/api/:version/contacts/113/contactDeals","deals":"https://:account.api-us1.com/api/:version/contacts/113/deals","fieldValues":"https://:account.api-us1.com/api/:version/contacts/113/fieldValues","geoIps":"https://:account.api-us1.com/api/:version/contacts/113/geoIps","notes":"https://:account.api-us1.com/api/:version/contacts/113/notes","organization":"https://:account.api-us1.com/api/:version/contacts/113/organization","plusAppend":"https://:account.api-us1.com/api/:version/contacts/113/plusAppend","trackingLogs":"https://:account.api-us1.com/api/:version/contacts/113/trackingLogs","scoreValues":"https://:account.api-us1.com/api/:version/contacts/113/scoreValues"},"id":"113","organization":""}}';
+        $contact = new Contact('johndoe@example.com', 'John', 'Doe', '7223224241', [new FieldValue('1', 'The Value for First Field'), new FieldValue('6', '2008-01-20')]);
 
         $createdContact = $this->client->createContact($contact);
 
+        self::assertCount(1, HttpClientStub::$sendedRequests);
+        $sendedRequest = reset(HttpClientStub::$sendedRequests);
+        self::assertInstanceOf(RequestInterface::class, $sendedRequest);
+        self::assertEquals('{"contact":{"email":"johndoe@example.com","firstName":"John","lastName":"Doe","phone":"7223224241","fieldValues":[{"field":"1","value":"The Value for First Field"},{"field":"6","value":"2008-01-20"}]}}', $sendedRequest->getBody()->getContents());
+
         self::assertNotNull($createdContact);
-        self::assertEquals(5, $createdContact->getContact()->getId());
-        self::assertEquals('zachary.rippin@wisozk.com', $createdContact->getContact()->getEmail());
-        self::assertEquals('2022-03-15T12:01:48-05:00', $createdContact->getContact()->getCreatedAt());
-        self::assertEquals('2022-03-15T12:01:48-05:00', $createdContact->getContact()->getUpdatedAt());
-        self::assertEquals([], $createdContact->getFieldValues());
-        self::assertCount(18, $createdContact->getContact()->getLinks());
+        self::assertEquals(113, $createdContact->getContact()->getId());
+        self::assertEquals('johndoe@example.com', $createdContact->getContact()->getEmail());
+        self::assertEquals('2018-09-28T13:50:41-05:00', $createdContact->getContact()->getCreatedAt());
+        self::assertEquals('2018-09-28T13:50:41-05:00', $createdContact->getContact()->getUpdatedAt());
+        self::assertCount(2, $createdContact->getFieldValues());
+        self::assertCount(16, $createdContact->getContact()->getLinks());
         self::assertEquals('', $createdContact->getContact()->getOrganization());
         self::assertEquals('', $createdContact->getContact()->getOrganizationId());
     }

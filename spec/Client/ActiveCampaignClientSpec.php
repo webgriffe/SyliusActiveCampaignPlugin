@@ -5,51 +5,38 @@ declare(strict_types=1);
 namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Client;
 
 use GuzzleHttp\ClientInterface;
-use Http\Message\MessageFactory;
+use GuzzleHttp\Psr7\Request;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
-use RuntimeException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\CreateContactResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateContactResponse;
 
 final class ActiveCampaignClientSpec extends ObjectBehavior
 {
-    private const API_KEY = 'apitoken123456';
+    private const CREATE_CONTACT_REQUEST_PAYLOAD = '{"contact":{"email":"johndoe@example.com","firstName":"John","lastName":"Doe","phone":"7223224241","fieldValues":[{"field":"1","value":"The Value for First Field"},{"field":"6","value":"2008-01-20"}]}}';
 
-    private const API_URL = 'https://api-base-url.com';
-
-    private const API_VERSIONED_URL = self::API_URL . '/api/3';
-
-    private const CREATE_CONTACT_REQUEST_PAYLOAD = '{"contact":{"email":"test@email.com","firstName":"John","lastName":"Wayne","phone":"0123456789","fieldValues":[]}}';
-
-    private const CREATE_CONTACT_RESPONSE_PAYLOAD = '{"fieldValues":[],"email":"test@email.com","cdate":"2022-03-07T10:16:24-06:00","udate":"2022-03-07T10:16:24-06:00","origid":"ABC123","organization":"Webgriffe SRL","links":[],"id":"1"}';
+    private const CREATE_CONTACT_RESPONSE_PAYLOAD = '{"fieldValues":[{"contact":"113","field":"1","value":"The Value for First Field","cdate":"2020-08-01T10:54:59-05:00","udate":"2020-08-01T14:13:34-05:00","links":{"owner":"https://:account.api-us1.com/api/3/fieldValues/11797/owner","field":"https://:account.api-us1.com/api/3/fieldValues/11797/field"},"id":"11797","owner":"113"},{"contact":"113","field":"6","value":"2008-01-20","cdate":"2020-08-01T10:54:59-05:00","udate":"2020-08-01T14:13:34-05:00","links":{"owner":"https://:account.api-us1.com/api/3/fieldValues/11798/owner","field":"https://:account.api-us1.com/api/3/fieldValues/11798/field"},"id":"11798","owner":"113"}],"contact":{"email":"johndoe@example.com","cdate":"2018-09-28T13:50:41-05:00","udate":"2018-09-28T13:50:41-05:00","orgid":"","links":{"bounceLogs":"https://:account.api-us1.com/api/:version/contacts/113/bounceLogs","contactAutomations":"https://:account.api-us1.com/api/:version/contacts/113/contactAutomations","contactData":"https://:account.api-us1.com/api/:version/contacts/113/contactData","contactGoals":"https://:account.api-us1.com/api/:version/contacts/113/contactGoals","contactLists":"https://:account.api-us1.com/api/:version/contacts/113/contactLists","contactLogs":"https://:account.api-us1.com/api/:version/contacts/113/contactLogs","contactTags":"https://:account.api-us1.com/api/:version/contacts/113/contactTags","contactDeals":"https://:account.api-us1.com/api/:version/contacts/113/contactDeals","deals":"https://:account.api-us1.com/api/:version/contacts/113/deals","fieldValues":"https://:account.api-us1.com/api/:version/contacts/113/fieldValues","geoIps":"https://:account.api-us1.com/api/:version/contacts/113/geoIps","notes":"https://:account.api-us1.com/api/:version/contacts/113/notes","organization":"https://:account.api-us1.com/api/:version/contacts/113/organization","plusAppend":"https://:account.api-us1.com/api/:version/contacts/113/plusAppend","trackingLogs":"https://:account.api-us1.com/api/:version/contacts/113/trackingLogs","scoreValues":"https://:account.api-us1.com/api/:version/contacts/113/scoreValues"},"id":"113","organization":""}}';
 
     public function let(
         ClientInterface $httpClient,
-        MessageFactory $requestFactory,
+        SerializerInterface $deserializer,
         SerializerInterface $serializer,
         ContactInterface $contact,
-        RequestInterface $request,
-        ResponseInterface $response,
-        StreamInterface $responseBody,
+        ResponseInterface $response
     ): void {
-        $this->beConstructedWith($httpClient, $requestFactory, $serializer, self::API_URL, self::API_KEY);
+        $this->beConstructedWith($httpClient, $serializer, $deserializer);
 
-        $requestFactory
-            ->createRequest(Argument::any(), Argument::any(), Argument::any())
-            ->willReturn($request);
+        $serializer->serialize(['contact' => $contact], 'json')->willReturn(self::CREATE_CONTACT_REQUEST_PAYLOAD);
 
-        $serializer->serialize($contact, 'json')->willReturn(self::CREATE_CONTACT_REQUEST_PAYLOAD);
-
-        $httpClient->send($request)->willReturn($response);
-        $response->getBody()->willReturn($responseBody);
+        $httpClient->send(Argument::type(Request::class))->willReturn($response);
     }
 
     public function it_implements_interface(): void
@@ -58,59 +45,52 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
     }
 
     public function it_creates_a_contact_on_active_campaign(
-        ClientInterface $httpClient,
-        MessageFactory $requestFactory,
-        SerializerInterface $serializer,
-        RequestInterface $request,
+        SerializerInterface $deserializer,
         ResponseInterface $response,
         StreamInterface $responseBody,
-        ContactInterface $contact,
-        CreateContactResponseInterface $createContactResponse,
+        ContactInterface $contact
     ): void {
         $response->getStatusCode()->willReturn(201);
+        $response->getBody()->willReturn($responseBody);
         $responseBody->getContents()->willReturn(self::CREATE_CONTACT_RESPONSE_PAYLOAD);
-        $serializer->deserialize(self::CREATE_CONTACT_RESPONSE_PAYLOAD, CreateContactResponse::class, 'json')->shouldBeCalledOnce()->willReturn($createContactResponse);
-
-        $requestFactory
-            ->createRequest(
-                'POST',
-                self::API_VERSIONED_URL . '/contacts',
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                        'Api-Token' => self::API_KEY,
-                    ],
-                    'body' => self::CREATE_CONTACT_REQUEST_PAYLOAD,
-                ]
-            )
-            ->shouldBeCalledOnce()
-            ->willReturn($request);
-        $httpClient->send($request)->shouldBeCalledOnce()->willReturn($response);
+        $createContactResponse = new CreateContactResponse([], new ContactResponse('johndoe@example.com', '2018-09-28T13:50:41-05:00', '2018-09-28T13:50:41-05:00', '', [], 113, ''));
+        $deserializer->deserialize(self::CREATE_CONTACT_RESPONSE_PAYLOAD, CreateContactResponse::class, 'json')->shouldBeCalledOnce()->willReturn($createContactResponse);
 
         $this->createContact($contact)->shouldReturn($createContactResponse);
     }
 
-    public function it_throws_while_creating_a_contact_and_the_request_wasnt_successful(
+    public function it_throws_while_creating_a_contact_when_the_response_is_not_found(
         ResponseInterface $response,
         ContactInterface $contact,
-    ): void
-    {
-        $response->getStatusCode()->willReturn(500);
+        StreamInterface $stream
+    ): void {
+        $response->getStatusCode()->willReturn(404);
+        $response->getBody()->willReturn($stream);
+        $stream->getContents()->willReturn('{"message":"No Result found for Subscriber with id 1"}');
 
-        $this->shouldThrow(HttpException::class)->during('createContact', [$contact]);
+        $this->shouldThrow(new NotFoundHttpException('No Result found for Subscriber with id 1'))->during('createContact', [$contact]);
     }
 
-    public function it_throws_while_creating_a_contact_and_the_response_wasnt_deserialized_properly(
-        SerializerInterface $serializer,
+    public function it_throws_while_creating_a_contact_when_the_response_is_not_processable(
         ResponseInterface $response,
         ContactInterface $contact,
-        StreamInterface $responseBody,
-    ): void
-    {
-        $response->getStatusCode()->willReturn(200);
-        $responseBody->getContents()->willReturn(self::CREATE_CONTACT_RESPONSE_PAYLOAD);
-        $serializer->deserialize(self::CREATE_CONTACT_RESPONSE_PAYLOAD, 'array', 'json')->willReturn('not an array');
+        StreamInterface $stream
+    ): void {
+        $response->getStatusCode()->willReturn(422);
+        $response->getBody()->willReturn($stream);
+        $stream->getContents()->willReturn('{"errors":[{"title":"Email address already exists in the system","detail":"","code":"duplicate","source":{"pointer":"/data/attributes/email"}}]}');
 
-        $this->shouldThrow(RuntimeException::class)->during('createContact', [$contact]);
+        $this->shouldThrow(new UnprocessableEntityHttpException('Email address already exists in the system'))->during('createContact', [$contact]);
+    }
+
+    public function it_throws_while_creating_a_contact_when_the_response_is_not_recognized(
+        ResponseInterface $response,
+        ContactInterface $contact
+    ): void {
+        $response->getStatusCode()->willReturn(500);
+        $response->getHeaders()->willReturn([]);
+        $response->getReasonPhrase()->willReturn('Internal Server Error');
+
+        $this->shouldThrow(new HttpException(500, 'Internal Server Error'))->during('createContact', [$contact]);
     }
 }

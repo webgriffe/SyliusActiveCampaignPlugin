@@ -8,6 +8,8 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use RuntimeException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateContactResponse;
@@ -38,7 +40,21 @@ final class ActiveCampaignClient implements ActiveCampaignClientInterface
             $serializedContact
         ));
         if (($statusCode = $response->getStatusCode()) !== 201) {
-            throw new HttpException($statusCode);
+            switch ($statusCode) {
+                case 404:
+                    /** @var array{message: string} $errorResponse */
+                    $errorResponse = json_decode($response->getBody()->getContents(), true, 512, \JSON_THROW_ON_ERROR);
+
+                    throw new NotFoundHttpException($errorResponse['message']);
+                case 422:
+                    /** @var array{errors: array{title: string, detail: string, code: string, source: array{pointer: string}}} $errorResponse */
+                    $errorResponse = json_decode($response->getBody()->getContents(), true, 512, \JSON_THROW_ON_ERROR);
+                    $titles = array_column($errorResponse['errors'], 'title');
+
+                    throw new UnprocessableEntityHttpException(implode('; ', $titles));
+                default:
+                    throw new HttpException($statusCode, $response->getReasonPhrase(), null, $response->getHeaders());
+            }
         }
 
         /** @var CreateContactResponse $createContactResponse */

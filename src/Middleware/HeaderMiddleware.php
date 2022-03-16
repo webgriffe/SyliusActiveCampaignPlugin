@@ -25,6 +25,8 @@ final class HeaderMiddleware
         ) use ($handler) {
             $request = $request
                 ->withHeader('Api-Token', $this->apiKey)
+                ->withHeader('Accept', 'application/json')
+                ->withHeader('Content-Type', 'application/json')
             ;
 
             return $handler($request, $options);

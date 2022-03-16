@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Webgriffe\SyliusActiveCampaignPlugin\Client;
 
 use GuzzleHttp\Exception\GuzzleException;
+use JsonException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateContactResponse;
@@ -14,6 +15,7 @@ interface ActiveCampaignClientInterface
 {
     /**
      * @throws GuzzleException
+     * @throws JsonException
      * @throws HttpException
      */
     public function createContact(ContactInterface $contact): CreateContactResponse;
