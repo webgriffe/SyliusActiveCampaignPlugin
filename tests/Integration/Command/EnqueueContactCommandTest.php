@@ -32,8 +32,8 @@ final class EnqueueContactCommandTest extends AbstractCommandTest
         ], []);
         self::assertEquals(0, $commandTester->getStatusCode());
 
-        /** @var Envelope[] $messages */
         $transport = self::getContainer()->get('messenger.transport.main');
+        /** @var Envelope[] $messages */
         $messages = $transport->get();
         $this->assertCount(1, $messages);
         $message = $messages[0];

@@ -92,8 +92,7 @@ final class EnqueueContactCommand extends Command
 
         /** @var string|int $customerId */
         $customerId = $input->getArgument(self::CUSTOMER_ID_ARGUMENT_CODE);
-        /** @var bool $exportAll */
-        $exportAll = $input->getOption(self::ALL_OPTION_CODE);
+        $exportAll = (bool) $input->getOption(self::ALL_OPTION_CODE);
 
         $this->validateInputData($customerId, $exportAll);
 
@@ -143,9 +142,9 @@ final class EnqueueContactCommand extends Command
     /**
      * @param string|int|null $customerId
      */
-    private function validateInputData(mixed $customerId, mixed $all): void
+    private function validateInputData(mixed $customerId, bool $all): void
     {
-        if ((bool) $all) {
+        if ($all) {
             return;
         }
         $this->validateCustomerId($customerId);
