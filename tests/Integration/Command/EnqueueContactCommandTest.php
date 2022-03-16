@@ -90,6 +90,7 @@ final class EnqueueContactCommandTest extends AbstractCommandTest
         $customer = new Customer();
         $customer->setEmail($email);
         $this->customerRepository->add($customer);
+
         return $customer;
     }
 }
