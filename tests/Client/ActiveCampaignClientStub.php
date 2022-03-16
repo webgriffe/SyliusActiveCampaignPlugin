@@ -7,9 +7,9 @@ namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Client;
 use RuntimeException;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\CreateContactResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\CreateContactResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\UpdateContactResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateContactResponse;
 
 final class ActiveCampaignClientStub implements ActiveCampaignClientInterface
 {

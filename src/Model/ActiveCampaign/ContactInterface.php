@@ -18,8 +18,10 @@ interface ContactInterface
 
     public function setLastName(?string $lastName): void;
 
+    /** @return FieldValueInterface[] */
     public function getFieldValues(): array;
 
+    /** @param FieldValueInterface[] $fieldValues */
     public function setFieldValues(array $fieldValues): void;
 
     public function getPhone(): ?string;

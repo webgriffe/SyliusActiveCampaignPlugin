@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign;
+namespace Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response;
 
-final class UpdateContactResponse implements UpdateContactResponseInterface
+final class UpdateContactResponse
 {
     /**
-     * @param FieldValueInterface[] $fieldValues
+     * @param FieldValueResponse[] $fieldValues
      * @param array<string, string> $links
      */
     public function __construct(
@@ -45,6 +45,7 @@ final class UpdateContactResponse implements UpdateContactResponseInterface
     ) {
     }
 
+    /** @return FieldValueResponse[] */
     public function getFieldValues(): array
     {
         return $this->fieldValues;

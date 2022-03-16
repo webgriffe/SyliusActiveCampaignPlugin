@@ -6,24 +6,10 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign;
 
 final class FieldValue implements FieldValueInterface
 {
-    /**
-     * @param array<string, string> $links
-     */
     public function __construct(
-        private string $contact,
         private string $field,
-        private string $value,
-        private string $createdAt,
-        private string $updatedAt,
-        private array $links,
-        private string $id,
-        private string $owner
+        private string $value
     ) {
-    }
-
-    public function getContact(): string
-    {
-        return $this->contact;
     }
 
     public function getField(): string
@@ -31,33 +17,18 @@ final class FieldValue implements FieldValueInterface
         return $this->field;
     }
 
+    public function setField(string $field): void
+    {
+        $this->field = $field;
+    }
+
     public function getValue(): string
     {
         return $this->value;
     }
 
-    public function getCreatedAt(): string
+    public function setValue(string $value): void
     {
-        return $this->createdAt;
-    }
-
-    public function getUpdatedAt(): string
-    {
-        return $this->updatedAt;
-    }
-
-    public function getLinks(): array
-    {
-        return $this->links;
-    }
-
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
-    public function getOwner(): string
-    {
-        return $this->owner;
+        $this->value = $value;
     }
 }

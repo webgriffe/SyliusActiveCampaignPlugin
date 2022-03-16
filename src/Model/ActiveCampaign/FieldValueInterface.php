@@ -6,20 +6,11 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign;
 
 interface FieldValueInterface
 {
-    public function getContact(): string;
-
     public function getField(): string;
+
+    public function setField(string $field): void;
 
     public function getValue(): string;
 
-    public function getCreatedAt(): string;
-
-    public function getUpdatedAt(): string;
-
-    /** @return array<string, string> */
-    public function getLinks(): array;
-
-    public function getId(): string;
-
-    public function getOwner(): string;
+    public function setValue(string $value): void;
 }

@@ -2,19 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign;
+namespace Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response;
 
-final class CreateContactResponse implements CreateContactResponseInterface
+final class CreateContactResponse
 {
-    /**
-     * @param FieldValueInterface[] $fieldValues
-     */
+    /** @param FieldValueResponse[] $fieldValues */
     public function __construct(
         private array $fieldValues,
         private ContactResponse $contact
     ) {
     }
 
+    /** @return FieldValueResponse[] */
     public function getFieldValues(): array
     {
         return $this->fieldValues;

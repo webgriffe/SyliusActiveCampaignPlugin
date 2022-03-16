@@ -5,55 +5,53 @@ declare(strict_types=1);
 namespace Webgriffe\SyliusActiveCampaignPlugin\Client;
 
 use GuzzleHttp\ClientInterface;
-use Http\Message\MessageFactory;
+use GuzzleHttp\Psr7\Request;
 use RuntimeException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\CreateContactResponse;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\CreateContactResponseInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\UpdateContactResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateContactResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateContactResponse;
 
 final class ActiveCampaignClient implements ActiveCampaignClientInterface
 {
-    private string $apiVersionedUrl;
+    private const API_ENDPOINT_VERSIONED = '/api/3';
 
     public function __construct(
         private ClientInterface $httpClient,
-        private MessageFactory $requestFactory,
         private SerializerInterface $serializer,
-        private SerializerInterface $deserializer,
-        string $apiBaseUrl,
-        private string $apiKey
+        private SerializerInterface $deserializer
     ) {
-        $this->apiVersionedUrl = rtrim($apiBaseUrl, '/') . '/api/3';
     }
 
-    public function createContact(ContactInterface $contact): CreateContactResponseInterface
+    public function createContact(ContactInterface $contact): CreateContactResponse
     {
-        $serializedContact = $this->serializer->serialize(['contact' => $contact], 'json');
-        $request = $this->requestFactory->createRequest(
-            'POST',
-            '/api/3/contacts',
-            [],
-            $serializedContact
+        $serializedContact = $this->serializer->serialize(
+            ['contact' => $contact],
+            'json'
         );
 
-        $response = $this->httpClient->send($request);
+        $response = $this->httpClient->send(new Request(
+            'POST',
+            self::API_ENDPOINT_VERSIONED . '/contacts',
+            [],
+            $serializedContact
+        ));
         if (($statusCode = $response->getStatusCode()) !== 201) {
             throw new HttpException($statusCode);
         }
 
-        $body = $response->getBody();
-        $payload = $body->getContents();
-
         /** @var CreateContactResponse $createContactResponse */
-        $createContactResponse = $this->deserializer->deserialize($payload, CreateContactResponse::class, 'json');
+        $createContactResponse = $this->deserializer->deserialize(
+            $response->getBody()->getContents(),
+            CreateContactResponse::class,
+            'json'
+        );
 
         return $createContactResponse;
     }
 
-    public function updateContact(int $activeCampaignContactId, ContactInterface $contact): UpdateContactResponseInterface
+    public function updateContact(int $activeCampaignContactId, ContactInterface $contact): UpdateContactResponse
     {
         throw new RuntimeException('TODO');
     }

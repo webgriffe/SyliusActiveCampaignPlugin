@@ -2,13 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign;
+namespace Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response;
 
-final class ContactResponse implements ContactResponseInterface
+final class ContactResponse
 {
-    /**
-     * @param array<string, string> $links
-     */
+    /** @param array<string, string> $links */
     public function __construct(
         private string $email,
         private string $createdAt,
