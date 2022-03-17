@@ -3,6 +3,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <parameters>
         <parameter key="webgriffe_sylius_active_campaign.command.enqueue_contact.name">webgriffe:active-campaign:enqueue-contact</parameter>
+        <parameter key="webgriffe_sylius_active_campaign.command.enqueue_connection.name">webgriffe:active-campaign:enqueue-connection</parameter>
     </parameters>
     <services>
         <service id="webgriffe.sylius_active_campaign_plugin.command.enqueue_contact"
@@ -10,6 +11,14 @@
             <argument type="service" id="sylius.repository.customer"/>
             <argument type="service" id="messenger.default_bus"/>
             <argument>%webgriffe_sylius_active_campaign.command.enqueue_contact.name%</argument>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.command.enqueue_connection"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Command\EnqueueConnectionCommand">
+            <argument type="service" id="sylius.repository.channel"/>
+            <argument type="service" id="messenger.default_bus"/>
+            <argument>%webgriffe_sylius_active_campaign.command.enqueue_connection.name%</argument>
             <tag name="console.command"/>
         </service>
     </services>
