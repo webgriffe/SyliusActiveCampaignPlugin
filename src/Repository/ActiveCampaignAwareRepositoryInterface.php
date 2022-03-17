@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Repository;
 
-use Sylius\Component\Core\Model\CustomerInterface;
+use Sylius\Component\Resource\Model\ResourceInterface;
 
+/**
+ * @template T of ResourceInterface
+ */
 interface ActiveCampaignAwareRepositoryInterface
 {
-    public function findOneToEnqueue(mixed $id): ?CustomerInterface;
+    /** @return T|null */
+    public function findOneToEnqueue(mixed $id): ?ResourceInterface;
 
-    /** @return CustomerInterface[] */
+    /** @return T[] */
     public function findAllToEnqueue(): array;
 }

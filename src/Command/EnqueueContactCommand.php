@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Webgriffe\SyliusActiveCampaignPlugin\Command;
 
 use InvalidArgumentException;
+use Sylius\Component\Core\Model\CustomerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -32,6 +33,7 @@ final class EnqueueContactCommand extends Command
     /** @psalm-suppress PropertyNotSetInConstructor */
     private SymfonyStyle $io;
 
+    /** @param ActiveCampaignAwareRepositoryInterface<CustomerInterface> $customerRepository */
     public function __construct(
         private ActiveCampaignAwareRepositoryInterface $customerRepository,
         private MessageBusInterface $messageBus,

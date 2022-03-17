@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Integration\MessageHandler;
+namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Integration\MessageHandler\Contact;
 
 use App\Entity\Customer\Customer;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;

@@ -5,11 +5,15 @@ declare(strict_types=1);
 namespace Webgriffe\SyliusActiveCampaignPlugin\Doctrine\ORM;
 
 use Doctrine\ORM\EntityRepository;
-use Sylius\Component\Core\Model\CustomerInterface;
+use Sylius\Component\Resource\Model\ResourceInterface;
 
+/**
+ * @template T of ResourceInterface
+ */
 trait ActiveCampaignCustomerRepositoryTrait
 {
-    public function findOneToEnqueue(mixed $id): ?CustomerInterface
+    /** @return T|null */
+    public function findOneToEnqueue(mixed $id): ?ResourceInterface
     {
         assert($this instanceof EntityRepository);
 
@@ -19,7 +23,7 @@ trait ActiveCampaignCustomerRepositoryTrait
         ]);
     }
 
-    /** @return CustomerInterface[] */
+    /** @return T[] */
     public function findAllToEnqueue(): array
     {
         assert($this instanceof EntityRepository);
