@@ -6,7 +6,6 @@ namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Integration\Command;
 
 use App\Entity\Channel\Channel;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
-use Doctrine\ORM\EntityManagerInterface;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
 use Sylius\Component\Currency\Model\Currency;
 use Sylius\Component\Locale\Model\Locale;
