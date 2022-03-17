@@ -31,5 +31,19 @@
             <argument type="service" id="sylius.repository.channel"/>
             <tag name="messenger.message_handler"/>
         </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.message_handler.connection.update"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Connection\ConnectionUpdateHandler">
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.mapper.connection"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.connection"/>
+            <argument type="service" id="sylius.repository.channel"/>
+            <tag name="messenger.message_handler"/>
+        </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.message_handler.connection.remove"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Connection\ConnectionRemoveHandler">
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.connection"/>
+            <tag name="messenger.message_handler"/>
+        </service>
     </services>
 </container>
