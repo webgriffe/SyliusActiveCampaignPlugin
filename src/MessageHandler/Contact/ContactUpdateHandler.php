@@ -35,7 +35,7 @@ final class ContactUpdateHandler
 
         $activeCampaignId = $customer->getActiveCampaignId();
         if ($activeCampaignId !== $message->getActiveCampaignId()) {
-            throw new InvalidArgumentException(sprintf('The customer with id "%s" has an ActiveCampaign id that doe not match. Expected "%s", given "%s".', $customerId, $message->getActiveCampaignId(), (string) $activeCampaignId));
+            throw new InvalidArgumentException(sprintf('The Customer with id "%s" has an ActiveCampaign id that does not match. Expected "%s", given "%s".', $customerId, $message->getActiveCampaignId(), (string) $activeCampaignId));
         }
         $this->activeCampaignContactClient->update($message->getActiveCampaignId(), $this->contactMapper->mapFromCustomer($customer));
     }

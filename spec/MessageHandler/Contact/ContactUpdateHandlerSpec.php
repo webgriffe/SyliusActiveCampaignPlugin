@@ -66,7 +66,7 @@ class ContactUpdateHandlerSpec extends ObjectBehavior
     ): void {
         $customer->getActiveCampaignId()->willReturn('321');
 
-        $this->shouldThrow(new InvalidArgumentException('The customer with id "12" has an ActiveCampaign id that doe not match. Expected "1234", given "321".'))->during(
+        $this->shouldThrow(new InvalidArgumentException('The Customer with id "12" has an ActiveCampaign id that does not match. Expected "1234", given "321".'))->during(
             '__invoke', [new ContactUpdate(12, 1234)]
         );
     }
