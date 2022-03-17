@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign;
 
-interface ConnectionInterface
+interface ConnectionInterface extends ResourceInterface
 {
     public function getService(): string;
 

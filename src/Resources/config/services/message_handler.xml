@@ -26,6 +26,9 @@
 
         <service id="webgriffe.sylius_active_campaign_plugin.message_handler.connection.create"
                  class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Connection\ConnectionCreateHandler">
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.mapper.connection"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.connection"/>
+            <argument type="service" id="sylius.repository.channel"/>
             <tag name="messenger.message_handler"/>
         </service>
     </services>

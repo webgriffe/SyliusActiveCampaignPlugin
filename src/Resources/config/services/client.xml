@@ -5,11 +5,19 @@
         <service id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.contact"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient">
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
-            <argument type="service" id="serializer"/>
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.deserializer"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
             <argument type="string">contact</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateContactResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateContactResponse</argument>
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\CreateContactResponse</argument>
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\UpdateContactResponse</argument>
+        </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.connection"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient">
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
+            <argument type="string">connection</argument>
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\CreateConnectionResponse</argument>
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\UpdateConnectionResponse</argument>
         </service>
     </services>
 </container>

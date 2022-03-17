@@ -11,7 +11,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\Contact;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\FieldValue;
 
-final class ActiveCampaignClientTest extends KernelTestCase
+final class ActiveCampaignContactClientTest extends KernelTestCase
 {
     private ActiveCampaignResourceClient $client;
 
@@ -31,8 +31,8 @@ final class ActiveCampaignClientTest extends KernelTestCase
 
         $createdContact = $this->client->create($contact);
 
-        self::assertCount(1, HttpClientStub::$sendedRequests);
-        $sendedRequest = reset(HttpClientStub::$sendedRequests);
+        self::assertCount(1, HttpClientStub::$sentRequests);
+        $sendedRequest = reset(HttpClientStub::$sentRequests);
         self::assertInstanceOf(RequestInterface::class, $sendedRequest);
         self::assertEquals('/api/3/contacts', $sendedRequest->getUri()->getPath());
         self::assertEquals('POST', $sendedRequest->getMethod());
@@ -57,8 +57,8 @@ final class ActiveCampaignClientTest extends KernelTestCase
 
         $updatedContact = $this->client->update(113, $contact);
 
-        self::assertCount(1, HttpClientStub::$sendedRequests);
-        $sendedRequest = reset(HttpClientStub::$sendedRequests);
+        self::assertCount(1, HttpClientStub::$sentRequests);
+        $sendedRequest = reset(HttpClientStub::$sentRequests);
         self::assertInstanceOf(RequestInterface::class, $sendedRequest);
         self::assertEquals('/api/3/contacts/113', $sendedRequest->getUri()->getPath());
         self::assertEquals('PUT', $sendedRequest->getMethod());
@@ -106,8 +106,8 @@ final class ActiveCampaignClientTest extends KernelTestCase
 
         $this->client->remove(113);
 
-        self::assertCount(1, HttpClientStub::$sendedRequests);
-        $sendedRequest = reset(HttpClientStub::$sendedRequests);
+        self::assertCount(1, HttpClientStub::$sentRequests);
+        $sendedRequest = reset(HttpClientStub::$sentRequests);
         self::assertInstanceOf(RequestInterface::class, $sendedRequest);
         self::assertEquals('/api/3/contacts/113', $sendedRequest->getUri()->getPath());
         self::assertEquals('DELETE', $sendedRequest->getMethod());

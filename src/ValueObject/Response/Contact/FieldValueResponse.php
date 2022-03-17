@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response;
+namespace Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact;
 
 final class FieldValueResponse
 {

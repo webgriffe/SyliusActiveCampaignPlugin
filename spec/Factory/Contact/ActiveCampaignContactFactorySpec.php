@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Factory;
+namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Contact\Factory;
 
 use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ContactFactory;

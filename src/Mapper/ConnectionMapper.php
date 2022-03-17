@@ -15,6 +15,7 @@ final class ConnectionMapper implements ConnectionMapperInterface
     {
         $channelCode = $channel->getCode();
         Assert::notNull($channelCode, 'The channel does not have a code.');
+
         return new Connection(
             'sylius',
             $channelCode,

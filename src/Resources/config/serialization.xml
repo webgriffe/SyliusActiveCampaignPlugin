@@ -4,12 +4,12 @@
             xsi:schemaLocation="http://symfony.com/schema/dic/serializer-mapping
         https://symfony.com/schema/dic/serializer-mapping/serializer-mapping-1.0.xsd"
 >
-    <class name="Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateContactContactResponse">
+    <class name="Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\CreateContactContactResponse">
         <attribute name="createdAt" serialized-name="cdate"/>
         <attribute name="updatedAt" serialized-name="udate"/>
         <attribute name="organizationId" serialized-name="orgid"/>
     </class>
-    <class name="Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateContactContactResponse">
+    <class name="Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\UpdateContactContactResponse">
         <attribute name="createdAt" serialized-name="cdate"/>
         <attribute name="organizationId" serialized-name="orgid"/>
         <attribute name="segmentioId" serialized-name="segmentio_id"/>
@@ -27,5 +27,15 @@
         <attribute name="aDate" serialized-name="adate"/>
         <attribute name="eDate" serialized-name="edate"/>
         <attribute name="deletedAt" serialized-name="deleted_at"/>
+    </class>
+
+    <class name="Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\Connection">
+        <attribute name="externalId" serialized-name="externalid"/>
+    </class>
+
+    <class name="Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\CreateConnectionConnectionResponse">
+        <attribute name="externalId" serialized-name="externalid"/>
+        <attribute name="createdAt" serialized-name="cdate"/>
+        <attribute name="updatedAt" serialized-name="udate"/>
     </class>
 </serializer>

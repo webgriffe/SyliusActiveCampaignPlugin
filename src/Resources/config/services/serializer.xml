@@ -26,7 +26,7 @@
                       id="webgriffe.sylius_active_campaign_plugin.serializer.name_converter.metadata_aware"/>
         </service>
 
-        <service id="webgriffe.sylius_active_campaign_plugin.deserializer"
+        <service id="webgriffe.sylius_active_campaign_plugin.serializer"
                  class="Symfony\Component\Serializer\Serializer">
             <argument type="collection">
                 <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer.normalizer.object"/>

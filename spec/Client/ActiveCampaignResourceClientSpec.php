@@ -34,7 +34,13 @@ final class ActiveCampaignResourceClientSpec extends ObjectBehavior
         ContactInterface $contact,
         ResponseInterface $response
     ): void {
-        $this->beConstructedWith($httpClient, $serializer, $deserializer, 'contact');
+        $this->beConstructedWith(
+            $httpClient,
+            $serializer,
+            'contact',
+            'Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\CreateContactResponse',
+            'Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\UpdateContactResponse'
+        );
 
         $serializer->serialize(['contact' => $contact], 'json')->willReturn(self::CREATE_CONTACT_REQUEST_PAYLOAD);
 
@@ -47,7 +53,7 @@ final class ActiveCampaignResourceClientSpec extends ObjectBehavior
     }
 
     public function it_creates_a_resource_on_active_campaign(
-        SerializerInterface $deserializer,
+        SerializerInterface $serializer,
         ResponseInterface $response,
         StreamInterface $responseBody,
         ContactInterface $contact,
@@ -56,7 +62,12 @@ final class ActiveCampaignResourceClientSpec extends ObjectBehavior
         $response->getStatusCode()->willReturn(201);
         $response->getBody()->willReturn($responseBody);
         $responseBody->getContents()->willReturn(self::CREATE_CONTACT_RESPONSE_PAYLOAD);
-        $deserializer->deserialize(self::CREATE_CONTACT_RESPONSE_PAYLOAD, CreateResourceResponseInterface::class, 'json', ['resource' => 'contact'])->shouldBeCalledOnce()->willReturn($createResourceResponse);
+        $serializer->deserialize(
+            self::CREATE_CONTACT_RESPONSE_PAYLOAD,
+            'Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\CreateContactResponse',
+            'json',
+            ['resource' => 'contact']
+        )->shouldBeCalledOnce()->willReturn($createResourceResponse);
 
         $this->create($contact)->shouldReturn($createResourceResponse);
     }
@@ -97,7 +108,7 @@ final class ActiveCampaignResourceClientSpec extends ObjectBehavior
     }
 
     public function it_updates_a_resource_on_active_campaign(
-        SerializerInterface $deserializer,
+        SerializerInterface $serializer,
         ResponseInterface $response,
         StreamInterface $responseBody,
         ContactInterface $contact,
@@ -106,7 +117,12 @@ final class ActiveCampaignResourceClientSpec extends ObjectBehavior
         $response->getStatusCode()->willReturn(200);
         $response->getBody()->willReturn($responseBody);
         $responseBody->getContents()->willReturn(self::UPDATE_CONTACT_RESPONSE_PAYLOAD);
-        $deserializer->deserialize(self::UPDATE_CONTACT_RESPONSE_PAYLOAD, UpdateResourceResponseInterface::class, 'json', ['resource' => 'contact'])->shouldBeCalledOnce()->willReturn($updateResourceResponse);
+        $serializer->deserialize(
+            self::UPDATE_CONTACT_RESPONSE_PAYLOAD,
+            'Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\UpdateContactResponse',
+            'json',
+            ['resource' => 'contact']
+        )->shouldBeCalledOnce()->willReturn($updateResourceResponse);
 
         $this->update(113, $contact)->shouldReturn($updateResourceResponse);
     }

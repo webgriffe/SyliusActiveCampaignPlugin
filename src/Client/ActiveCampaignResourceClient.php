@@ -21,7 +21,6 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
     public function __construct(
         private ClientInterface $httpClient,
         private SerializerInterface $serializer,
-        private SerializerInterface $deserializer,
         private string $resourceName,
         private string $createResourceResponseType,
         private string $updateResourceResponseType
@@ -60,7 +59,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
         }
 
         /** @var CreateResourceResponseInterface $createResourceResponse */
-        $createResourceResponse = $this->deserializer->deserialize(
+        $createResourceResponse = $this->serializer->deserialize(
             $response->getBody()->getContents(),
             $this->createResourceResponseType,
             'json',
@@ -95,7 +94,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
         }
 
         /** @var UpdateResourceResponseInterface $updateResourceResponse */
-        $updateResourceResponse = $this->deserializer->deserialize(
+        $updateResourceResponse = $this->serializer->deserialize(
             $response->getBody()->getContents(),
             $this->updateResourceResponseType,
             'json',
