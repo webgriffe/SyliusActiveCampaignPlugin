@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Contact\Factory;
+namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign;
 
 use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ContactFactory;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ContactFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\Contact;
 
-class ActiveCampaignContactFactorySpec extends ObjectBehavior
+class ContactFactorySpec extends ObjectBehavior
 {
     public function let(): void
     {
