@@ -9,14 +9,13 @@ use InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
 use Sylius\Component\Core\Model\CustomerInterface as SyliusCustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactUpdateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateContactContactResponse;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateContactResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 
 class ContactUpdateHandlerSpec extends ObjectBehavior
 {
@@ -24,7 +23,7 @@ class ContactUpdateHandlerSpec extends ObjectBehavior
         ContactMapperInterface $contactMapper,
         ContactInterface $contact,
         CustomerInterface $customer,
-        ActiveCampaignClientInterface $activeCampaignClient,
+        ActiveCampaignResourceClientInterface $activeCampaignContactClient,
         CustomerRepositoryInterface $customerRepository
     ): void {
         $contactMapper->mapFromCustomer($customer)->willReturn($contact);
@@ -33,7 +32,7 @@ class ContactUpdateHandlerSpec extends ObjectBehavior
 
         $customerRepository->find(12)->willReturn($customer);
 
-        $this->beConstructedWith($contactMapper, $activeCampaignClient, $customerRepository);
+        $this->beConstructedWith($contactMapper, $activeCampaignContactClient, $customerRepository);
     }
 
     public function it_is_initializable(): void
@@ -74,43 +73,10 @@ class ContactUpdateHandlerSpec extends ObjectBehavior
 
     public function it_updates_contact_on_active_campaign(
         ContactInterface $contact,
-        ActiveCampaignClientInterface $activeCampaignClient,
+        ActiveCampaignResourceClientInterface $activeCampaignContactClient,
+        UpdateResourceResponseInterface $updateContactResponse
     ): void {
-        $activeCampaignClient->updateContact(1234, $contact)->shouldBeCalledOnce()->willReturn(new UpdateContactResponse(
-            [],
-            new UpdateContactContactResponse(
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                [],
-                1234,
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                ''
-            )
-        ));
+        $activeCampaignContactClient->update(1234, $contact)->shouldBeCalledOnce()->willReturn($updateContactResponse);
 
         $this->__invoke(new ContactUpdate(12, 1234));
     }

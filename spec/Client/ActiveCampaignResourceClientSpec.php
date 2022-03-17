@@ -14,14 +14,12 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Serializer\SerializerInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateContactContactResponse;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateContactResponse;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateContactContactResponse;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateContactResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 
-final class ActiveCampaignClientSpec extends ObjectBehavior
+final class ActiveCampaignResourceClientSpec extends ObjectBehavior
 {
     private const CREATE_CONTACT_REQUEST_PAYLOAD = '{"contact":{"email":"johndoe@example.com","firstName":"John","lastName":"Doe","phone":"7223224241","fieldValues":[{"field":"1","value":"The Value for First Field"},{"field":"6","value":"2008-01-20"}]}}';
 
@@ -36,7 +34,7 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
         ContactInterface $contact,
         ResponseInterface $response
     ): void {
-        $this->beConstructedWith($httpClient, $serializer, $deserializer);
+        $this->beConstructedWith($httpClient, $serializer, $deserializer, 'contact');
 
         $serializer->serialize(['contact' => $contact], 'json')->willReturn(self::CREATE_CONTACT_REQUEST_PAYLOAD);
 
@@ -45,25 +43,25 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
 
     public function it_implements_interface(): void
     {
-        $this->shouldImplement(ActiveCampaignClientInterface::class);
+        $this->shouldImplement(ActiveCampaignResourceClientInterface::class);
     }
 
-    public function it_creates_a_contact_on_active_campaign(
+    public function it_creates_a_resource_on_active_campaign(
         SerializerInterface $deserializer,
         ResponseInterface $response,
         StreamInterface $responseBody,
-        ContactInterface $contact
+        ContactInterface $contact,
+        CreateResourceResponseInterface $createResourceResponse
     ): void {
         $response->getStatusCode()->willReturn(201);
         $response->getBody()->willReturn($responseBody);
         $responseBody->getContents()->willReturn(self::CREATE_CONTACT_RESPONSE_PAYLOAD);
-        $createContactResponse = new CreateContactResponse([], new CreateContactContactResponse('johndoe@example.com', '2018-09-28T13:50:41-05:00', '2018-09-28T13:50:41-05:00', '', [], 113, ''));
-        $deserializer->deserialize(self::CREATE_CONTACT_RESPONSE_PAYLOAD, CreateContactResponse::class, 'json')->shouldBeCalledOnce()->willReturn($createContactResponse);
+        $deserializer->deserialize(self::CREATE_CONTACT_RESPONSE_PAYLOAD, CreateResourceResponseInterface::class, 'json', ['resource' => 'contact'])->shouldBeCalledOnce()->willReturn($createResourceResponse);
 
-        $this->createContact($contact)->shouldReturn($createContactResponse);
+        $this->create($contact)->shouldReturn($createResourceResponse);
     }
 
-    public function it_throws_while_creating_a_contact_when_the_response_is_not_found(
+    public function it_throws_while_creating_a_resource_when_the_response_is_not_found(
         ResponseInterface $response,
         ContactInterface $contact,
         StreamInterface $stream
@@ -72,10 +70,10 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
         $response->getBody()->willReturn($stream);
         $stream->getContents()->willReturn('{"message":"No Result found for Subscriber with id 1"}');
 
-        $this->shouldThrow(new NotFoundHttpException('No Result found for Subscriber with id 1'))->during('createContact', [$contact]);
+        $this->shouldThrow(new NotFoundHttpException('No Result found for Subscriber with id 1'))->during('create', [$contact]);
     }
 
-    public function it_throws_while_creating_a_contact_when_the_response_is_not_processable(
+    public function it_throws_while_creating_a_resource_when_the_response_is_not_processable(
         ResponseInterface $response,
         ContactInterface $contact,
         StreamInterface $stream
@@ -84,10 +82,10 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
         $response->getBody()->willReturn($stream);
         $stream->getContents()->willReturn('{"errors":[{"title":"Email address already exists in the system","detail":"","code":"duplicate","source":{"pointer":"/data/attributes/email"}}]}');
 
-        $this->shouldThrow(new UnprocessableEntityHttpException('Email address already exists in the system'))->during('createContact', [$contact]);
+        $this->shouldThrow(new UnprocessableEntityHttpException('Email address already exists in the system'))->during('create', [$contact]);
     }
 
-    public function it_throws_while_creating_a_contact_when_the_response_is_not_recognized(
+    public function it_throws_while_creating_a_resource_when_the_response_is_not_recognized(
         ResponseInterface $response,
         ContactInterface $contact
     ): void {
@@ -95,58 +93,25 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
         $response->getHeaders()->willReturn([]);
         $response->getReasonPhrase()->willReturn('Internal Server Error');
 
-        $this->shouldThrow(new HttpException(500, 'Internal Server Error'))->during('createContact', [$contact]);
+        $this->shouldThrow(new HttpException(500, 'Internal Server Error'))->during('create', [$contact]);
     }
 
-    public function it_updates_a_contact_on_active_campaign(
+    public function it_updates_a_resource_on_active_campaign(
         SerializerInterface $deserializer,
         ResponseInterface $response,
         StreamInterface $responseBody,
-        ContactInterface $contact
+        ContactInterface $contact,
+        UpdateResourceResponseInterface $updateResourceResponse
     ): void {
         $response->getStatusCode()->willReturn(200);
         $response->getBody()->willReturn($responseBody);
         $responseBody->getContents()->willReturn(self::UPDATE_CONTACT_RESPONSE_PAYLOAD);
-        $updateContactResponse = new UpdateContactResponse([], new UpdateContactContactResponse(
-            '2018-09-28T13:50:41-05:00',
-            'johndoe@example.com',
-            '',
-            'John',
-            'Doe',
-            '0',
-            '',
-            '0',
-            '0',
-            '0',
-            '8309146b50af1ed5f9cb40c7465a0315',
-            '',
-            '',
-            '0',
-            '0',
-            '0',
-            '0',
-            '2018-09-28T13:55:59-05:00',
-            '2018-09-28 13:50:41',
-            '2018-09-28 13:50:41',
-            [
-                'bounceLogs' => 'https://:account.api-us1.com/api/:version/contacts/113/bounceLogs'
-            ],
-            113,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null
-        ));
-        $deserializer->deserialize(self::UPDATE_CONTACT_RESPONSE_PAYLOAD, UpdateContactResponse::class, 'json')->shouldBeCalledOnce()->willReturn($updateContactResponse);
+        $deserializer->deserialize(self::UPDATE_CONTACT_RESPONSE_PAYLOAD, UpdateResourceResponseInterface::class, 'json', ['resource' => 'contact'])->shouldBeCalledOnce()->willReturn($updateResourceResponse);
 
-        $this->updateContact(113, $contact)->shouldReturn($updateContactResponse);
+        $this->update(113, $contact)->shouldReturn($updateResourceResponse);
     }
 
-    public function it_throws_while_updating_a_contact_when_the_response_is_not_found(
+    public function it_throws_while_updating_a_resource_when_the_response_is_not_found(
         ResponseInterface $response,
         ContactInterface $contact,
         StreamInterface $stream
@@ -155,10 +120,10 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
         $response->getBody()->willReturn($stream);
         $stream->getContents()->willReturn('{"message":"No Result found for Subscriber with id 1"}');
 
-        $this->shouldThrow(new NotFoundHttpException('No Result found for Subscriber with id 1'))->during('updateContact', [1, $contact]);
+        $this->shouldThrow(new NotFoundHttpException('No Result found for Subscriber with id 1'))->during('update', [1, $contact]);
     }
 
-    public function it_throws_while_updating_a_contact_when_the_response_is_not_recognized(
+    public function it_throws_while_updating_a_resource_when_the_response_is_not_recognized(
         ResponseInterface $response,
         ContactInterface $contact
     ): void {
@@ -166,10 +131,10 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
         $response->getHeaders()->willReturn([]);
         $response->getReasonPhrase()->willReturn('Internal Server Error');
 
-        $this->shouldThrow(new HttpException(500, 'Internal Server Error'))->during('updateContact', [113, $contact]);
+        $this->shouldThrow(new HttpException(500, 'Internal Server Error'))->during('update', [113, $contact]);
     }
 
-    public function it_removes_a_contact_on_active_campaign(
+    public function it_removes_a_resource_on_active_campaign(
         ResponseInterface $response,
         StreamInterface $responseBody,
     ): void {
@@ -177,29 +142,27 @@ final class ActiveCampaignClientSpec extends ObjectBehavior
         $response->getBody()->willReturn($responseBody);
         $responseBody->getContents()->willReturn('{}');
 
-        $this->removeContact(113)->shouldReturn(null);
+        $this->remove(113)->shouldReturn(null);
     }
 
-    public function it_throws_while_removing_a_contact_when_the_response_is_not_found(
+    public function it_throws_while_removing_a_resource_when_the_response_is_not_found(
         ResponseInterface $response,
-        ContactInterface $contact,
         StreamInterface $stream
     ): void {
         $response->getStatusCode()->willReturn(404);
         $response->getBody()->willReturn($stream);
         $stream->getContents()->willReturn('{"message":"No Result found for Subscriber with id 1"}');
 
-        $this->shouldThrow(new NotFoundHttpException('No Result found for Subscriber with id 1'))->during('removeContact', [1]);
+        $this->shouldThrow(new NotFoundHttpException('No Result found for Subscriber with id 1'))->during('remove', [1]);
     }
 
-    public function it_throws_while_removing_a_contact_when_the_response_is_not_recognized(
-        ResponseInterface $response,
-        ContactInterface $contact
+    public function it_throws_while_removing_a_resource_when_the_response_is_not_recognized(
+        ResponseInterface $response
     ): void {
         $response->getStatusCode()->willReturn(500);
         $response->getHeaders()->willReturn([]);
         $response->getReasonPhrase()->willReturn('Internal Server Error');
 
-        $this->shouldThrow(new HttpException(500, 'Internal Server Error'))->during('removeContact', [113]);
+        $this->shouldThrow(new HttpException(500, 'Internal Server Error'))->during('remove', [113]);
     }
 }

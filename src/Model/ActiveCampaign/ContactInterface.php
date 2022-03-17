@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign;
 
-interface ContactInterface
+interface ContactInterface extends ResourceInterface
 {
     public function getEmail(): string;
 

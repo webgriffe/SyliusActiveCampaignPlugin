@@ -5,7 +5,7 @@
         <service id="webgriffe.sylius_active_campaign_plugin.message_handler.contact.create"
                  class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactCreateHandler">
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.mapper.contact"/>
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.contact"/>
             <argument type="service" id="sylius.repository.customer"/>
             <tag name="messenger.message_handler"/>
         </service>
@@ -13,14 +13,14 @@
         <service id="webgriffe.sylius_active_campaign_plugin.message_handler.contact.update"
                  class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactUpdateHandler">
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.mapper.contact"/>
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.contact"/>
             <argument type="service" id="sylius.repository.customer"/>
             <tag name="messenger.message_handler"/>
         </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.message_handler.contact.remove"
                  class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactRemoveHandler">
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.contact"/>
             <tag name="messenger.message_handler"/>
         </service>
 

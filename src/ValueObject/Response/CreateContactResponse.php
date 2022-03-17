@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response;
 
-final class CreateContactResponse
+final class CreateContactResponse implements CreateResourceResponseInterface
 {
     /** @param FieldValueResponse[] $fieldValues */
     public function __construct(

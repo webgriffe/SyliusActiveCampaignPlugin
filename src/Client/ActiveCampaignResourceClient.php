@@ -10,33 +10,36 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Serializer\SerializerInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateContactResponse;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateContactResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ResourceInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 
-final class ActiveCampaignClient implements ActiveCampaignClientInterface
+final class ActiveCampaignResourceClient implements ActiveCampaignResourceClientInterface
 {
     private const API_ENDPOINT_VERSIONED = '/api/3';
 
     public function __construct(
         private ClientInterface $httpClient,
         private SerializerInterface $serializer,
-        private SerializerInterface $deserializer
+        private SerializerInterface $deserializer,
+        private string $resourceName,
+        private string $createResourceResponseType,
+        private string $updateResourceResponseType
     ) {
     }
 
-    public function createContact(ContactInterface $contact): CreateContactResponse
+    public function create(ResourceInterface $resource): CreateResourceResponseInterface
     {
-        $serializedContact = $this->serializer->serialize(
-            ['contact' => $contact],
+        $serializedResource = $this->serializer->serialize(
+            [$this->resourceName => $resource],
             'json'
         );
 
         $response = $this->httpClient->send(new Request(
             'POST',
-            self::API_ENDPOINT_VERSIONED . '/contacts',
+            self::API_ENDPOINT_VERSIONED . '/' . $this->resourceName . 's',
             [],
-            $serializedContact
+            $serializedResource
         ));
         if (($statusCode = $response->getStatusCode()) !== 201) {
             switch ($statusCode) {
@@ -56,28 +59,29 @@ final class ActiveCampaignClient implements ActiveCampaignClientInterface
             }
         }
 
-        /** @var CreateContactResponse $createContactResponse */
-        $createContactResponse = $this->deserializer->deserialize(
+        /** @var CreateResourceResponseInterface $createResourceResponse */
+        $createResourceResponse = $this->deserializer->deserialize(
             $response->getBody()->getContents(),
-            CreateContactResponse::class,
-            'json'
+            $this->createResourceResponseType,
+            'json',
+            ['resource' => $this->resourceName]
         );
 
-        return $createContactResponse;
+        return $createResourceResponse;
     }
 
-    public function updateContact(int $activeCampaignContactId, ContactInterface $contact): UpdateContactResponse
+    public function update(int $activeCampaignResourceId, ResourceInterface $resource): UpdateResourceResponseInterface
     {
-        $serializedContact = $this->serializer->serialize(
-            ['contact' => $contact],
+        $serializedResource = $this->serializer->serialize(
+            [$this->resourceName => $resource],
             'json'
         );
 
         $response = $this->httpClient->send(new Request(
             'PUT',
-            self::API_ENDPOINT_VERSIONED . '/contacts/' . $activeCampaignContactId,
+            self::API_ENDPOINT_VERSIONED . '/' . $this->resourceName . 's' . '/' . $activeCampaignResourceId,
             [],
-            $serializedContact
+            $serializedResource
         ));
         if (($statusCode = $response->getStatusCode()) !== 200) {
             if ($statusCode === 404) {
@@ -90,21 +94,22 @@ final class ActiveCampaignClient implements ActiveCampaignClientInterface
             throw new HttpException($statusCode, $response->getReasonPhrase(), null, $response->getHeaders());
         }
 
-        /** @var UpdateContactResponse $updateContactResponse */
-        $updateContactResponse = $this->deserializer->deserialize(
+        /** @var UpdateResourceResponseInterface $updateResourceResponse */
+        $updateResourceResponse = $this->deserializer->deserialize(
             $response->getBody()->getContents(),
-            UpdateContactResponse::class,
-            'json'
+            $this->updateResourceResponseType,
+            'json',
+            ['resource' => $this->resourceName]
         );
 
-        return $updateContactResponse;
+        return $updateResourceResponse;
     }
 
-    public function removeContact(int $activeCampaignContactId): void
+    public function remove(int $activeCampaignResourceId): void
     {
         $response = $this->httpClient->send(new Request(
             'DELETE',
-            self::API_ENDPOINT_VERSIONED . '/contacts/' . $activeCampaignContactId
+            self::API_ENDPOINT_VERSIONED . '/' . $this->resourceName . 's' . '/' . $activeCampaignResourceId
         ));
         if (($statusCode = $response->getStatusCode()) === 200) {
             return;

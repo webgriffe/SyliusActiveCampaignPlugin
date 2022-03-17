@@ -7,7 +7,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact;
 use InvalidArgumentException;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
@@ -16,7 +16,7 @@ final class ContactUpdateHandler
 {
     public function __construct(
         private ContactMapperInterface $contactMapper,
-        private ActiveCampaignClientInterface $activeCampaignClient,
+        private ActiveCampaignResourceClientInterface $activeCampaignContactClient,
         private CustomerRepositoryInterface $customerRepository
     ) {
     }
@@ -37,6 +37,6 @@ final class ContactUpdateHandler
         if ($activeCampaignId !== $message->getActiveCampaignId()) {
             throw new InvalidArgumentException(sprintf('The customer with id "%s" has an ActiveCampaign id that doe not match. Expected "%s", given "%s".', $customerId, $message->getActiveCampaignId(), (string) $activeCampaignId));
         }
-        $this->activeCampaignClient->updateContact($message->getActiveCampaignId(), $this->contactMapper->mapFromCustomer($customer));
+        $this->activeCampaignContactClient->update($message->getActiveCampaignId(), $this->contactMapper->mapFromCustomer($customer));
     }
 }

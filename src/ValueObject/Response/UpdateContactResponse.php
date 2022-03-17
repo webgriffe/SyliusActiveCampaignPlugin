@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response;
 
-final class UpdateContactResponse
+final class UpdateContactResponse implements UpdateResourceResponseInterface
 {
     /**
      * @param FieldValueResponse[] $fieldValues

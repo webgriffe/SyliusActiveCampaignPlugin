@@ -4,42 +4,43 @@ declare(strict_types=1);
 
 namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub;
 
-use RuntimeException;
-use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ResourceInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateContactContactResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateContactResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateContactContactResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateContactResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 
-final class ActiveCampaignClientStub implements ActiveCampaignClientInterface
+final class ActiveCampaignContactClientStub implements ActiveCampaignResourceClientInterface
 {
-    public int $activeCampaignId = 1234;
+    public int $activeCampaignResourceId = 1234;
 
-    public function createContact(ContactInterface $contact): CreateContactResponse
+    public function create(ResourceInterface $resource): CreateResourceResponseInterface
     {
         return new CreateContactResponse(
             [],
             new CreateContactContactResponse(
-                $contact->getEmail(),
+                $resource->getEmail(),
                 (new \DateTimeImmutable('now'))->format('c'),
                 (new \DateTimeImmutable('now'))->format('c'),
                 '',
                 [],
-                $this->activeCampaignId,
+                $this->activeCampaignResourceId,
                 ''
             )
         );
     }
 
-    public function updateContact(int $activeCampaignContactId, ContactInterface $contact): UpdateContactResponse
+    public function update(int $activeCampaignResourceId, ResourceInterface $resource): UpdateResourceResponseInterface
     {
         return new UpdateContactResponse([], new UpdateContactContactResponse(
             (new \DateTimeImmutable('now'))->format('c'),
-            $contact->getEmail(),
+            $resource->getEmail(),
             '',
-            $contact->getFirstName(),
-            $contact->getLastName(),
+            $resource->getFirstName(),
+            $resource->getLastName(),
             '0',
             '',
             '0',
@@ -58,7 +59,7 @@ final class ActiveCampaignClientStub implements ActiveCampaignClientInterface
             [
                 'bounceLogs' => 'https://:account.api-us1.com/api/:version/contacts/113/bounceLogs'
             ],
-            $activeCampaignContactId,
+            $activeCampaignResourceId,
             null,
             null,
             null,
@@ -70,7 +71,7 @@ final class ActiveCampaignClientStub implements ActiveCampaignClientInterface
         ));
     }
 
-    public function removeContact(int $activeCampaignContactId): void
+    public function remove(int $activeCampaignResourceId): void
     {
     }
 }

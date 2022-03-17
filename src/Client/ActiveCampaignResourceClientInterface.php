@@ -9,11 +9,11 @@ use JsonException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateContactResponse;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateContactResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ResourceInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 
-interface ActiveCampaignClientInterface
+interface ActiveCampaignResourceClientInterface
 {
     /**
      * @throws GuzzleException
@@ -22,7 +22,7 @@ interface ActiveCampaignClientInterface
      * @throws UnprocessableEntityHttpException
      * @throws NotFoundHttpException
      */
-    public function createContact(ContactInterface $contact): CreateContactResponse;
+    public function create(ResourceInterface $resource): CreateResourceResponseInterface;
 
     /**
      * @throws GuzzleException
@@ -30,7 +30,7 @@ interface ActiveCampaignClientInterface
      * @throws HttpException
      * @throws NotFoundHttpException
      */
-    public function updateContact(int $activeCampaignContactId, ContactInterface $contact): UpdateContactResponse;
+    public function update(int $activeCampaignResourceId, ResourceInterface $resource): UpdateResourceResponseInterface;
 
     /**
      * @throws GuzzleException
@@ -38,5 +38,5 @@ interface ActiveCampaignClientInterface
      * @throws HttpException
      * @throws NotFoundHttpException
      */
-    public function removeContact(int $activeCampaignContactId): void;
+    public function remove(int $activeCampaignResourceId): void;
 }

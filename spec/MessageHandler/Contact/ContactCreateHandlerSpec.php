@@ -9,7 +9,7 @@ use InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
 use Sylius\Component\Core\Model\CustomerInterface as SyliusCustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignClientInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactCreateHandler;
@@ -24,7 +24,7 @@ class ContactCreateHandlerSpec extends ObjectBehavior
         ContactMapperInterface $contactMapper,
         ContactInterface $contact,
         CustomerInterface $customer,
-        ActiveCampaignClientInterface $activeCampaignClient,
+        ActiveCampaignResourceClientInterface $activeCampaignContactClient,
         CustomerRepositoryInterface $customerRepository
     ): void {
         $contactMapper->mapFromCustomer($customer)->willReturn($contact);
@@ -33,7 +33,7 @@ class ContactCreateHandlerSpec extends ObjectBehavior
 
         $customerRepository->find(12)->willReturn($customer);
 
-        $this->beConstructedWith($contactMapper, $activeCampaignClient, $customerRepository);
+        $this->beConstructedWith($contactMapper, $activeCampaignContactClient, $customerRepository);
     }
 
     public function it_is_initializable(): void
@@ -74,11 +74,11 @@ class ContactCreateHandlerSpec extends ObjectBehavior
 
     public function it_creates_contact_on_active_campaign(
         ContactInterface $contact,
-        ActiveCampaignClientInterface $activeCampaignClient,
+        ActiveCampaignResourceClientInterface $activeCampaignContactClient,
         CustomerInterface $customer,
         CustomerRepositoryInterface $customerRepository
     ): void {
-        $activeCampaignClient->createContact($contact)->shouldBeCalledOnce()->willReturn(new CreateContactResponse([], new CreateContactContactResponse('info@activecampaign.com', 'today', 'today', '', [], 3423, '')));
+        $activeCampaignContactClient->create($contact)->shouldBeCalledOnce()->willReturn(new CreateContactResponse([], new CreateContactContactResponse('info@activecampaign.com', 'today', 'today', '', [], 3423, '')));
         $customer->setActiveCampaignId(3423)->shouldBeCalledOnce();
         $customerRepository->add($customer)->shouldBeCalledOnce();
 
