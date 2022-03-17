@@ -25,12 +25,13 @@ final class EcommerceCustomerMapper implements EcommerceCustomerMapperInterface
             throw new ChannelConnectionNotSetException();
         }
 
+        /** @var string|int|null $customerId */
         $customerId = $customer->getId();
         $customerEmail = $customer->getEmail();
         if ($customerEmail === null) {
             throw new CustomerDoesNotHaveEmailException(sprintf(
                 'Unable to create a new ActiveCampaign Ecommerce Customer, the customer "%s" does not have a valid email.',
-                $customerId
+                (string) $customerId
             ));
         }
         $contact = $this->ecommerceCustomerFactory->createNew($customerEmail, (string) $connectionId, (string) $customerId);
