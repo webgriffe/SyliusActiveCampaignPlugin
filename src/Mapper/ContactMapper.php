@@ -6,13 +6,13 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Mapper;
 
 use Sylius\Component\Core\Model\CustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Exception\CustomerDoesNotHaveEmailException;
-use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaignContactFactoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ContactFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 
 final class ContactMapper implements ContactMapperInterface
 {
     public function __construct(
-        private ActiveCampaignContactFactoryInterface $contactFactory
+        private ContactFactoryInterface $contactFactory
     ) {
     }
 

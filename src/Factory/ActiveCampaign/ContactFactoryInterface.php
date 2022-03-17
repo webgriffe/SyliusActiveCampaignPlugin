@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusActiveCampaignPlugin\Factory;
+namespace Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign;
 
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 
-interface ActiveCampaignContactFactoryInterface
+interface ContactFactoryInterface
 {
     public function createNewFromEmail(string $email): ContactInterface;
 }

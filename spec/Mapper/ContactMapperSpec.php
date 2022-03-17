@@ -7,7 +7,7 @@ namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Mapper;
 use PhpSpec\ObjectBehavior;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Exception\CustomerDoesNotHaveEmailException;
-use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaignContactFactoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ContactFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapper;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
@@ -15,7 +15,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 class ContactMapperSpec extends ObjectBehavior
 {
     public function let(
-        ActiveCampaignContactFactoryInterface $contactFactory,
+        ContactFactoryInterface $contactFactory,
         CustomerInterface $customer,
         ContactInterface $contact
     ): void {

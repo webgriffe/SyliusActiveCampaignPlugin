@@ -4,7 +4,10 @@
     <services>
         <service id="webgriffe.sylius_active_campaign_plugin.mapper.contact"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapper">
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign_contact"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.contact"/>
         </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.mapper.connection"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Mapper\ConnectionMapper"/>
     </services>
 </container>

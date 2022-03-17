@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Factory;
 
 use PhpSpec\ObjectBehavior;
-use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaignContactFactory;
-use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaignContactFactoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ContactFactory;
+use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ContactFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\Contact;
 
 class ActiveCampaignContactFactorySpec extends ObjectBehavior
@@ -18,12 +18,12 @@ class ActiveCampaignContactFactorySpec extends ObjectBehavior
 
     public function it_is_initializable(): void
     {
-        $this->shouldBeAnInstanceOf(ActiveCampaignContactFactory::class);
+        $this->shouldBeAnInstanceOf(ContactFactory::class);
     }
 
     public function it_implements_active_campaign_contact_factory_interface(): void
     {
-        $this->shouldImplement(ActiveCampaignContactFactoryInterface::class);
+        $this->shouldImplement(ContactFactoryInterface::class);
     }
 
     public function it_should_returns_an_active_campaign_contact_instance(): void
