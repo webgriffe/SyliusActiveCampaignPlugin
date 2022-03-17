@@ -38,4 +38,10 @@
         <attribute name="createdAt" serialized-name="cdate"/>
         <attribute name="updatedAt" serialized-name="udate"/>
     </class>
+
+    <class name="Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\UpdateConnectionConnectionResponse">
+        <attribute name="externalId" serialized-name="externalid"/>
+        <attribute name="createdAt" serialized-name="cdate"/>
+        <attribute name="updatedAt" serialized-name="udate"/>
+    </class>
 </serializer>

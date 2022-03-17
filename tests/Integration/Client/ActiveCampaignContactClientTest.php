@@ -10,6 +10,8 @@ use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\HttpClientStub;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\Contact;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\FieldValue;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\CreateContactResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\UpdateContactResponse;
 
 final class ActiveCampaignContactClientTest extends KernelTestCase
 {
@@ -32,13 +34,14 @@ final class ActiveCampaignContactClientTest extends KernelTestCase
         $createdContact = $this->client->create($contact);
 
         self::assertCount(1, HttpClientStub::$sentRequests);
-        $sendedRequest = reset(HttpClientStub::$sentRequests);
-        self::assertInstanceOf(RequestInterface::class, $sendedRequest);
-        self::assertEquals('/api/3/contacts', $sendedRequest->getUri()->getPath());
-        self::assertEquals('POST', $sendedRequest->getMethod());
-        self::assertEquals('{"contact":{"email":"johndoe@example.com","firstName":"John","lastName":"Doe","phone":"7223224241","fieldValues":[{"field":"1","value":"The Value for First Field"},{"field":"6","value":"2008-01-20"}]}}', $sendedRequest->getBody()->getContents());
+        $sentRequest = reset(HttpClientStub::$sentRequests);
+        self::assertInstanceOf(RequestInterface::class, $sentRequest);
+        self::assertEquals('/api/3/contacts', $sentRequest->getUri()->getPath());
+        self::assertEquals('POST', $sentRequest->getMethod());
+        self::assertEquals('{"contact":{"email":"johndoe@example.com","firstName":"John","lastName":"Doe","phone":"7223224241","fieldValues":[{"field":"1","value":"The Value for First Field"},{"field":"6","value":"2008-01-20"}]}}', $sentRequest->getBody()->getContents());
 
         self::assertNotNull($createdContact);
+        self::assertInstanceOf(CreateContactResponse::class, $createdContact);
         self::assertEquals(113, $createdContact->getContact()->getId());
         self::assertEquals('johndoe@example.com', $createdContact->getContact()->getEmail());
         self::assertEquals('2018-09-28T13:50:41-05:00', $createdContact->getContact()->getCreatedAt());
@@ -58,13 +61,14 @@ final class ActiveCampaignContactClientTest extends KernelTestCase
         $updatedContact = $this->client->update(113, $contact);
 
         self::assertCount(1, HttpClientStub::$sentRequests);
-        $sendedRequest = reset(HttpClientStub::$sentRequests);
-        self::assertInstanceOf(RequestInterface::class, $sendedRequest);
-        self::assertEquals('/api/3/contacts/113', $sendedRequest->getUri()->getPath());
-        self::assertEquals('PUT', $sendedRequest->getMethod());
-        self::assertEquals('{"contact":{"email":"johndoe@example.com","firstName":"John","lastName":"Doe","phone":"7223224241","fieldValues":[{"field":"1","value":"The Value for First Field"},{"field":"6","value":"2008-01-20"}]}}', $sendedRequest->getBody()->getContents());
+        $sentRequest = reset(HttpClientStub::$sentRequests);
+        self::assertInstanceOf(RequestInterface::class, $sentRequest);
+        self::assertEquals('/api/3/contacts/113', $sentRequest->getUri()->getPath());
+        self::assertEquals('PUT', $sentRequest->getMethod());
+        self::assertEquals('{"contact":{"email":"johndoe@example.com","firstName":"John","lastName":"Doe","phone":"7223224241","fieldValues":[{"field":"1","value":"The Value for First Field"},{"field":"6","value":"2008-01-20"}]}}', $sentRequest->getBody()->getContents());
 
         self::assertNotNull($updatedContact);
+        self::assertInstanceOf(UpdateContactResponse::class, $updatedContact);
         self::assertCount(2, $updatedContact->getFieldValues());
         self::assertEquals(113, $updatedContact->getContact()->getId());
         self::assertEquals('2018-09-28T13:50:41-05:00', $updatedContact->getContact()->getCreatedAt());
@@ -107,10 +111,10 @@ final class ActiveCampaignContactClientTest extends KernelTestCase
         $this->client->remove(113);
 
         self::assertCount(1, HttpClientStub::$sentRequests);
-        $sendedRequest = reset(HttpClientStub::$sentRequests);
-        self::assertInstanceOf(RequestInterface::class, $sendedRequest);
-        self::assertEquals('/api/3/contacts/113', $sendedRequest->getUri()->getPath());
-        self::assertEquals('DELETE', $sendedRequest->getMethod());
-        self::assertEmpty($sendedRequest->getBody()->getContents());
+        $sentRequest = reset(HttpClientStub::$sentRequests);
+        self::assertInstanceOf(RequestInterface::class, $sentRequest);
+        self::assertEquals('/api/3/contacts/113', $sentRequest->getUri()->getPath());
+        self::assertEquals('DELETE', $sentRequest->getMethod());
+        self::assertEmpty($sentRequest->getBody()->getContents());
     }
 }
