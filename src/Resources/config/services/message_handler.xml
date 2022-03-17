@@ -2,7 +2,7 @@
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="webgriffe.sylius_active_campaign_plugin.message_handler.contact.contact_create"
+        <service id="webgriffe.sylius_active_campaign_plugin.message_handler.contact.create"
                  class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactCreateHandler">
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.mapper.contact"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign"/>
@@ -10,7 +10,7 @@
             <tag name="messenger.message_handler"/>
         </service>
 
-        <service id="webgriffe.sylius_active_campaign_plugin.message_handler.contact.contact_update"
+        <service id="webgriffe.sylius_active_campaign_plugin.message_handler.contact.update"
                  class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactUpdateHandler">
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.mapper.contact"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign"/>
@@ -18,11 +18,15 @@
             <tag name="messenger.message_handler"/>
         </service>
 
-        <service id="webgriffe.sylius_active_campaign_plugin.message_handler.contact.contact_remove"
+        <service id="webgriffe.sylius_active_campaign_plugin.message_handler.contact.remove"
                  class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactRemoveHandler">
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign"/>
             <tag name="messenger.message_handler"/>
         </service>
 
+        <service id="webgriffe.sylius_active_campaign_plugin.message_handler.connection.create"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Connection\ConnectionCreateHandler">
+            <tag name="messenger.message_handler"/>
+        </service>
     </services>
 </container>
