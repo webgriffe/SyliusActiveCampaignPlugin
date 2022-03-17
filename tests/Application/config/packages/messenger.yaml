@@ -6,3 +6,5 @@ framework:
             'Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactRemove': main
 
             'Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionCreate': main
+            'Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionUpdate': main
+            'Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionRemove': main
