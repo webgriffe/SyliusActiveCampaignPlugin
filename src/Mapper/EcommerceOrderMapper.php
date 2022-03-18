@@ -11,6 +11,7 @@ use Sylius\Component\Core\Model\ShipmentInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderProductInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webmozart\Assert\Assert;
 
@@ -18,7 +19,8 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
 {
     public function __construct(
         private EcommerceOrderFactoryInterface $ecommerceOrderFactory,
-        private RouterInterface $router
+        private RouterInterface $router,
+        private EcommerceOrderProductMapperInterface $ecommerceOrderProductMapper
     ) {
     }
 
@@ -64,7 +66,6 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
         if (!$isInRealTime) {
             $ecommerceOrder->setSource(EcommerceOrderInterface::HISTORICAL_SOURCE_CODE);
         }
-        $ecommerceOrder->setOrderProducts([]);
         $ecommerceOrder->setShippingAmount($order->getShippingTotal());
         $ecommerceOrder->setTaxAmount($order->getTaxTotal());
         $ecommerceOrder->setDiscountAmount($order->getOrderPromotionTotal());
@@ -76,6 +77,13 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
         }
         $ecommerceOrder->setOrderNumber($order->getNumber());
         $ecommerceOrder->setOrderDiscounts([]);
+
+        /** @var EcommerceOrderProductInterface[] $orderProducts */
+        $orderProducts = [];
+        foreach ($order->getItems() as $orderItem) {
+            $orderProducts[] = $this->ecommerceOrderProductMapper->mapFromOrderItem($orderItem);
+        }
+        $ecommerceOrder->setOrderProducts($orderProducts);
 
         return $ecommerceOrder;
     }

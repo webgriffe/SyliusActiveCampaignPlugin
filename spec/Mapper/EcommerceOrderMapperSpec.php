@@ -13,6 +13,7 @@ use Prophecy\Argument;
 use Sylius\Component\Core\Model\ChannelInterface as SyliusChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface as SyliusCustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\ShipmentInterface;
 use Sylius\Component\Core\Model\ShippingMethodInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -20,7 +21,9 @@ use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderFa
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderMapper;
 use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderMapperInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderProductMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderProductInterface;
 use Webmozart\Assert\InvalidArgumentException;
 
 class EcommerceOrderMapperSpec extends ObjectBehavior
@@ -28,6 +31,7 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
     public function let(
         EcommerceOrderFactoryInterface $ecommerceOrderFactory,
         RouterInterface $router,
+        EcommerceOrderProductMapperInterface $ecommerceOrderProductMapper,
         OrderInterface $order,
         CustomerInterface $customer,
         ChannelInterface $channel,
@@ -36,8 +40,13 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
         ShipmentInterface $secondShipment,
         ShippingMethodInterface $firstShippingMethod,
         ShippingMethodInterface $secondShippingMethod,
+        OrderItemInterface $firstOrderItem,
+        EcommerceOrderProductInterface $firstOrderProduct
     ): void {
         $router->generate('sylius_shop_order_show', ['tokenValue' => 'sD4ew_w4s5T'])->willReturn('https://localhost/order/sD4ew_w4s5T');
+
+        $ecommerceOrderProductMapper->mapFromOrderItem($firstOrderItem)->willReturn($firstOrderProduct);
+
         $order->getCustomer()->willReturn($customer);
         $order->getChannel()->willReturn($channel);
         $order->getCurrencyCode()->willReturn('EUR');
@@ -51,6 +60,7 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
         $order->getShipments()->willReturn(new ArrayCollection([$firstShipment->getWrappedObject(), $secondShipment->getWrappedObject()]));
         $order->getTokenValue()->willReturn('sD4ew_w4s5T');
         $order->getNumber()->willReturn('00000234');
+        $order->getItems()->willReturn(new ArrayCollection([$firstOrderItem->getWrappedObject()]));
 
         $firstShipment->getMethod()->willReturn($firstShippingMethod);
         $secondShipment->getMethod()->willReturn($secondShippingMethod);
@@ -71,8 +81,8 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
         $ecommerceOrder->setOrderUrl('https://localhost/order/sD4ew_w4s5T');
         $ecommerceOrder->setExternalUpdatedDate(Argument::type(DateTimeInterface::class));
         $ecommerceOrder->setOrderNumber('00000234');
+        $ecommerceOrder->setOrderProducts([$firstOrderProduct]);
         $ecommerceOrder->setOrderDiscounts([]);
-        $ecommerceOrder->setOrderProducts([]);
 
         $ecommerceOrderFactory->createNew(
             'info@activecampaign.org',
@@ -86,7 +96,7 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
             null
         )->willReturn($ecommerceOrder);
 
-        $this->beConstructedWith($ecommerceOrderFactory, $router);
+        $this->beConstructedWith($ecommerceOrderFactory, $router, $ecommerceOrderProductMapper);
     }
 
     public function it_is_initializable(): void
