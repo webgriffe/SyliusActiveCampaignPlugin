@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Mapper;
 
+use Sylius\Component\Core\Model\ImageInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
+use Sylius\Component\Core\Model\TaxonInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderProductFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderProductInterface;
 use Webmozart\Assert\Assert;
@@ -12,7 +15,8 @@ use Webmozart\Assert\Assert;
 final class EcommerceOrderProductMapper implements EcommerceOrderProductMapperInterface
 {
     public function __construct(
-        private EcommerceOrderProductFactoryInterface $ecommerceOrderProductFactory
+        private EcommerceOrderProductFactoryInterface $ecommerceOrderProductFactory,
+        private RouterInterface $router
     ) {
     }
 
@@ -31,6 +35,17 @@ final class EcommerceOrderProductMapper implements EcommerceOrderProductMapperIn
             $orderItem->getQuantity(),
             (string) $productId
         );
+        $mainTaxon = $product->getMainTaxon();
+        if ($mainTaxon instanceof TaxonInterface) {
+            $ecommerceOrderProduct->setCategory($mainTaxon->getName());
+        }
+        $ecommerceOrderProduct->setSku($product->getCode());
+        $ecommerceOrderProduct->setDescription($product->getDescription());
+        $firstImage = $product->getImages()->first();
+        if ($firstImage instanceof ImageInterface) {
+            $ecommerceOrderProduct->setImageUrl($firstImage->getPath());
+        }
+        $ecommerceOrderProduct->setProductUrl($this->router->generate('sylius_shop_product_show', ['slug' => $product->getSlug()]));
 
         return $ecommerceOrderProduct;
     }

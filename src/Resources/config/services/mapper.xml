@@ -21,6 +21,7 @@
         <service id="webgriffe.sylius_active_campaign_plugin.mapper.ecommerce_order_product"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderProductMapper">
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.ecommerce_order_product"/>
+            <argument type="service" id="router"/>
         </service>
     </services>
 </container>
