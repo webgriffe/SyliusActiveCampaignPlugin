@@ -24,5 +24,10 @@
             <argument type="service" id="router"/>
             <argument type="string">%webgriffe_sylius_active_campaign.mapper.ecommerce_order_product.image_type%</argument>
         </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.mapper.ecommerce_order_discount"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderDiscountMapper">
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.ecommerce_order_discount"/>
+        </service>
     </services>
 </container>

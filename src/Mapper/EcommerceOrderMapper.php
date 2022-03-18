@@ -89,7 +89,7 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
         /** @var EcommerceOrderDiscountInterface[] $orderDiscounts */
         $orderDiscounts = [];
         foreach ($order->getPromotions() as $promotion) {
-            $orderDiscounts[] = $this->ecommerceOrderDiscountMapper->mapFromPromotion($promotion);
+            $orderDiscounts[] = $this->ecommerceOrderDiscountMapper->mapFromPromotion($order, $promotion);
         }
         $ecommerceOrder->setOrderDiscounts($orderDiscounts);
 

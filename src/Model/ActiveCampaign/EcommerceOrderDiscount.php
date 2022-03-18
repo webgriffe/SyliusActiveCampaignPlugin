@@ -6,10 +6,6 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign;
 
 final class EcommerceOrderDiscount implements EcommerceOrderDiscountInterface
 {
-    public const ORDER_DISCOUNT_TYPE = 'order';
-
-    public const SHIPPING_DISCOUNT_TYPE = 'shipping';
-
     public function __construct(
         private ?string $name = null,
         private ?string $type = self::ORDER_DISCOUNT_TYPE,
