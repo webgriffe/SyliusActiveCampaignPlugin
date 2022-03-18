@@ -8,10 +8,14 @@ use App\Entity\Channel\ChannelInterface;
 use App\Entity\Customer\CustomerInterface;
 use DateTime;
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Prophecy\Argument;
 use Sylius\Component\Core\Model\ChannelInterface as SyliusChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface as SyliusCustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\Component\Core\Model\ShipmentInterface;
+use Sylius\Component\Core\Model\ShippingMethodInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderMapper;
 use PhpSpec\ObjectBehavior;
@@ -23,22 +27,52 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
 {
     public function let(
         EcommerceOrderFactoryInterface $ecommerceOrderFactory,
+        RouterInterface $router,
         OrderInterface $order,
         CustomerInterface $customer,
         ChannelInterface $channel,
-        EcommerceOrderInterface $ecommerceOrder
+        EcommerceOrderInterface $ecommerceOrder,
+        ShipmentInterface $firstShipment,
+        ShipmentInterface $secondShipment,
+        ShippingMethodInterface $firstShippingMethod,
+        ShippingMethodInterface $secondShippingMethod,
     ): void {
+        $router->generate('sylius_shop_order_show', ['tokenValue' => 'sD4ew_w4s5T'])->willReturn('https://localhost/order/sD4ew_w4s5T');
         $order->getCustomer()->willReturn($customer);
         $order->getChannel()->willReturn($channel);
         $order->getCurrencyCode()->willReturn('EUR');
         $order->getCreatedAt()->willReturn(new DateTime('2022-03-18'));
+        $order->getUpdatedAt()->willReturn(new DateTime('2022-03-19'));
         $order->getId()->willReturn(125);
         $order->getTotal()->willReturn(15450);
+        $order->getShippingTotal()->willReturn(1000);
+        $order->getTaxTotal()->willReturn(2500);
+        $order->getOrderPromotionTotal()->willReturn(1200);
+        $order->getShipments()->willReturn(new ArrayCollection([$firstShipment->getWrappedObject(), $secondShipment->getWrappedObject()]));
+        $order->getTokenValue()->willReturn('sD4ew_w4s5T');
+        $order->getNumber()->willReturn('00000234');
+
+        $firstShipment->getMethod()->willReturn($firstShippingMethod);
+        $secondShipment->getMethod()->willReturn($secondShippingMethod);
+
+        $firstShippingMethod->getName()->willReturn('UPS Delivery');
+        $secondShippingMethod->getName()->willReturn('DHL');
 
         $customer->getEmail()->willReturn('info@activecampaign.org');
         $customer->getActiveCampaignId()->willReturn(432);
 
         $channel->getActiveCampaignId()->willReturn(1);
+
+        $ecommerceOrder->setShippingAmount(1000);
+        $ecommerceOrder->setTaxAmount(2500);
+        $ecommerceOrder->setDiscountAmount(1200);
+        $ecommerceOrder->setShippingMethod('UPS Delivery');
+        $ecommerceOrder->setShippingMethod('DHL');
+        $ecommerceOrder->setOrderUrl('https://localhost/order/sD4ew_w4s5T');
+        $ecommerceOrder->setExternalUpdatedDate(Argument::type(DateTimeInterface::class));
+        $ecommerceOrder->setOrderNumber('00000234');
+        $ecommerceOrder->setOrderDiscounts([]);
+        $ecommerceOrder->setOrderProducts([]);
 
         $ecommerceOrderFactory->createNew(
             'info@activecampaign.org',
@@ -52,7 +86,7 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
             null
         )->willReturn($ecommerceOrder);
 
-        $this->beConstructedWith($ecommerceOrderFactory);
+        $this->beConstructedWith($ecommerceOrderFactory, $router);
     }
 
     public function it_is_initializable(): void
@@ -135,7 +169,31 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
             ->during('mapFromOrder', [$order, true]);
     }
 
-    public function it_maps_ecommerce_order_from_order(
+    public function it_maps_ecommerce_order_without_shipping_method_if_order_has_no_shipments(
+        OrderInterface $order,
+        EcommerceOrderInterface $ecommerceOrder
+    ): void {
+        $order->getShipments()->willReturn(new ArrayCollection());
+        $ecommerceOrder->setShippingMethod('UPS Delivery')->shouldNotBeCalled();
+        $ecommerceOrder->setShippingMethod('DHL')->shouldNotBeCalled();
+
+        $this->mapFromOrder($order, true)->shouldReturn($ecommerceOrder);
+    }
+
+    public function it_maps_ecommerce_order_without_shipping_method_if_order_first_shipment_does_not_have_shipping_method(
+        OrderInterface $order,
+        ShipmentInterface $shipment,
+        EcommerceOrderInterface $ecommerceOrder
+    ): void {
+        $order->getShipments()->willReturn(new ArrayCollection([$shipment->getWrappedObject()]));
+        $shipment->getMethod()->willReturn(null);
+        $ecommerceOrder->setShippingMethod('UPS Delivery')->shouldNotBeCalled();
+        $ecommerceOrder->setShippingMethod('DHL')->shouldNotBeCalled();
+
+        $this->mapFromOrder($order, true)->shouldReturn($ecommerceOrder);
+    }
+
+    public function it_maps_ecommerce_order_real_time_from_order(
         OrderInterface $order,
         EcommerceOrderInterface $ecommerceOrder
     ): void {
@@ -148,7 +206,6 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
         OrderInterface $order,
         EcommerceOrderInterface $ecommerceOrder
     ): void {
-
         $ecommerceOrder->setSource(EcommerceOrderInterface::HISTORICAL_SOURCE_CODE)->shouldBeCalledOnce();
 
         $this->mapFromOrder($order, false)->shouldReturn($ecommerceOrder);

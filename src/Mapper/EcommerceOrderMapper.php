@@ -7,6 +7,8 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Mapper;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\Component\Core\Model\ShipmentInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
@@ -15,7 +17,8 @@ use Webmozart\Assert\Assert;
 final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
 {
     public function __construct(
-        private EcommerceOrderFactoryInterface $ecommerceOrderFactory
+        private EcommerceOrderFactoryInterface $ecommerceOrderFactory,
+        private RouterInterface $router
     ) {
     }
 
@@ -61,6 +64,18 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
         if (!$isInRealTime) {
             $ecommerceOrder->setSource(EcommerceOrderInterface::HISTORICAL_SOURCE_CODE);
         }
+        $ecommerceOrder->setOrderProducts([]);
+        $ecommerceOrder->setShippingAmount($order->getShippingTotal());
+        $ecommerceOrder->setTaxAmount($order->getTaxTotal());
+        $ecommerceOrder->setDiscountAmount($order->getOrderPromotionTotal());
+        $ecommerceOrder->setOrderUrl($this->router->generate('sylius_shop_order_show', ['tokenValue' => $order->getTokenValue()]));
+        $ecommerceOrder->setExternalUpdatedDate($order->getUpdatedAt());
+        $firstShipment = $order->getShipments()->first();
+        if ($firstShipment instanceof ShipmentInterface && (null !== $shippingMethod = $firstShipment->getMethod())) {
+            $ecommerceOrder->setShippingMethod($shippingMethod->getName());
+        }
+        $ecommerceOrder->setOrderNumber($order->getNumber());
+        $ecommerceOrder->setOrderDiscounts([]);
 
         return $ecommerceOrder;
     }
