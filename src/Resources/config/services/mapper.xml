@@ -9,5 +9,8 @@
 
         <service id="webgriffe.sylius_active_campaign_plugin.mapper.connection"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Mapper\ConnectionMapper"/>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.mapper.ecommerce_order"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderMapper"/>
     </services>
 </container>

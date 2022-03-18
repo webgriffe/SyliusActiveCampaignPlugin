@@ -28,6 +28,7 @@ final class EcommerceOrder implements EcommerceOrderInterface
         private DateTimeInterface $externalCreatedDate,
         private ?string $externalId = null,
         private ?string $externalCheckoutId = null,
+        private ?DateTimeInterface $abandonedDate = null,
         private int $source = self::REAL_TIME_SOURCE_CODE,
         private array $orderProducts = [],
         private ?int $shippingAmount = null,
@@ -35,7 +36,6 @@ final class EcommerceOrder implements EcommerceOrderInterface
         private ?int $discountAmount = null,
         private ?string $orderUrl = null,
         private ?DateTimeInterface $externalUpdatedDate = null,
-        private ?DateTimeInterface $abandonedDate = null,
         private ?string $shippingMethod = null,
         private ?string $orderNumber = null,
         private array $orderDiscounts = []
