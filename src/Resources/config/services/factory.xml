@@ -13,5 +13,8 @@
 
         <service id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.ecommerce_order_product"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderProductFactory"/>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.ecommerce_order_discount"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderDiscountFactory"/>
     </services>
 </container>
