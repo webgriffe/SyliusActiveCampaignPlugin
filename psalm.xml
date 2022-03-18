@@ -33,5 +33,10 @@
                 <file name="src/DependencyInjection/WebgriffeSyliusActiveCampaignExtension.php" />
             </errorLevel>
         </MixedArrayAccess>
+        <MixedArgument>
+            <errorLevel type="suppress">
+                <file name="src/DependencyInjection/WebgriffeSyliusActiveCampaignExtension.php" />
+            </errorLevel>
+        </MixedArgument>
     </issueHandlers>
 </psalm>
