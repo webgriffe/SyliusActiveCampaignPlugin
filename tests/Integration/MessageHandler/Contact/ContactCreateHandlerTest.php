@@ -9,7 +9,7 @@ use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\ActiveCampaignContactClientStub;
+use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\ActiveCampaignResourceClientStub;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactCreateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
@@ -29,7 +29,7 @@ final class ContactCreateHandlerTest extends KernelTestCase
         $this->customerRepository = self::getContainer()->get('sylius.repository.customer');
         $this->contactCreateHandler = new ContactCreateHandler(
             self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.mapper.contact'),
-            new ActiveCampaignContactClientStub(),
+            new ActiveCampaignResourceClientStub(),
             $this->customerRepository
         );
     }

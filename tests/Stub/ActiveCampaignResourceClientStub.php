@@ -13,7 +13,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\UpdateCont
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 
-final class ActiveCampaignContactClientStub implements ActiveCampaignResourceClientInterface
+final class ActiveCampaignResourceClientStub implements ActiveCampaignResourceClientInterface
 {
     public int $activeCampaignResourceId = 1234;
 
