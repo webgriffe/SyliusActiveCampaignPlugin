@@ -71,7 +71,10 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
         $ecommerceOrder->setShippingAmount($order->getShippingTotal());
         $ecommerceOrder->setTaxAmount($order->getTaxTotal());
         $ecommerceOrder->setDiscountAmount($order->getOrderPromotionTotal());
-        $ecommerceOrder->setOrderUrl($this->router->generate('sylius_shop_order_show', ['tokenValue' => $order->getTokenValue()]));
+        $ecommerceOrder->setOrderUrl($this->router->generate('sylius_shop_order_show', [
+            'tokenValue' => $order->getTokenValue(),
+            '_locale' => $order->getLocaleCode(),
+        ]));
         $ecommerceOrder->setExternalUpdatedDate($order->getUpdatedAt());
         $firstShipment = $order->getShipments()->first();
         if ($firstShipment instanceof ShipmentInterface && (null !== $shippingMethod = $firstShipment->getMethod())) {

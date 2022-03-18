@@ -6,7 +6,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign;
 
 use DateTimeInterface;
 
-interface EcommerceOrderInterface
+interface EcommerceOrderInterface extends ResourceInterface
 {
     public const HISTORICAL_SOURCE_CODE = 0;
 

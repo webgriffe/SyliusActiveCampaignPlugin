@@ -27,3 +27,10 @@ sylius_customer:
             classes:
                 model: App\Entity\Customer\Customer
                 repository: App\Doctrine\ORM\CustomerRepository
+
+sylius_order:
+    resources:
+        order:
+            classes:
+                model: App\Entity\Order\Order
+                repository: App\Doctrine\ORM\OrderRepository

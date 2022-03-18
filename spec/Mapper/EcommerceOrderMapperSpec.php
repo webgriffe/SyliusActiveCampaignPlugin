@@ -49,14 +49,15 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
         PromotionInterface $firstPromotion,
         EcommerceOrderDiscountInterface $firstOrderDiscount
     ): void {
-        $router->generate('sylius_shop_order_show', ['tokenValue' => 'sD4ew_w4s5T'])->willReturn('https://localhost/order/sD4ew_w4s5T');
+        $router->generate('sylius_shop_order_show', ['tokenValue' => 'sD4ew_w4s5T', '_locale' => 'en_US'])->willReturn('https://localhost/order/sD4ew_w4s5T');
 
         $ecommerceOrderProductMapper->mapFromOrderItem($firstOrderItem)->willReturn($firstOrderProduct);
 
-        $ecommerceOrderDiscountMapper->mapFromPromotion($firstPromotion)->willReturn($firstOrderDiscount);
+        $ecommerceOrderDiscountMapper->mapFromPromotion($order, $firstPromotion)->willReturn($firstOrderDiscount);
 
         $order->getCustomer()->willReturn($customer);
         $order->getChannel()->willReturn($channel);
+        $order->getLocaleCode()->willReturn('en_US');
         $order->getCurrencyCode()->willReturn('EUR');
         $order->getCreatedAt()->willReturn(new DateTime('2022-03-18'));
         $order->getUpdatedAt()->willReturn(new DateTime('2022-03-19'));

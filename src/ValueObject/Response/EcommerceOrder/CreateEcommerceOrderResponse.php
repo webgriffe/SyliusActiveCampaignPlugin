@@ -8,4 +8,13 @@ use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResp
 
 final class CreateEcommerceOrderResponse implements CreateResourceResponseInterface
 {
+    public function __construct(
+        private CreateEcommerceOrderEcommerceOrderResponse $order
+    ) {
+    }
+
+    public function getOrder(): CreateEcommerceOrderEcommerceOrderResponse
+    {
+        return $this->order;
+    }
 }
