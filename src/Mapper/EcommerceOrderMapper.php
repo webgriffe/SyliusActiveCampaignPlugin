@@ -10,6 +10,7 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\ShipmentInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderFactoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderDiscountInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderProductInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
@@ -20,7 +21,8 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
     public function __construct(
         private EcommerceOrderFactoryInterface $ecommerceOrderFactory,
         private RouterInterface $router,
-        private EcommerceOrderProductMapperInterface $ecommerceOrderProductMapper
+        private EcommerceOrderProductMapperInterface $ecommerceOrderProductMapper,
+        private EcommerceOrderDiscountMapperInterface $ecommerceOrderDiscountMapper
     ) {
     }
 
@@ -76,7 +78,6 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
             $ecommerceOrder->setShippingMethod($shippingMethod->getName());
         }
         $ecommerceOrder->setOrderNumber($order->getNumber());
-        $ecommerceOrder->setOrderDiscounts([]);
 
         /** @var EcommerceOrderProductInterface[] $orderProducts */
         $orderProducts = [];
@@ -84,6 +85,13 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
             $orderProducts[] = $this->ecommerceOrderProductMapper->mapFromOrderItem($orderItem);
         }
         $ecommerceOrder->setOrderProducts($orderProducts);
+
+        /** @var EcommerceOrderDiscountInterface[] $orderDiscounts */
+        $orderDiscounts = [];
+        foreach ($order->getPromotions() as $promotion) {
+            $orderDiscounts[] = $this->ecommerceOrderDiscountMapper->mapFromPromotion($promotion);
+        }
+        $ecommerceOrder->setOrderDiscounts($orderDiscounts);
 
         return $ecommerceOrder;
     }

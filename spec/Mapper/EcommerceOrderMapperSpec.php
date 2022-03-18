@@ -16,12 +16,15 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\ShipmentInterface;
 use Sylius\Component\Core\Model\ShippingMethodInterface;
+use Sylius\Component\Promotion\Model\PromotionInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderFactoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderDiscountMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderMapper;
 use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderProductMapperInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderDiscountInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderProductInterface;
 use Webmozart\Assert\InvalidArgumentException;
@@ -32,6 +35,7 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
         EcommerceOrderFactoryInterface $ecommerceOrderFactory,
         RouterInterface $router,
         EcommerceOrderProductMapperInterface $ecommerceOrderProductMapper,
+        EcommerceOrderDiscountMapperInterface $ecommerceOrderDiscountMapper,
         OrderInterface $order,
         CustomerInterface $customer,
         ChannelInterface $channel,
@@ -41,11 +45,15 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
         ShippingMethodInterface $firstShippingMethod,
         ShippingMethodInterface $secondShippingMethod,
         OrderItemInterface $firstOrderItem,
-        EcommerceOrderProductInterface $firstOrderProduct
+        EcommerceOrderProductInterface $firstOrderProduct,
+        PromotionInterface $firstPromotion,
+        EcommerceOrderDiscountInterface $firstOrderDiscount
     ): void {
         $router->generate('sylius_shop_order_show', ['tokenValue' => 'sD4ew_w4s5T'])->willReturn('https://localhost/order/sD4ew_w4s5T');
 
         $ecommerceOrderProductMapper->mapFromOrderItem($firstOrderItem)->willReturn($firstOrderProduct);
+
+        $ecommerceOrderDiscountMapper->mapFromPromotion($firstPromotion)->willReturn($firstOrderDiscount);
 
         $order->getCustomer()->willReturn($customer);
         $order->getChannel()->willReturn($channel);
@@ -61,6 +69,7 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
         $order->getTokenValue()->willReturn('sD4ew_w4s5T');
         $order->getNumber()->willReturn('00000234');
         $order->getItems()->willReturn(new ArrayCollection([$firstOrderItem->getWrappedObject()]));
+        $order->getPromotions()->willReturn(new ArrayCollection([$firstPromotion->getWrappedObject()]));
 
         $firstShipment->getMethod()->willReturn($firstShippingMethod);
         $secondShipment->getMethod()->willReturn($secondShippingMethod);
@@ -82,7 +91,7 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
         $ecommerceOrder->setExternalUpdatedDate(Argument::type(DateTimeInterface::class));
         $ecommerceOrder->setOrderNumber('00000234');
         $ecommerceOrder->setOrderProducts([$firstOrderProduct]);
-        $ecommerceOrder->setOrderDiscounts([]);
+        $ecommerceOrder->setOrderDiscounts([$firstOrderDiscount]);
 
         $ecommerceOrderFactory->createNew(
             'info@activecampaign.org',
@@ -96,7 +105,7 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
             null
         )->willReturn($ecommerceOrder);
 
-        $this->beConstructedWith($ecommerceOrderFactory, $router, $ecommerceOrderProductMapper);
+        $this->beConstructedWith($ecommerceOrderFactory, $router, $ecommerceOrderProductMapper, $ecommerceOrderDiscountMapper);
     }
 
     public function it_is_initializable(): void
