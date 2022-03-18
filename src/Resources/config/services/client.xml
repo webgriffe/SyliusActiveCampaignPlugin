@@ -19,5 +19,14 @@
             <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\CreateConnectionResponse</argument>
             <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\UpdateConnectionResponse</argument>
         </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.ecommerce_customer"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient">
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
+            <argument type="string">ecommerce_customer</argument>
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\CreateEcommerceCustomerResponse</argument>
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\UpdateEcommerceCustomerResponse</argument>
+        </service>
     </services>
 </container>
