@@ -28,6 +28,8 @@ final class WebgriffeSyliusActiveCampaignExtension extends Extension
         $container->setParameter('webgriffe_sylius_active_campaign.api_client.base_url', (string) $config['api_client']['base_url']);
         $container->setParameter('webgriffe_sylius_active_campaign.api_client.key', (string) $config['api_client']['key']);
 
+        $container->setParameter('webgriffe_sylius_active_campaign.mapper.ecommerce_order_product.image_type', $config['mapper']['ecommerce_order_product']['image_type']);
+
         $loader->load('services.xml');
     }
 

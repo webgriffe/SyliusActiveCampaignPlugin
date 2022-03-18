@@ -6,6 +6,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Mapper;
 
 use Sylius\Component\Core\Model\ImageInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
+use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Core\Model\TaxonInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderProductFactoryInterface;
@@ -16,7 +17,8 @@ final class EcommerceOrderProductMapper implements EcommerceOrderProductMapperIn
 {
     public function __construct(
         private EcommerceOrderProductFactoryInterface $ecommerceOrderProductFactory,
-        private RouterInterface $router
+        private RouterInterface $router,
+        private ?string $imageType = null
     ) {
     }
 
@@ -41,12 +43,27 @@ final class EcommerceOrderProductMapper implements EcommerceOrderProductMapperIn
         }
         $ecommerceOrderProduct->setSku($product->getCode());
         $ecommerceOrderProduct->setDescription($product->getDescription());
-        $firstImage = $product->getImages()->first();
-        if ($firstImage instanceof ImageInterface) {
-            $ecommerceOrderProduct->setImageUrl($firstImage->getPath());
-        }
+        $ecommerceOrderProduct->setImageUrl($this->getImageUrlFromProduct($product));
         $ecommerceOrderProduct->setProductUrl($this->router->generate('sylius_shop_product_show', ['slug' => $product->getSlug()]));
 
         return $ecommerceOrderProduct;
+    }
+
+    private function getImageUrlFromProduct(ProductInterface $product): ?string
+    {
+        if ($this->imageType === null || $this->imageType === '') {
+            $firstImage = $product->getImages()->first();
+            if (!$firstImage instanceof ImageInterface) {
+                return null;
+            }
+
+            return $firstImage->getPath();
+        }
+        $imageForType = $product->getImagesByType($this->imageType)->first();
+        if (!$imageForType instanceof ImageInterface) {
+            return null;
+        }
+
+        return $imageForType->getPath();
     }
 }

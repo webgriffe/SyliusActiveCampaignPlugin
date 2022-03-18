@@ -17,6 +17,7 @@ final class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->getRootNode();
 
         $this->buildApiClientNode($rootNode);
+        $this->buildMapperNode($rootNode);
 
         return $treeBuilder;
     }
@@ -30,6 +31,22 @@ final class Configuration implements ConfigurationInterface
                     ->children()
                         ->scalarNode('base_url')->isRequired()->cannotBeEmpty()->defaultNull()->end()
                         ->scalarNode('key')->isRequired()->cannotBeEmpty()->defaultNull()->end()
+                    ->end()
+            ->end()
+        ;
+    }
+
+    private function buildMapperNode(ArrayNodeDefinition $rootNode): void
+    {
+        $rootNode
+            ->children()
+                ->arrayNode('mapper')
+                ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('ecommerce_order_product')
+                            ->children()
+                                ->scalarNode('image_type')->defaultNull()->end()
+                            ->end()
                     ->end()
             ->end()
         ;

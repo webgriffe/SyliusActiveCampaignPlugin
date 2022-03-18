@@ -54,7 +54,7 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
         $ecommerceOrderProduct->setImageUrl('path/wine.png');
         $ecommerceOrderProduct->setProductUrl('https://localhost/products/wine-bottle');
 
-        $this->beConstructedWith($ecommerceOrderProductFactory, $router);
+        $this->beConstructedWith($ecommerceOrderProductFactory, $router, null);
     }
 
     public function it_is_initializable(): void
@@ -91,7 +91,6 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
     public function it_maps_ecommerce_order_product_without_category_if_main_taxon_does_not_exist(
         OrderItemInterface $orderItem,
         ProductInterface $product,
-        EcommerceOrderProductFactoryInterface $ecommerceOrderProductFactory,
         EcommerceOrderProductInterface $ecommerceOrderProduct
     ): void {
         $product->getMainTaxon()->willReturn(null);
@@ -103,11 +102,59 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
     public function it_maps_ecommerce_order_product_without_image_url_if_products_does_not_have_images(
         OrderItemInterface $orderItem,
         ProductInterface $product,
-        EcommerceOrderProductFactoryInterface $ecommerceOrderProductFactory,
         EcommerceOrderProductInterface $ecommerceOrderProduct
     ): void {
         $product->getImages()->willReturn(new ArrayCollection());
         $ecommerceOrderProduct->setImageUrl('path/wine.png')->shouldNotBeCalled();
+        $ecommerceOrderProduct->setImageUrl(null)->shouldBeCalledOnce();
+
+        $this->mapFromOrderItem($orderItem)->shouldReturn($ecommerceOrderProduct);
+    }
+
+    public function it_maps_ecommerce_order_product_without_image_url_if_products_does_not_have_images_with_specified_type(
+        EcommerceOrderProductFactoryInterface $ecommerceOrderProductFactory,
+        RouterInterface $router,
+        OrderItemInterface $orderItem,
+        ProductInterface $product,
+        EcommerceOrderProductInterface $ecommerceOrderProduct
+    ): void {
+        $this->beConstructedWith($ecommerceOrderProductFactory, $router, 'main');
+        $product->getImagesByType('main')->willReturn(new ArrayCollection());
+        $ecommerceOrderProduct->setImageUrl('path/wine.png')->shouldNotBeCalled();
+        $ecommerceOrderProduct->setImageUrl(null)->shouldBeCalledOnce();
+
+        $this->mapFromOrderItem($orderItem)->shouldReturn($ecommerceOrderProduct);
+    }
+
+    public function it_maps_ecommerce_order_product_with_image_url_from_specified_type(
+        EcommerceOrderProductFactoryInterface $ecommerceOrderProductFactory,
+        RouterInterface $router,
+        OrderItemInterface $orderItem,
+        ProductInterface $product,
+        EcommerceOrderProductInterface $ecommerceOrderProduct,
+        ImageInterface $typedImage
+    ): void {
+        $this->beConstructedWith($ecommerceOrderProductFactory, $router, 'main');
+        $product->getImagesByType('main')->willReturn(new ArrayCollection([$typedImage->getWrappedObject()]));
+        $typedImage->getPath()->willReturn('path/main.jpg');
+        $ecommerceOrderProduct->setImageUrl('path/wine.png')->shouldNotBeCalled();
+        $ecommerceOrderProduct->setImageUrl(null)->shouldNotBeCalled();
+        $ecommerceOrderProduct->setImageUrl('path/main.jpg')->shouldBeCalledOnce();
+
+        $this->mapFromOrderItem($orderItem)->shouldReturn($ecommerceOrderProduct);
+    }
+
+    public function it_maps_ecommerce_order_product_without_image_url_from_specified_type_if_image_type_is_a_empty_string(
+        EcommerceOrderProductFactoryInterface $ecommerceOrderProductFactory,
+        RouterInterface $router,
+        OrderItemInterface $orderItem,
+        ProductInterface $product,
+        EcommerceOrderProductInterface $ecommerceOrderProduct
+    ): void {
+        $this->beConstructedWith($ecommerceOrderProductFactory, $router, '');
+        $product->getImagesByType('')->shouldNotBeCalled();
+        $ecommerceOrderProduct->setImageUrl('path/wine.png')->shouldBeCalledOnce();
+        $ecommerceOrderProduct->setImageUrl(null)->shouldNotBeCalled();
 
         $this->mapFromOrderItem($orderItem)->shouldReturn($ecommerceOrderProduct);
     }
