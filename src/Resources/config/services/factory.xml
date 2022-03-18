@@ -5,6 +5,9 @@
         <service id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.contact"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ContactFactory"/>
 
+        <service id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.ecommerce_customer"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceCustomerFactory"/>
+
         <service id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.ecommerce_order"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderFactory"/>
     </services>

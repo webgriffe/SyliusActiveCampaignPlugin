@@ -10,6 +10,11 @@
         <service id="webgriffe.sylius_active_campaign_plugin.mapper.connection"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Mapper\ConnectionMapper"/>
 
+        <service id="webgriffe.sylius_active_campaign_plugin.mapper.ecommerce_customer"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceCustomerMapper">
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.ecommerce_customer" />
+        </service>
+
         <service id="webgriffe.sylius_active_campaign_plugin.mapper.ecommerce_order"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderMapper"/>
     </services>
