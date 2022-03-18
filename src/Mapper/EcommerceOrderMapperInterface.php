@@ -9,5 +9,5 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderInte
 
 interface EcommerceOrderMapperInterface
 {
-    public function mapFromOrder(OrderInterface $order): EcommerceOrderInterface;
+    public function mapFromOrder(OrderInterface $order, bool $isInRealTime): EcommerceOrderInterface;
 }

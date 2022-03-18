@@ -19,7 +19,7 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
     ) {
     }
 
-    public function mapFromOrder(OrderInterface $order): EcommerceOrderInterface
+    public function mapFromOrder(OrderInterface $order, bool $isInRealTime): EcommerceOrderInterface
     {
         /** @var CustomerInterface|(CustomerInterface&ActiveCampaignAwareInterface)|null $customer */
         $customer = $order->getCustomer();
@@ -58,6 +58,9 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
             null,
             null
         );
+        if (!$isInRealTime) {
+            $ecommerceOrder->setSource(EcommerceOrderInterface::HISTORICAL_SOURCE_CODE);
+        }
 
         return $ecommerceOrder;
     }

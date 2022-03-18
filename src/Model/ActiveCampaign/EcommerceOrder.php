@@ -10,11 +10,6 @@ use Webgriffe\SyliusActiveCampaignPlugin\Exception\EcommerceOrderExternalIdNotVa
 
 final class EcommerceOrder implements EcommerceOrderInterface
 {
-    public const HISTORICAL_SOURCE_CODE = 0;
-
-    /** @docs Only real-time orders (source = 1) will show up on your Ecommerce Dashboard and trigger the “Makes a purchase” automation start, abandoned cart actions, customer conversions, or revenue attributions. */
-    public const REAL_TIME_SOURCE_CODE = 1;
-
     /**
      * @param EcommerceOrderProductInterface[] $orderProducts
      * @param EcommerceOrderDiscountInterface[] $orderDiscounts

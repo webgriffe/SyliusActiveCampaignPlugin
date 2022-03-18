@@ -25,7 +25,8 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
         EcommerceOrderFactoryInterface $ecommerceOrderFactory,
         OrderInterface $order,
         CustomerInterface $customer,
-        ChannelInterface $channel
+        ChannelInterface $channel,
+        EcommerceOrderInterface $ecommerceOrder
     ): void {
         $order->getCustomer()->willReturn($customer);
         $order->getChannel()->willReturn($channel);
@@ -38,6 +39,18 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
         $customer->getActiveCampaignId()->willReturn(432);
 
         $channel->getActiveCampaignId()->willReturn(1);
+
+        $ecommerceOrderFactory->createNew(
+            'info@activecampaign.org',
+            1,
+            432,
+            'EUR',
+            15450,
+            Argument::type(DateTimeInterface::class),
+            '125',
+            null,
+            null
+        )->willReturn($ecommerceOrder);
 
         $this->beConstructedWith($ecommerceOrderFactory);
     }
@@ -56,89 +69,88 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
     {
         $order->getCustomer()->willReturn(null);
         $this->shouldThrow(new InvalidArgumentException('Order customer should implement "Sylius\Component\Core\Model\CustomerInterface".'))
-            ->during('mapFromOrder', [$order]);
+            ->during('mapFromOrder', [$order, true]);
     }
 
     public function it_throws_if_order_customer_is_not_an_instance_of_active_campaign_aware_interface(OrderInterface $order, SyliusCustomerInterface $syliusCustomer): void
     {
         $order->getCustomer()->willReturn($syliusCustomer);
         $this->shouldThrow(new InvalidArgumentException('Order customer should implement "Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface".'))
-            ->during('mapFromOrder', [$order]);
+            ->during('mapFromOrder', [$order, true]);
     }
 
     public function it_throws_if_order_customer_email_is_null(OrderInterface $order, CustomerInterface $customer): void
     {
         $customer->getEmail()->willReturn(null);
         $this->shouldThrow(new InvalidArgumentException('The customer\'s email should not be null.'))
-            ->during('mapFromOrder', [$order]);
+            ->during('mapFromOrder', [$order, true]);
     }
 
     public function it_throws_if_order_customer_active_campaign_id_is_null(OrderInterface $order, CustomerInterface $customer): void
     {
         $customer->getActiveCampaignId()->willReturn(null);
         $this->shouldThrow(new InvalidArgumentException('The customer\'s ActiveCampaign customer id should not be null.'))
-            ->during('mapFromOrder', [$order]);
+            ->during('mapFromOrder', [$order, true]);
     }
 
     public function it_throws_if_order_channel_is_null(OrderInterface $order): void
     {
         $order->getChannel()->willReturn(null);
         $this->shouldThrow(new InvalidArgumentException('Order does not have a channel.'))
-            ->during('mapFromOrder', [$order]);
+            ->during('mapFromOrder', [$order, true]);
     }
 
     public function it_throws_if_order_channel_is_not_an_instance_of_active_campaign_aware_interface(OrderInterface $order, SyliusChannelInterface $syliusChannel): void
     {
         $order->getChannel()->willReturn($syliusChannel);
         $this->shouldThrow(new InvalidArgumentException('Order channel should implement "Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface".'))
-            ->during('mapFromOrder', [$order]);
+            ->during('mapFromOrder', [$order, true]);
     }
 
     public function it_throws_if_order_channel_active_campaign_id_is_null(OrderInterface $order, ChannelInterface $channel): void
     {
         $channel->getActiveCampaignId()->willReturn(null);
         $this->shouldThrow(new InvalidArgumentException('The channel\'s ActiveCampaign connection id should not be null.'))
-            ->during('mapFromOrder', [$order]);
+            ->during('mapFromOrder', [$order, true]);
     }
 
     public function it_throws_if_order_currency_code_is_null(OrderInterface $order): void
     {
         $order->getCurrencyCode()->willReturn(null);
         $this->shouldThrow(new InvalidArgumentException('The order currency code should not be null.'))
-            ->during('mapFromOrder', [$order]);
+            ->during('mapFromOrder', [$order, true]);
     }
 
     public function it_throws_if_order_created_at_is_null(OrderInterface $order): void
     {
         $order->getCreatedAt()->willReturn(null);
         $this->shouldThrow(new InvalidArgumentException('The order creation date should not be null.'))
-            ->during('mapFromOrder', [$order]);
+            ->during('mapFromOrder', [$order, true]);
     }
 
     public function it_throws_if_order_id_is_null(OrderInterface $order): void
     {
         $order->getId()->willReturn(null);
         $this->shouldThrow(new InvalidArgumentException('The order id should not be null.'))
-            ->during('mapFromOrder', [$order]);
+            ->during('mapFromOrder', [$order, true]);
     }
 
     public function it_maps_ecommerce_order_from_order(
         OrderInterface $order,
-        EcommerceOrderFactoryInterface $ecommerceOrderFactory,
         EcommerceOrderInterface $ecommerceOrder
     ): void {
-        $ecommerceOrderFactory->createNew(
-            'info@activecampaign.org',
-            1,
-            432,
-            'EUR',
-            15450,
-            Argument::type(DateTimeInterface::class),
-            '125',
-            null,
-            null
-        )->shouldBeCalledOnce()->willReturn($ecommerceOrder);
+        $ecommerceOrder->setSource(EcommerceOrderInterface::HISTORICAL_SOURCE_CODE)->shouldNotBeCalled();
 
-        $this->mapFromOrder($order)->shouldReturn($ecommerceOrder);
+        $this->mapFromOrder($order, true)->shouldReturn($ecommerceOrder);
+    }
+
+    public function it_maps_ecommerce_order_historical_from_order(
+        OrderInterface $order,
+        EcommerceOrderInterface $ecommerceOrder
+    ): void {
+
+        $ecommerceOrder->setSource(EcommerceOrderInterface::HISTORICAL_SOURCE_CODE)->shouldBeCalledOnce();
+
+        $this->mapFromOrder($order, false)->shouldReturn($ecommerceOrder);
     }
 }
