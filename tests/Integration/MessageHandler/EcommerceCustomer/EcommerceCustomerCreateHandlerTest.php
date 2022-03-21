@@ -15,7 +15,7 @@ use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Sylius\Component\Currency\Model\Currency;
 use Sylius\Component\Locale\Model\Locale;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\ActiveCampaignContactClientStub;
+use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\ActiveCampaignEcommerceCustomerClientStub;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceCustomer\EcommerceCustomerCreateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
@@ -41,9 +41,10 @@ final class EcommerceCustomerCreateHandlerTest extends KernelTestCase
         $this->customerRepository = self::getContainer()->get('sylius.repository.customer');
         $this->channelRepository = self::getContainer()->get('sylius.repository.channel');
 
+        // todo: it would be great to have only one stub for all resources
         $this->ecommerceCustomerCreateHandler = new EcommerceCustomerCreateHandler(
             self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.mapper.ecommerce_customer'),
-            new ActiveCampaignContactClientStub(),
+            new ActiveCampaignEcommerceCustomerClientStub(),
             $this->customerRepository,
             $this->channelRepository
         );
@@ -51,14 +52,13 @@ final class EcommerceCustomerCreateHandlerTest extends KernelTestCase
 
     public function test_that_it_creates_ecommerce_customer_on_active_campaign(): void
     {
-        $this->markTestIncomplete('todo');
         $channel = $this->createChannel();
         $customer = $this->createCustomer();
         $this->ecommerceCustomerCreateHandler->__invoke(new EcommerceCustomerCreate($customer->getId(), $channel->getId()));
 
         /** @var CustomerInterface&ActiveCampaignAwareInterface $customer */
         $customer = $this->customerRepository->find($customer->getId());
-        $this->assertEquals(1234, $customer->getActiveCampaignId());
+        $this->assertEquals(3423, $customer->getActiveCampaignId());
     }
 
     // todo: we should start using fixtures
