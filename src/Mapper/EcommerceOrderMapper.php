@@ -56,8 +56,8 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
 
         $ecommerceOrder = $this->ecommerceOrderFactory->createNew(
             $customerEmail,
-            $connectionId,
-            $ecommerceCustomerId,
+            (string) $connectionId,
+            (string) $ecommerceCustomerId,
             $currencyCode,
             $order->getTotal(),
             $createdAt,

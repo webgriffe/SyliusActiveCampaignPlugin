@@ -7,4 +7,20 @@
     <class name="Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\Connection">
         <attribute name="externalId" serialized-name="externalid"/>
     </class>
+    <class name="Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrder">
+        <attribute name="externalId" serialized-name="externalid"/>
+        <attribute name="connectionId" serialized-name="connectionid"/>
+        <attribute name="customerId" serialized-name="customerid"/>
+    </class>
+    <class name="Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderProduct">
+        <attribute name="externalId" serialized-name="externalid"/>
+    </class>
+
+    <class name="Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\CreateEcommerceOrderResponse">
+        <attribute name="ecommerceOrder" serialized-name="ecomOrder"/>
+    </class>
+
+    <class name="Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\UpdateEcommerceOrderResponse">
+        <attribute name="ecommerceOrder" serialized-name="ecomOrder"/>
+    </class>
 </serializer>

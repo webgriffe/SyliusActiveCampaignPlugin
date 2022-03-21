@@ -8,22 +8,22 @@ use DateTimeInterface;
 
 interface EcommerceOrderInterface extends ResourceInterface
 {
-    public const HISTORICAL_SOURCE_CODE = 0;
+    public const HISTORICAL_SOURCE_CODE = '0';
 
     /** @docs Only real-time orders (source = 1) will show up on your Ecommerce Dashboard and trigger the “Makes a purchase” automation start, abandoned cart actions, customer conversions, or revenue attributions. */
-    public const REAL_TIME_SOURCE_CODE = 1;
+    public const REAL_TIME_SOURCE_CODE = '1';
 
     public function getEmail(): string;
 
     public function setEmail(string $email): void;
 
-    public function getConnectionId(): int;
+    public function getConnectionId(): string;
 
-    public function setConnectionId(int $connectionId): void;
+    public function setConnectionId(string $connectionId): void;
 
-    public function getCustomerId(): int;
+    public function getCustomerId(): string;
 
-    public function setCustomerId(int $customerId): void;
+    public function setCustomerId(string $customerId): void;
 
     public function getCurrency(): string;
 
@@ -45,9 +45,9 @@ interface EcommerceOrderInterface extends ResourceInterface
 
     public function setExternalCheckoutId(?string $externalCheckoutId): void;
 
-    public function getSource(): int;
+    public function getSource(): string;
 
-    public function setSource(int $source): void;
+    public function setSource(string $source): void;
 
     /** @return EcommerceOrderProductInterface[] */
     public function getOrderProducts(): array;

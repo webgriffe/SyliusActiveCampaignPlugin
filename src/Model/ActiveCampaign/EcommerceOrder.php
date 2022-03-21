@@ -16,15 +16,15 @@ final class EcommerceOrder implements EcommerceOrderInterface
      */
     public function __construct(
         private string $email,
-        private int $connectionId,
-        private int $customerId,
+        private string $connectionId,
+        private string $customerId,
         private string $currency,
         private int $totalPrice,
         private DateTimeInterface $externalCreatedDate,
         private ?string $externalId = null,
         private ?string $externalCheckoutId = null,
         private ?DateTimeInterface $abandonedDate = null,
-        private int $source = self::REAL_TIME_SOURCE_CODE,
+        private string $source = self::REAL_TIME_SOURCE_CODE,
         private array $orderProducts = [],
         private ?int $shippingAmount = null,
         private ?int $taxAmount = null,
@@ -53,22 +53,22 @@ final class EcommerceOrder implements EcommerceOrderInterface
         $this->email = $email;
     }
 
-    public function getConnectionId(): int
+    public function getConnectionId(): string
     {
         return $this->connectionId;
     }
 
-    public function setConnectionId(int $connectionId): void
+    public function setConnectionId(string $connectionId): void
     {
         $this->connectionId = $connectionId;
     }
 
-    public function getCustomerId(): int
+    public function getCustomerId(): string
     {
         return $this->customerId;
     }
 
-    public function setCustomerId(int $customerId): void
+    public function setCustomerId(string $customerId): void
     {
         $this->customerId = $customerId;
     }
@@ -123,12 +123,12 @@ final class EcommerceOrder implements EcommerceOrderInterface
         $this->externalCheckoutId = $externalCheckoutId;
     }
 
-    public function getSource(): int
+    public function getSource(): string
     {
         return $this->source;
     }
 
-    public function setSource(int $source): void
+    public function setSource(string $source): void
     {
         $this->source = $source;
     }
