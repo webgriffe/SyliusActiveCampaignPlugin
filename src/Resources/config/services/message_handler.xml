@@ -55,6 +55,15 @@
             <tag name="messenger.message_handler"/>
         </service>
 
+        <service id="webgriffe.sylius_active_campaign_plugin.message_handler.ecommerce_customer.update"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceCustomer\EcommerceCustomerUpdateHandler">
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.mapper.ecommerce_customer"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.ecommerce_customer"/>
+            <argument type="service" id="sylius.repository.customer"/>
+            <argument type="service" id="sylius.repository.channel"/>
+            <tag name="messenger.message_handler"/>
+        </service>
+
         <service id="webgriffe.sylius_active_campaign_plugin.message_handler.ecommerce_order.create"
                  class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceOrder\EcommerceOrderCreateHandler">
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.mapper.ecommerce_order"/>
