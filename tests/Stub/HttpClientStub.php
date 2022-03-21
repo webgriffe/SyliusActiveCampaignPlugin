@@ -31,21 +31,21 @@ final class HttpClientStub implements ClientInterface
 
     public function sendAsync(RequestInterface $request, array $options = [])
     {
-        throw new RuntimeException('not implemented yet');
+        throw new RuntimeException('Not implemented');
     }
 
     public function request($method, $uri, array $options = [])
     {
-        throw new RuntimeException('not implemented yet');
+        throw new RuntimeException('Not implemented');
     }
 
     public function requestAsync($method, $uri, array $options = [])
     {
-        throw new RuntimeException('not implemented yet');
+        throw new RuntimeException('Not implemented');
     }
 
     public function getConfig($option = null)
     {
-        throw new RuntimeException('not implemented yet');
+        throw new RuntimeException('Not implemented');
     }
 }

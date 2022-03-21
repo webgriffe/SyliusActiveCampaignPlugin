@@ -41,16 +41,7 @@ final class ActiveCampaignConnectionClientTest extends KernelTestCase
 
         self::assertNotNull($createdConnection);
         self::assertInstanceOf(CreateConnectionResponse::class, $createdConnection);
-        self::assertEquals('0', $createdConnection->getConnection()->getIsInternal());
-        self::assertEquals('fooCommerce', $createdConnection->getConnection()->getService());
-        self::assertEquals('toystore123', $createdConnection->getConnection()->getExternalId());
-        self::assertEquals('Toystore, Inc.', $createdConnection->getConnection()->getName());
-        self::assertEquals('http://example.com/i/foo.png', $createdConnection->getConnection()->getLogoUrl());
-        self::assertEquals('http://example.com/foo/', $createdConnection->getConnection()->getLinkUrl());
-        self::assertEquals('2017-02-02T14:56:05-06:00', $createdConnection->getConnection()->getCreatedAt());
-        self::assertEquals('2017-02-02T14:56:05-06:00', $createdConnection->getConnection()->getUpdatedAt());
-        self::assertCount(1, $createdConnection->getConnection()->getLinks());
-        self::assertEquals(1, $createdConnection->getConnection()->getId());
+        self::assertEquals(1, $createdConnection->getResourceResponse()->getId());
     }
 
     public function test_it_updates_connection_on_active_campaign(): void
@@ -70,18 +61,7 @@ final class ActiveCampaignConnectionClientTest extends KernelTestCase
 
         self::assertNotNull($updatedConnection);
         self::assertInstanceOf(UpdateConnectionResponse::class, $updatedConnection);
-        self::assertEquals('fooCommerce', $updatedConnection->getConnection()->getService());
-        self::assertEquals('johndoe@example.com', $updatedConnection->getConnection()->getExternalId());
-        self::assertEquals('Acme, Inc.', $updatedConnection->getConnection()->getName());
-        self::assertEquals('0', $updatedConnection->getConnection()->getIsInternal());
-        self::assertEquals('1', $updatedConnection->getConnection()->getStatus());
-        self::assertEquals('0', $updatedConnection->getConnection()->getSyncStatus());
-        self::assertEquals('http://foocorp.net/i/path3523.png', $updatedConnection->getConnection()->getLogoUrl());
-        self::assertEquals('http://example.com/', $updatedConnection->getConnection()->getLinkUrl());
-        self::assertEquals('2017-02-02T14:56:05-06:00', $updatedConnection->getConnection()->getCreatedAt());
-        self::assertEquals('2017-02-03T15:54:51-06:00', $updatedConnection->getConnection()->getUpdatedAt());
-        self::assertCount(1, $updatedConnection->getConnection()->getLinks());
-        self::assertEquals(2, $updatedConnection->getConnection()->getId());
+        self::assertEquals(2, $updatedConnection->getResourceResponse()->getId());
     }
 
     public function test_it_removes_connection_on_active_campaign(): void

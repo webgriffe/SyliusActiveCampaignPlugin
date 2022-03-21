@@ -42,14 +42,7 @@ final class ActiveCampaignContactClientTest extends KernelTestCase
 
         self::assertNotNull($createdContact);
         self::assertInstanceOf(CreateContactResponse::class, $createdContact);
-        self::assertEquals(113, $createdContact->getContact()->getId());
-        self::assertEquals('johndoe@example.com', $createdContact->getContact()->getEmail());
-        self::assertEquals('2018-09-28T13:50:41-05:00', $createdContact->getContact()->getCreatedAt());
-        self::assertEquals('2018-09-28T13:50:41-05:00', $createdContact->getContact()->getUpdatedAt());
-        self::assertCount(2, $createdContact->getFieldValues());
-        self::assertCount(16, $createdContact->getContact()->getLinks());
-        self::assertEquals('', $createdContact->getContact()->getOrganization());
-        self::assertEquals('', $createdContact->getContact()->getOrganizationId());
+        self::assertEquals(113, $createdContact->getResourceResponse()->getId());
     }
 
     public function test_it_updates_contact_on_active_campaign(): void
@@ -69,38 +62,7 @@ final class ActiveCampaignContactClientTest extends KernelTestCase
 
         self::assertNotNull($updatedContact);
         self::assertInstanceOf(UpdateContactResponse::class, $updatedContact);
-        self::assertCount(2, $updatedContact->getFieldValues());
-        self::assertEquals(113, $updatedContact->getContact()->getId());
-        self::assertEquals('2018-09-28T13:50:41-05:00', $updatedContact->getContact()->getCreatedAt());
-        self::assertEquals('johndoe@example.com', $updatedContact->getContact()->getEmail());
-        self::assertEquals('', $updatedContact->getContact()->getPhone());
-        self::assertEquals('John', $updatedContact->getContact()->getFirstName());
-        self::assertEquals('Doe', $updatedContact->getContact()->getLastName());
-        self::assertEquals('0', $updatedContact->getContact()->getOrganizationId());
-        self::assertEquals('', $updatedContact->getContact()->getSegmentioId());
-        self::assertEquals('0', $updatedContact->getContact()->getBouncedHard());
-        self::assertEquals('0', $updatedContact->getContact()->getBouncedSoft());
-        self::assertEquals('0', $updatedContact->getContact()->getIp());
-        self::assertEquals('8309146b50af1ed5f9cb40c7465a0315', $updatedContact->getContact()->getHash());
-        self::assertEquals('', $updatedContact->getContact()->getEmailLocal());
-        self::assertEquals('', $updatedContact->getContact()->getEmailDomain());
-        self::assertEquals('0', $updatedContact->getContact()->getSentCnt());
-        self::assertEquals('0', $updatedContact->getContact()->getGravatar());
-        self::assertEquals('0', $updatedContact->getContact()->getDeleted());
-        self::assertEquals('0', $updatedContact->getContact()->getAnonymized());
-        self::assertEquals('2018-09-28T13:55:59-05:00', $updatedContact->getContact()->getUpdatedAt());
-        self::assertEquals('2018-09-28 13:50:41', $updatedContact->getContact()->getCreatedAtUTCTimestamp());
-        self::assertEquals('2018-09-28 13:50:41', $updatedContact->getContact()->getUpdatedAtUTCTimestamp());
-        self::assertCount(16, $updatedContact->getContact()->getLinks());
-        self::assertEquals(113, $updatedContact->getContact()->getId());
-        self::assertNull($updatedContact->getContact()->getBouncedDate());
-        self::assertNull($updatedContact->getContact()->getUa());
-        self::assertNull($updatedContact->getContact()->getSocialDataLastCheck());
-        self::assertNull($updatedContact->getContact()->getRatingTimestamp());
-        self::assertNull($updatedContact->getContact()->getADate());
-        self::assertNull($updatedContact->getContact()->getEDate());
-        self::assertNull($updatedContact->getContact()->getDeletedAt());
-        self::assertNull($updatedContact->getContact()->getOrganization());
+        self::assertEquals(113, $updatedContact->getResourceResponse()->getId());
     }
 
     public function test_it_removes_contact_on_active_campaign(): void

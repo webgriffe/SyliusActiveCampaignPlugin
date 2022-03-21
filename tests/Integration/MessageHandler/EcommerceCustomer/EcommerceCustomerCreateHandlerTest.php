@@ -15,7 +15,7 @@ use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Sylius\Component\Currency\Model\Currency;
 use Sylius\Component\Locale\Model\Locale;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\ActiveCampaignResourceClientStub;
+use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\ActiveCampaignContactClientStub;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceCustomer\EcommerceCustomerCreateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
@@ -43,7 +43,7 @@ final class EcommerceCustomerCreateHandlerTest extends KernelTestCase
 
         $this->ecommerceCustomerCreateHandler = new EcommerceCustomerCreateHandler(
             self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.mapper.ecommerce_customer'),
-            new ActiveCampaignResourceClientStub(),
+            new ActiveCampaignContactClientStub(),
             $this->customerRepository,
             $this->channelRepository
         );

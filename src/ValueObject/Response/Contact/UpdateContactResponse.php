@@ -9,24 +9,9 @@ use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResp
 
 final class UpdateContactResponse implements UpdateResourceResponseInterface
 {
-    /**
-     * @param FieldValueResponse[] $fieldValues
-     */
     public function __construct(
-        private array $fieldValues,
-        private UpdateContactContactResponse $contact
+        private ContactResponse $contact
     ) {
-    }
-
-    /** @return FieldValueResponse[] */
-    public function getFieldValues(): array
-    {
-        return $this->fieldValues;
-    }
-
-    public function getContact(): UpdateContactContactResponse
-    {
-        return $this->contact;
     }
 
     public function getResourceResponse(): ResourceResponseInterface

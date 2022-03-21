@@ -7,19 +7,21 @@ namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub;
 use RuntimeException;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ResourceInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\ConnectionResponse;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\CreateConnectionResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ContactResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\CreateContactResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\UpdateContactContactResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\UpdateContactResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 
-final class ActiveCampaignConnectionClientStub implements ActiveCampaignResourceClientInterface
+final class ActiveCampaignContactClientStub implements ActiveCampaignResourceClientInterface
 {
-    public int $activeCampaignResourceId = 1;
+    public int $activeCampaignResourceId = 1234;
 
     public function create(ResourceInterface $resource): CreateResourceResponseInterface
     {
-        return new CreateConnectionResponse(
-            new ConnectionResponse(
+        return new CreateContactResponse(
+            new ContactResponse(
                 $this->activeCampaignResourceId
             )
         );
