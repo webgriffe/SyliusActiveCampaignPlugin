@@ -9,8 +9,8 @@ use App\Entity\Customer\CustomerInterface;
 use InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
-use Sylius\Component\Core\Model\CustomerInterface as SyliusCustomerInterface;
 use Sylius\Component\Core\Model\ChannelInterface as SyliusChannelInterface;
+use Sylius\Component\Core\Model\CustomerInterface as SyliusCustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceCustomerMapperInterface;
@@ -18,8 +18,8 @@ use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCust
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceCustomer\EcommerceCustomerCreateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceCustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\CreateEcommerceCustomerEcomCustomerResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\CreateEcommerceCustomerResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\EcommerceCustomerResponse;
 
 final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
 {
@@ -109,7 +109,7 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
         $activeCampaignClient->create($ecommerceCustomer)->shouldBeCalledOnce()
             ->willReturn(
                 new CreateEcommerceCustomerResponse(
-                    new CreateEcommerceCustomerEcomCustomerResponse('1', '1005', 'info@activecampaign.com', [], 3423, '1')
+                    new EcommerceCustomerResponse(3423)
                 )
             );
         $customer->setActiveCampaignId(3423)->shouldBeCalledOnce();
