@@ -8,7 +8,7 @@ use RuntimeException;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ResourceInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\CreateEcommerceOrderEcommerceOrderResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\EcommerceOrderResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\CreateEcommerceOrderResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 
@@ -19,7 +19,7 @@ final class ActiveCampaignEcommerceOrderClientStub implements ActiveCampaignReso
     public function create(ResourceInterface $resource): CreateResourceResponseInterface
     {
         return new CreateEcommerceOrderResponse(
-            new CreateEcommerceOrderEcommerceOrderResponse(
+            new EcommerceOrderResponse(
                 $this->activeCampaignResourceId
             )
         );

@@ -6,4 +6,5 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response;
 
 interface CreateResourceResponseInterface
 {
+    public function getResourceResponse(): ResourceResponseInterface;
 }
