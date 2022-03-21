@@ -13,8 +13,6 @@ use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInte
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceCustomerMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
-use Webmozart\Assert\Assert;
 
 final class EcommerceCustomerCreateHandler
 {
@@ -52,9 +50,7 @@ final class EcommerceCustomerCreateHandler
         if ($activeCampaignId !== null) {
             throw new InvalidArgumentException(sprintf('The Customer with id "%s" has been already created on ActiveCampaign on the EcommerceCustomer with id "%s"', $customerId, $activeCampaignId));
         }
-
         $response = $this->activeCampaignClient->create($this->ecommerceCustomerMapper->mapFromCustomerAndChannel($customer, $channel));
-        Assert::isInstanceOf($response, CreateResourceResponseInterface::class);
         $customer->setActiveCampaignId($response->getResourceResponse()->getId());
         $this->customerRepository->add($customer);
     }

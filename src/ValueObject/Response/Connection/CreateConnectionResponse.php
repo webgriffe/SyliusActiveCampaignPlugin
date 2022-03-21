@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection;
 
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseInterface;
 
 final class CreateConnectionResponse implements CreateResourceResponseInterface
 {
@@ -14,6 +15,11 @@ final class CreateConnectionResponse implements CreateResourceResponseInterface
     }
 
     public function getConnection(): CreateConnectionConnectionResponse
+    {
+        return $this->connection;
+    }
+
+    public function getResourceResponse(): ResourceResponseInterface
     {
         return $this->connection;
     }

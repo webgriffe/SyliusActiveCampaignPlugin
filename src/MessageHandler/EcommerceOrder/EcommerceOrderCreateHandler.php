@@ -11,9 +11,6 @@ use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInte
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\CreateEcommerceOrderResponse;
-use Webmozart\Assert\Assert;
 
 final class EcommerceOrderCreateHandler
 {
@@ -40,10 +37,8 @@ final class EcommerceOrderCreateHandler
         if ($activeCampaignId !== null) {
             throw new InvalidArgumentException(sprintf('The Order with id "%s" has been already created on ActiveCampaign on the ecommerce order with id "%s"', $orderId, $activeCampaignId));
         }
-        /** @var CreateResourceResponseInterface|CreateEcommerceOrderResponse $response */
         $response = $this->activeCampaignEcommerceOrderClient->create($this->ecommerceOrderMapper->mapFromOrder($order, $message->isInRealTime()));
-        Assert::isInstanceOf($response, CreateEcommerceOrderResponse::class);
-        $order->setActiveCampaignId($response->getOrder()->getId());
+        $order->setActiveCampaignId($response->getResourceResponse()->getId());
         $this->orderRepository->add($order);
     }
 }

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection;
 
-final class CreateConnectionConnectionResponse
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseInterface;
+
+final class CreateConnectionConnectionResponse implements ResourceResponseInterface
 {
     /** @param array<string, string> $links */
     public function __construct(

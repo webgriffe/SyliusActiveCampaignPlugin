@@ -9,8 +9,8 @@ use App\Entity\Customer\CustomerInterface;
 use InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
-use Sylius\Component\Core\Model\ChannelInterface as SyliusChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface as SyliusCustomerInterface;
+use Sylius\Component\Core\Model\ChannelInterface as SyliusChannelInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceCustomerMapperInterface;
@@ -18,8 +18,8 @@ use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCust
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceCustomer\EcommerceCustomerCreateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceCustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\CreateEcommerceCustomerResponse;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\EcommerceCustomerResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseInterface;
 
 final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
 {
@@ -105,13 +105,12 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
         CustomerInterface $customer,
         CustomerRepositoryInterface $customerRepository,
         EcommerceCustomerInterface $ecommerceCustomer,
+        CreateResourceResponseInterface $createEcommerceCustomerResponse,
+        ResourceResponseInterface $ecommerceCustomerResponse
     ): void {
-        $activeCampaignClient->create($ecommerceCustomer)->shouldBeCalledOnce()
-            ->willReturn(
-                new CreateEcommerceCustomerResponse(
-                    new EcommerceCustomerResponse(3423)
-                )
-            );
+        $ecommerceCustomerResponse->getId()->willReturn(3423);
+        $createEcommerceCustomerResponse->getResourceResponse()->willReturn($ecommerceCustomerResponse);
+        $activeCampaignClient->create($ecommerceCustomer)->shouldBeCalledOnce()->willReturn($createEcommerceCustomerResponse);
         $customer->setActiveCampaignId(3423)->shouldBeCalledOnce();
         $customerRepository->add($customer)->shouldBeCalledOnce();
 

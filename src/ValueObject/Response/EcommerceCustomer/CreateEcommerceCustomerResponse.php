@@ -18,4 +18,9 @@ final class CreateEcommerceCustomerResponse implements CreateResourceResponseInt
     {
         return $this->ecomCustomerResponse;
     }
+
+    public function getResourceResponse(): ResourceResponseInterface
+    {
+        return $this->ecomCustomerResponse;
+    }
 }

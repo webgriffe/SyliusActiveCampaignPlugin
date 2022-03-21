@@ -11,9 +11,6 @@ use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInte
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ConnectionMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\CreateConnectionResponse;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
-use Webmozart\Assert\Assert;
 
 final class ConnectionCreateHandler
 {
@@ -40,10 +37,8 @@ final class ConnectionCreateHandler
         if ($activeCampaignId !== null) {
             throw new InvalidArgumentException(sprintf('The Channel with id "%s" has been already created on ActiveCampaign on the connection with id "%s"', $channelId, $activeCampaignId));
         }
-        /** @var CreateResourceResponseInterface|CreateConnectionResponse $response */
-        $response = $this->activeCampaignConnectionClient->create($this->connectionMapper->mapFromChannel($channel));
-        Assert::isInstanceOf($response, CreateConnectionResponse::class);
-        $channel->setActiveCampaignId($response->getConnection()->getId());
+        $createConnectionResponse = $this->activeCampaignConnectionClient->create($this->connectionMapper->mapFromChannel($channel));
+        $channel->setActiveCampaignId($createConnectionResponse->getResourceResponse()->getId());
         $this->channelRepository->add($channel);
     }
 }

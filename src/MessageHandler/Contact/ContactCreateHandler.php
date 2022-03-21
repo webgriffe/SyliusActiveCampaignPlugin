@@ -11,9 +11,6 @@ use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInte
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\CreateContactResponse;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
-use Webmozart\Assert\Assert;
 
 final class ContactCreateHandler
 {
@@ -40,10 +37,8 @@ final class ContactCreateHandler
         if ($activeCampaignId !== null) {
             throw new InvalidArgumentException(sprintf('The Customer with id "%s" has been already created on ActiveCampaign on the contact with id "%s"', $customerId, $activeCampaignId));
         }
-        /** @var CreateResourceResponseInterface|CreateContactResponse $response */
-        $response = $this->activeCampaignContactClient->create($this->contactMapper->mapFromCustomer($customer));
-        Assert::isInstanceOf($response, CreateContactResponse::class);
-        $customer->setActiveCampaignId($response->getContact()->getId());
+        $createContactResponse = $this->activeCampaignContactClient->create($this->contactMapper->mapFromCustomer($customer));
+        $customer->setActiveCampaignId($createContactResponse->getResourceResponse()->getId());
         $this->customerRepository->add($customer);
     }
 }

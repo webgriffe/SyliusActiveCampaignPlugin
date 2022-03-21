@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact;
 
-final class UpdateContactContactResponse
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseInterface;
+
+final class UpdateContactContactResponse implements ResourceResponseInterface
 {
     /**
      * @param array<string, string> $links

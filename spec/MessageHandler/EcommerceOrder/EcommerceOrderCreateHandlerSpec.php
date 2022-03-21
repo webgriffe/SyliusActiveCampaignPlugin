@@ -15,8 +15,8 @@ use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceOrder\Ecommerce
 use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\EcommerceOrderResponse;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\CreateEcommerceOrderResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseInterface;
 
 class EcommerceOrderCreateHandlerSpec extends ObjectBehavior
 {
@@ -76,9 +76,13 @@ class EcommerceOrderCreateHandlerSpec extends ObjectBehavior
         EcommerceOrderInterface $ecommerceOrder,
         ActiveCampaignResourceClientInterface $activeCampaignEcommerceOrderClient,
         OrderInterface $order,
-        OrderRepositoryInterface $orderRepository
+        OrderRepositoryInterface $orderRepository,
+        CreateResourceResponseInterface $createEcommerceOrderResponse,
+        ResourceResponseInterface $ecommerceOrderResponse
     ): void {
-        $activeCampaignEcommerceOrderClient->create($ecommerceOrder)->shouldBeCalledOnce()->willReturn(new CreateEcommerceOrderResponse(new EcommerceOrderResponse(432)));
+        $ecommerceOrderResponse->getId()->willReturn(432);
+        $createEcommerceOrderResponse->getResourceResponse()->willReturn($ecommerceOrderResponse);
+        $activeCampaignEcommerceOrderClient->create($ecommerceOrder)->shouldBeCalledOnce()->willReturn($createEcommerceOrderResponse);
         $order->setActiveCampaignId(432)->shouldBeCalledOnce();
         $orderRepository->add($order)->shouldBeCalledOnce();
 

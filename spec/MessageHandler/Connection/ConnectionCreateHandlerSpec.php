@@ -15,8 +15,8 @@ use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Connection\ConnectionCre
 use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ConnectionInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\CreateConnectionConnectionResponse;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\CreateConnectionResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseInterface;
 
 class ConnectionCreateHandlerSpec extends ObjectBehavior
 {
@@ -76,9 +76,13 @@ class ConnectionCreateHandlerSpec extends ObjectBehavior
         ConnectionInterface $connection,
         ActiveCampaignResourceClientInterface $activeCampaignConnectionClient,
         ChannelInterface $channel,
-        ChannelRepositoryInterface $channelRepository
+        ChannelRepositoryInterface $channelRepository,
+        CreateResourceResponseInterface $createConnectionResponse,
+        ResourceResponseInterface $connectionResponse
     ): void {
-        $activeCampaignConnectionClient->create($connection)->shouldBeCalledOnce()->willReturn(new CreateConnectionResponse(new CreateConnectionConnectionResponse(0, 'sylius', 'sylius', 'sylius', '', '', 'today', 'today', [], 12)));
+        $connectionResponse->getId()->willReturn(12);
+        $createConnectionResponse->getResourceResponse()->willReturn($connectionResponse);
+        $activeCampaignConnectionClient->create($connection)->shouldBeCalledOnce()->willReturn($createConnectionResponse);
         $channel->setActiveCampaignId(12)->shouldBeCalledOnce();
         $channelRepository->add($channel)->shouldBeCalledOnce();
 
