@@ -10,7 +10,7 @@ use Sylius\Component\Resource\Model\ResourceInterface;
 /**
  * @template T of ResourceInterface
  */
-trait ActiveCampaignCustomerRepositoryTrait
+trait ActiveCampaignResourceRepositoryTrait
 {
     /** @return T|null */
     public function findOneToEnqueue(mixed $id): ?ResourceInterface
