@@ -19,5 +19,11 @@
             <argument type="service" id="messenger.default_bus"/>
             <tag name="kernel.event_subscriber"/>
         </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.event_subscriber.checkout"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\EventSubscriber\CheckoutSubscriber">
+            <argument type="service" id="messenger.default_bus"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
     </services>
 </container>

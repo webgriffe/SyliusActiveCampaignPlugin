@@ -44,6 +44,7 @@ final class OrderSubscriberTest extends AbstractEventDispatcherTest
         $message = $messages[0];
         $this->assertInstanceOf(EcommerceOrderCreate::class, $message->getMessage());
         $this->assertEquals($order->getId(), $message->getMessage()->getOrderId());
+        $this->assertFalse($message->getMessage()->isInRealTime());
     }
 
     public function test_that_it_updates_ecommerce_order_on_active_campaign(): void
@@ -59,6 +60,7 @@ final class OrderSubscriberTest extends AbstractEventDispatcherTest
         $this->assertInstanceOf(EcommerceOrderUpdate::class, $message->getMessage());
         $this->assertEquals($order->getId(), $message->getMessage()->getOrderId());
         $this->assertEquals($order->getActiveCampaignId(), $message->getMessage()->getActiveCampaignId());
+        $this->assertFalse($message->getMessage()->isInRealTime());
     }
 
     public function test_that_it_removes_ecommerce_order_on_active_campaign(): void
