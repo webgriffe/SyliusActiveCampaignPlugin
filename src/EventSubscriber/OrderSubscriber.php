@@ -9,6 +9,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderRemove;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 
@@ -24,6 +25,7 @@ final class OrderSubscriber implements EventSubscriberInterface
         return [
             'sylius.order.post_create' => ['createOrder'],
             'sylius.order.post_update' => ['updateOrder'],
+            'sylius.order.post_delete' => ['removeOrder'],
         ];
     }
 
@@ -65,5 +67,19 @@ final class OrderSubscriber implements EventSubscriberInterface
         }
 
         $this->messageBus->dispatch(new EcommerceOrderUpdate($orderId, $activeCampaignId, true));
+    }
+
+    public function removeOrder(GenericEvent $event): void
+    {
+        $customer = $event->getSubject();
+        if (!$customer instanceof ActiveCampaignAwareInterface) {
+            return;
+        }
+        $activeCampaignId = $customer->getActiveCampaignId();
+        if ($activeCampaignId === null) {
+            return;
+        }
+
+        $this->messageBus->dispatch(new EcommerceOrderRemove($activeCampaignId));
     }
 }

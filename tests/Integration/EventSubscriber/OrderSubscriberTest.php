@@ -16,9 +16,10 @@ use Sylius\Component\Locale\Model\Locale;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\InMemoryTransport;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderRemove;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderUpdate;
 
-final class EcommerceOrderSubscriberTest extends AbstractEventDispatcherTest
+final class OrderSubscriberTest extends AbstractEventDispatcherTest
 {
     private OrderRepositoryInterface $orderRepository;
 
@@ -59,6 +60,22 @@ final class EcommerceOrderSubscriberTest extends AbstractEventDispatcherTest
         $message = $messages[0];
         $this->assertInstanceOf(EcommerceOrderUpdate::class, $message->getMessage());
         $this->assertEquals($order->getId(), $message->getMessage()->getOrderId());
+        $this->assertEquals($order->getActiveCampaignId(), $message->getMessage()->getActiveCampaignId());
+    }
+
+    public function test_that_it_removes_ecommerce_order_on_active_campaign(): void
+    {
+        $order = $this->createOrder();
+        $order->setActiveCampaignId(15);
+        $this->orderRepository->add($order);
+        $this->eventDispatcher->dispatch(new ResourceControllerEvent($order), 'sylius.order.post_delete');
+        /** @var InMemoryTransport $transport */
+        $transport = self::getContainer()->get('messenger.transport.main');
+        /** @var Envelope[] $messages */
+        $messages = $transport->get();
+        $this->assertCount(1, $messages);
+        $message = $messages[0];
+        $this->assertInstanceOf(EcommerceOrderRemove::class, $message->getMessage());
         $this->assertEquals($order->getActiveCampaignId(), $message->getMessage()->getActiveCampaignId());
     }
 

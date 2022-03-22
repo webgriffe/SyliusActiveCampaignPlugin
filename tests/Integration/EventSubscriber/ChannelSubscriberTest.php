@@ -44,7 +44,7 @@ final class ChannelSubscriberTest extends AbstractEventDispatcherTest
         $this->assertEquals($channel->getId(), $message->getMessage()->getChannelId());
     }
 
-    public function test_that_it_updates_channel_on_active_campaign(): void
+    public function test_that_it_updates_connection_on_active_campaign(): void
     {
         $channel = $this->createChannel();
         $channel->setActiveCampaignId(15);
@@ -61,7 +61,7 @@ final class ChannelSubscriberTest extends AbstractEventDispatcherTest
         $this->assertEquals($channel->getActiveCampaignId(), $message->getMessage()->getActiveCampaignId());
     }
 
-    public function test_that_it_removes_channel_on_active_campaign(): void
+    public function test_that_it_removes_connection_on_active_campaign(): void
     {
         $channel = $this->createChannel();
         $channel->setActiveCampaignId(15);
