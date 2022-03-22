@@ -8,3 +8,6 @@ framework:
             'Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionCreate': main
             'Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionUpdate': main
             'Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionRemove': main
+
+            'Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderCreate': main
+            'Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderUpdate': main
