@@ -71,5 +71,13 @@
             <argument type="service" id="sylius.repository.order"/>
             <tag name="messenger.message_handler"/>
         </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.message_handler.ecommerce_order.update"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceOrder\EcommerceOrderUpdateHandler">
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.mapper.ecommerce_order"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.ecommerce_order"/>
+            <argument type="service" id="sylius.repository.order"/>
+            <tag name="messenger.message_handler"/>
+        </service>
     </services>
 </container>
