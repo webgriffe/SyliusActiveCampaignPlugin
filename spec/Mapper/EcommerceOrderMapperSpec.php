@@ -57,6 +57,7 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
 
         $order->getCustomer()->willReturn($customer);
         $order->getChannel()->willReturn($channel);
+        $order->getState()->willReturn(OrderInterface::STATE_NEW);
         $order->getLocaleCode()->willReturn('en_US');
         $order->getCurrencyCode()->willReturn('EUR');
         $order->getCreatedAt()->willReturn(new DateTime('2022-03-18'));
@@ -96,8 +97,8 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
 
         $ecommerceOrderFactory->createNew(
             'info@activecampaign.org',
-            1,
-            432,
+            '1',
+            '432',
             'EUR',
             15450,
             Argument::type(DateTimeInterface::class),
@@ -229,5 +230,26 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
         $ecommerceOrder->setSource(EcommerceOrderInterface::HISTORICAL_SOURCE_CODE)->shouldBeCalledOnce();
 
         $this->mapFromOrder($order, false)->shouldReturn($ecommerceOrder);
+    }
+
+    public function it_maps_ecommerce_abandoned_cart_from_order(
+        OrderInterface $order,
+        EcommerceOrderInterface $ecommerceOrder,
+        EcommerceOrderFactoryInterface $ecommerceOrderFactory
+    ): void {
+        $order->getState()->willReturn(OrderInterface::STATE_CART);
+        $ecommerceOrderFactory->createNew(
+            'info@activecampaign.org',
+            '1',
+            '432',
+            'EUR',
+            15450,
+            Argument::type(DateTimeInterface::class),
+            null,
+            '125',
+            Argument::type(DateTimeInterface::class),
+        )->willReturn($ecommerceOrder);
+
+        $this->mapFromOrder($order, true)->shouldReturn($ecommerceOrder);
     }
 }

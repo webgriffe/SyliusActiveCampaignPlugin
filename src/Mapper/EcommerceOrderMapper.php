@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Mapper;
 
+use DateTime;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
-use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\Component\Core\Model\OrderInterface as BaseOrderInterface;
 use Sylius\Component\Core\Model\ShipmentInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderFactoryInterface;
@@ -26,7 +27,7 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
     ) {
     }
 
-    public function mapFromOrder(OrderInterface $order, bool $isInRealTime): EcommerceOrderInterface
+    public function mapFromOrder(BaseOrderInterface $order, bool $isInRealTime): EcommerceOrderInterface
     {
         /** @var CustomerInterface|(CustomerInterface&ActiveCampaignAwareInterface)|null $customer */
         $customer = $order->getCustomer();
@@ -54,6 +55,11 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
         $orderId = $order->getId();
         Assert::notNull($orderId, 'The order id should not be null.');
 
+        $isCart = false;
+        if ($order->getState() === BaseOrderInterface::STATE_CART) {
+            $isCart = true;
+        }
+
         $ecommerceOrder = $this->ecommerceOrderFactory->createNew(
             $customerEmail,
             (string) $connectionId,
@@ -61,9 +67,9 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
             $currencyCode,
             $order->getTotal(),
             $createdAt,
-            (string) $orderId,
-            null,
-            null
+            !$isCart ? (string) $orderId : null,
+            $isCart ? (string) $orderId : null,
+            $isCart ? new DateTime('now') : null
         );
         if (!$isInRealTime) {
             $ecommerceOrder->setSource(EcommerceOrderInterface::HISTORICAL_SOURCE_CODE);
