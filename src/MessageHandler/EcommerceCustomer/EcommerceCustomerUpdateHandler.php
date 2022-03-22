@@ -50,6 +50,6 @@ final class EcommerceCustomerUpdateHandler
         if ($activeCampaignId !== $message->getActiveCampaignId()) {
             throw new InvalidArgumentException(sprintf('The Customer with id "%s" has an ActiveCampaign id that does not match. Expected "%s", given "%s".', $customerId, $message->getActiveCampaignId(), (string) $activeCampaignId));
         }
-        $this->activeCampaignClient->update($activeCampaignId, $this->ecommerceCustomerMapper->mapFromCustomerAndChannel($customer, $channel));
+        $this->activeCampaignClient->update($message->getActiveCampaignId(), $this->ecommerceCustomerMapper->mapFromCustomerAndChannel($customer, $channel));
     }
 }
