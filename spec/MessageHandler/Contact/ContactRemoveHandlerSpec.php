@@ -22,7 +22,7 @@ class ContactRemoveHandlerSpec extends ObjectBehavior
         $this->shouldBeAnInstanceOf(ContactRemoveHandler::class);
     }
 
-    public function it_updates_contact_on_active_campaign(
+    public function it_removes_contact_on_active_campaign(
         ActiveCampaignResourceClientInterface $activeCampaignContactClient,
     ): void {
         $activeCampaignContactClient->remove(1234)->shouldBeCalledOnce();

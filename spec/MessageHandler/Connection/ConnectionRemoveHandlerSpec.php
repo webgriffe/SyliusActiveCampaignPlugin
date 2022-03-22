@@ -22,7 +22,7 @@ class ConnectionRemoveHandlerSpec extends ObjectBehavior
         $this->shouldBeAnInstanceOf(ConnectionRemoveHandler::class);
     }
 
-    public function it_updates_contact_on_active_campaign(
+    public function it_removes_connection_on_active_campaign(
         ActiveCampaignResourceClientInterface $activeCampaignConnectionClient,
     ): void {
         $activeCampaignConnectionClient->remove(1)->shouldBeCalledOnce();
