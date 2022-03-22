@@ -44,7 +44,7 @@ final class OrderSubscriber implements EventSubscriberInterface
             $orderId = (string) $orderId;
         }
 
-        $this->messageBus->dispatch(new EcommerceOrderCreate($orderId, true));
+        $this->messageBus->dispatch(new EcommerceOrderCreate($orderId, false));
     }
 
     public function updateOrder(GenericEvent $event): void
@@ -66,7 +66,7 @@ final class OrderSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $this->messageBus->dispatch(new EcommerceOrderUpdate($orderId, $activeCampaignId, true));
+        $this->messageBus->dispatch(new EcommerceOrderUpdate($orderId, $activeCampaignId, false));
     }
 
     public function removeOrder(GenericEvent $event): void
