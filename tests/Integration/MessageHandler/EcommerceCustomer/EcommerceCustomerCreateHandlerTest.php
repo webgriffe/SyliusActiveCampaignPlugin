@@ -4,16 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Integration\MessageHandler\EcommerceCustomer;
 
-use App\Entity\Channel\Channel;
-use App\Entity\Channel\ChannelInterface;
-use App\Entity\Customer\Customer;
-use Doctrine\Common\DataFixtures\Purger\ORMPurger;
-use Doctrine\ORM\EntityManagerInterface;
+use Fidry\AliceDataFixtures\Persistence\PurgeMode;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
-use Sylius\Component\Currency\Model\Currency;
-use Sylius\Component\Locale\Model\Locale;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\ActiveCampaignEcommerceCustomerClientStub;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;
@@ -22,24 +16,25 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 
 final class EcommerceCustomerCreateHandlerTest extends KernelTestCase
 {
+    private const FIXTURE_BASE_DIR = __DIR__ . '/../../../DataFixtures/ORM/resources/MessageHandler/EcommerceCustomerCreateHandlerTest';
+
     private CustomerRepositoryInterface $customerRepository;
 
     private ChannelRepositoryInterface $channelRepository;
 
     private EcommerceCustomerCreateHandler $ecommerceCustomerCreateHandler;
 
-    private EntityManagerInterface $entityManager;
-
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->entityManager = self::getContainer()->get('doctrine.orm.entity_manager');
-        $purger = new ORMPurger($this->entityManager);
-        $purger->purge();
-
         $this->customerRepository = self::getContainer()->get('sylius.repository.customer');
         $this->channelRepository = self::getContainer()->get('sylius.repository.channel');
+
+        $fixtureLoader = self::getContainer()->get('fidry_alice_data_fixtures.loader.doctrine');
+        $fixtureLoader->load([
+            self::FIXTURE_BASE_DIR . '/channels.yaml',
+            self::FIXTURE_BASE_DIR . '/customers.yaml',
+        ], [], [], PurgeMode::createDeleteMode());
 
         // todo: it would be great to have only one stub for all resources
         $this->ecommerceCustomerCreateHandler = new EcommerceCustomerCreateHandler(
@@ -52,42 +47,12 @@ final class EcommerceCustomerCreateHandlerTest extends KernelTestCase
 
     public function test_that_it_creates_ecommerce_customer_on_active_campaign(): void
     {
-        $channel = $this->createChannel();
-        $customer = $this->createCustomer();
+        $channel = $this->channelRepository->findOneBy(['code' => 'fashion_shop']);
+        $customer = $this->customerRepository->findOneBy(['email' => 'jim@email.com']);
         $this->ecommerceCustomerCreateHandler->__invoke(new EcommerceCustomerCreate($customer->getId(), $channel->getId()));
 
         /** @var CustomerInterface&ActiveCampaignAwareInterface $customer */
         $customer = $this->customerRepository->find($customer->getId());
         $this->assertEquals(3423, $customer->getActiveCampaignId());
-    }
-
-    // todo: we should start using fixtures
-    private function createCustomer(): CustomerInterface
-    {
-        $customer = new Customer();
-        $customer->setEmail('info@activecampaign.com');
-        $this->customerRepository->add($customer);
-
-        return $customer;
-    }
-
-    private function createChannel(): ChannelInterface
-    {
-        $locale = new Locale();
-        $locale->setCode('en_US');
-        $this->entityManager->persist($locale);
-        $currency = new Currency();
-        $currency->setCode('EUR');
-        $this->entityManager->persist($currency);
-        $channel = new Channel();
-        $channel->setCode('ecommerce');
-        $channel->setName('E Commerce');
-        $channel->setTaxCalculationStrategy('order_items_based');
-        $channel->setDefaultLocale($locale);
-        $channel->setBaseCurrency($currency);
-        $channel->setActiveCampaignId(1);
-        $this->channelRepository->add($channel);
-
-        return $channel;
     }
 }

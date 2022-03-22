@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Integration\EventSubscriber;
 
-use App\Entity\Customer\Customer;
+use Fidry\AliceDataFixtures\Persistence\PurgeMode;
 use Sylius\Bundle\ResourceBundle\Event\ResourceControllerEvent;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Symfony\Component\Messenger\Envelope;
@@ -15,19 +15,24 @@ use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactUpdate;
 
 final class CustomerSubscriberTest extends AbstractEventDispatcherTest
 {
+    private const FIXTURE_BASE_DIR = __DIR__ . '/../../DataFixtures/ORM/resources/EventSubscriber/CustomerSubscriberTest';
+
     private CustomerRepositoryInterface $customerRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->customerRepository = self::getContainer()->get('sylius.repository.customer');
+
+        $fixtureLoader = self::getContainer()->get('fidry_alice_data_fixtures.loader.doctrine');
+        $fixtureLoader->load([
+            self::FIXTURE_BASE_DIR . '/customers.yaml',
+        ], [], [], PurgeMode::createDeleteMode());
     }
 
     public function test_that_it_creates_contact_on_active_campaign(): void
     {
-        $customer = new Customer();
-        $customer->setEmail('info@activecampaign.com');
-        $this->customerRepository->add($customer);
+        $customer = $this->customerRepository->findOneBy(['email' => 'jim@email.com']);
         $this->eventDispatcher->dispatch(new ResourceControllerEvent($customer), 'sylius.customer.post_create');
         /** @var InMemoryTransport $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
@@ -41,10 +46,7 @@ final class CustomerSubscriberTest extends AbstractEventDispatcherTest
 
     public function test_that_it_updates_contact_on_active_campaign(): void
     {
-        $customer = new Customer();
-        $customer->setEmail('info@activecampaign.com');
-        $customer->setActiveCampaignId(1234);
-        $this->customerRepository->add($customer);
+        $customer = $this->customerRepository->findOneBy(['email' => 'jim@email.com']);
         $this->eventDispatcher->dispatch(new ResourceControllerEvent($customer), 'sylius.customer.post_update');
         /** @var InMemoryTransport $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
@@ -59,10 +61,7 @@ final class CustomerSubscriberTest extends AbstractEventDispatcherTest
 
     public function test_that_it_removes_contact_on_active_campaign(): void
     {
-        $customer = new Customer();
-        $customer->setEmail('info@activecampaign.com');
-        $customer->setActiveCampaignId(1234);
-        $this->customerRepository->add($customer);
+        $customer = $this->customerRepository->findOneBy(['email' => 'jim@email.com']);
         $this->eventDispatcher->dispatch(new ResourceControllerEvent($customer), 'sylius.customer.post_delete');
         /** @var InMemoryTransport $transport */
         $transport = self::getContainer()->get('messenger.transport.main');

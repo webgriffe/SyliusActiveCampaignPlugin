@@ -1,0 +1,8 @@
+App\Entity\Order\Order:
+    order_1:
+        channel: '@fashion_shop'
+        number: '0001'
+        currency_code: 'EUR'
+        locale_code: 'en_US'
+        customer: '@customer_01'
+        activeCampaignId: 15

@@ -4,41 +4,31 @@ declare(strict_types=1);
 
 namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Integration\Command;
 
-use App\Entity\Channel\Channel;
-use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+use Fidry\AliceDataFixtures\Persistence\PurgeMode;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
-use Sylius\Component\Currency\Model\Currency;
-use Sylius\Component\Locale\Model\Locale;
 use Symfony\Component\Messenger\Envelope;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionCreate;
 
 final class EnqueueConnectionCommandTest extends AbstractCommandTest
 {
+    private const FIXTURE_BASE_DIR = __DIR__ . '/../../DataFixtures/ORM/resources/Command/EnqueueConnectionCommandTest';
+
     private ChannelRepositoryInterface $channelRepository;
-
-    private Locale $locale;
-
-    private Currency $currency;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $entityManager = self::getContainer()->get('doctrine.orm.entity_manager');
-        $purger = new ORMPurger($entityManager);
-        $purger->purge();
         $this->channelRepository = self::getContainer()->get('sylius.repository.channel');
 
-        $this->locale = new Locale();
-        $this->locale->setCode('en_US');
-        $entityManager->persist($this->locale);
-        $this->currency = new Currency();
-        $this->currency->setCode('EUR');
-        $entityManager->persist($this->currency);
+        $fixtureLoader = self::getContainer()->get('fidry_alice_data_fixtures.loader.doctrine');
+        $fixtureLoader->load([
+            self::FIXTURE_BASE_DIR . '/channels.yaml',
+        ], [], [], PurgeMode::createDeleteMode());
     }
 
     public function test_that_it_enqueues_connection(): void
     {
-        $channel = $this->createChannel();
+        $channel = $this->channelRepository->findOneBy(['code' => 'fashion_shop']);
         self::assertNotNull($channel->getId());
         $commandTester = $this->executeCommand([
             'channel-id' => $channel->getId(),
@@ -56,7 +46,7 @@ final class EnqueueConnectionCommandTest extends AbstractCommandTest
 
     public function test_that_it_enqueues_connection_interactively(): void
     {
-        $channel = $this->createChannel();
+        $channel = $this->channelRepository->findOneBy(['code' => 'fashion_shop']);
         self::assertNotNull($channel->getId());
         $commandTester = $this->executeCommand([], [
             $channel->getId(),
@@ -74,40 +64,27 @@ final class EnqueueConnectionCommandTest extends AbstractCommandTest
 
     public function test_that_it_enqueues_all_contacts(): void
     {
-        $firstChannel = $this->createChannel('ecommerce');
-        $secondChannel = $this->createChannel('support');
         $commandTester = $this->executeCommand([
             '--all' => true,
         ]);
         self::assertEquals(0, $commandTester->getStatusCode());
 
+        $fashionChannel = $this->channelRepository->findOneBy(['code' => 'fashion_shop']);
+        $digitalChannel = $this->channelRepository->findOneBy(['code' => 'digital_shop']);
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
         $this->assertCount(2, $messages);
         $message = $messages[0];
         $this->assertInstanceOf(ConnectionCreate::class, $message->getMessage());
-        $this->assertEquals($firstChannel->getId(), $message->getMessage()->getChannelId());
+        $this->assertEquals($fashionChannel->getId(), $message->getMessage()->getChannelId());
         $message = $messages[1];
         $this->assertInstanceOf(ConnectionCreate::class, $message->getMessage());
-        $this->assertEquals($secondChannel->getId(), $message->getMessage()->getChannelId());
+        $this->assertEquals($digitalChannel->getId(), $message->getMessage()->getChannelId());
     }
 
     protected function getCommandDefinition(): string
     {
         return 'webgriffe.sylius_active_campaign_plugin.command.enqueue_connection';
-    }
-
-    private function createChannel(string $code = 'ecommerce'): Channel
-    {
-        $channel = new Channel();
-        $channel->setCode($code);
-        $channel->setName('E Commerce');
-        $channel->setTaxCalculationStrategy('order_items_based');
-        $channel->setDefaultLocale($this->locale);
-        $channel->setBaseCurrency($this->currency);
-        $this->channelRepository->add($channel);
-
-        return $channel;
     }
 }

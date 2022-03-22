@@ -1,0 +1,6 @@
+App\Entity\Customer\Customer:
+    customer_01:
+        email: 'jim@email.com'
+        first_name: 'James'
+        last_name: 'Rodriguez'
+        activeCampaignId: 354

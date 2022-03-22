@@ -1,0 +1,5 @@
+App\Entity\Customer\Customer:
+    customer_jim:
+        email: 'jim@email.com'
+        first_name: 'James'
+        last_name: 'Rodriguez'

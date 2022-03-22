@@ -1,0 +1,18 @@
+App\Entity\Channel\Channel:
+    fashion_shop:
+        code: "fashion_shop"
+        name: "Fashion shop"
+        taxCalculationStrategy: "order_items_based"
+        defaultLocale: "@en_US"
+        baseCurrency: "@EUR"
+        activeCampaignId: 15
+
+Sylius\Component\Locale\Model\Locale:
+    en_US:
+        code: "en_US"
+    it_IT:
+        code: "it_IT"
+
+Sylius\Component\Currency\Model\Currency:
+    EUR:
+        code: "EUR"
