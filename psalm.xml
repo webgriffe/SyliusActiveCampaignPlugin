@@ -38,5 +38,10 @@
                 <file name="src/DependencyInjection/WebgriffeSyliusActiveCampaignExtension.php" />
             </errorLevel>
         </MixedArgument>
+        <UnusedMethodCall>
+            <errorLevel type="suppress">
+                <file name="src/DependencyInjection/WebgriffeSyliusActiveCampaignExtension.php" />
+            </errorLevel>
+        </UnusedMethodCall>
     </issueHandlers>
 </psalm>

@@ -1,3 +1,6 @@
+imports:
+    - { resource: "@WebgriffeSyliusActiveCampaignPlugin/Resources/config/app/config.yaml" }
+
 webgriffe_sylius_active_campaign:
     api_client:
         base_url: '%env(WEBGRIFFE_SYLIUS_ACTIVE_CAMPAIGN_PLUGIN_BASE_URL)%'

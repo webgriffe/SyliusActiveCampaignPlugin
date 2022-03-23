@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\DependencyInjection;
 
+use Sylius\Bundle\ResourceBundle\DependencyInjection\Extension\AbstractResourceExtension;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
-final class WebgriffeSyliusActiveCampaignExtension extends Extension
+final class WebgriffeSyliusActiveCampaignExtension extends AbstractResourceExtension
 {
     /**
      * @psalm-suppress UnusedVariable
@@ -20,6 +20,8 @@ final class WebgriffeSyliusActiveCampaignExtension extends Extension
         $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
         $fileLocator = new FileLocator(__DIR__ . '/../Resources/config');
         $loader = new XmlFileLoader($container, $fileLocator);
+
+        $this->registerResources('webgriffe_sylius_active_campaign', $config['driver'], $config['resources'], $container);
 
         $container->setParameter(
             'webgriffe.sylius_active_campaign_plugin.serializer.mapping.xml_file_path',
