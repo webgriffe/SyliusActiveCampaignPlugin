@@ -1,0 +1,32 @@
+App\Entity\Channel\Channel:
+    fashion_shop:
+        code: "fashion_shop"
+        name: "Fashion shop"
+        taxCalculationStrategy: "order_items_based"
+        defaultLocale: "@en_US"
+        baseCurrency: "@EUR"
+        enabled: true
+    digital_shop:
+        code: "digital_shop"
+        name: "Digital shop"
+        taxCalculationStrategy: "order_items_based"
+        defaultLocale: "@en_US"
+        baseCurrency: "@EUR"
+        enabled: true
+    disabled_shop:
+        code: "disabled_shop"
+        name: "Disabled shop"
+        taxCalculationStrategy: "order_items_based"
+        defaultLocale: "@en_US"
+        baseCurrency: "@EUR"
+        enabled: false
+
+Sylius\Component\Locale\Model\Locale:
+    en_US:
+        code: "en_US"
+    it_IT:
+        code: "it_IT"
+
+Sylius\Component\Currency\Model\Currency:
+    EUR:
+        code: "EUR"

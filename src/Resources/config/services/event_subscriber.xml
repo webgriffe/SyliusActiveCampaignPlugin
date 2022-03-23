@@ -5,6 +5,7 @@
         <service id="webgriffe.sylius_active_campaign_plugin.event_subscriber.customer"
                  class="Webgriffe\SyliusActiveCampaignPlugin\EventSubscriber\CustomerSubscriber">
             <argument type="service" id="messenger.default_bus"/>
+            <argument type="service" id="sylius.repository.channel"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 
