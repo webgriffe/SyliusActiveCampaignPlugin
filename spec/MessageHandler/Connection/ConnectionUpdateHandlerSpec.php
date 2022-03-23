@@ -61,7 +61,17 @@ class ConnectionUpdateHandlerSpec extends ObjectBehavior
         );
     }
 
-    public function it_throws_if_channel_has_has_a_different_id_on_active_campaign_than_the_message_provided(
+    public function it_throws_if_channel_has_not_been_exported_to_active_campaign_yet(
+        ActiveCampaignAwareInterface $channel
+    ): void {
+        $channel->getActiveCampaignId()->willReturn(null);
+
+        $this->shouldThrow(new InvalidArgumentException('The Channel with id "1" has an ActiveCampaign id that does not match. Expected "1", given "".'))->during(
+            '__invoke', [new ConnectionUpdate(1, 1)]
+        );
+    }
+
+    public function it_throws_if_channel_has_a_different_id_on_active_campaign_than_the_message_provided(
         ActiveCampaignAwareInterface $channel
     ): void {
         $channel->getActiveCampaignId()->willReturn(312);

@@ -6,6 +6,10 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign;
 
 interface EcommerceCustomerInterface extends ResourceInterface
 {
+    public const MARKETING_NOT_OPTED_IN = '0';
+
+    public const MARKETING_OPTED_IN = '1';
+
     public function getEmail(): string;
 
     public function setEmail(string $email): void;

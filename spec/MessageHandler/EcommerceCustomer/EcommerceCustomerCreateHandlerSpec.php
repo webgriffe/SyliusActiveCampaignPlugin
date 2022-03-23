@@ -53,7 +53,7 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
     ): void {
         $channelRepository->find(1)->shouldBeCalledOnce()->willReturn(null);
 
-        $this->shouldThrow(InvalidArgumentException::class)->during(
+        $this->shouldThrow(new InvalidArgumentException('Channel with id "1" does not exists'))->during(
             '__invoke', [new EcommerceCustomerCreate(12, 1)]
         );
     }
@@ -64,7 +64,7 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
     ): void {
         $channelRepository->find(1)->shouldBeCalledOnce()->willReturn($syliusChannel);
 
-        $this->shouldThrow(InvalidArgumentException::class)->during(
+        $this->shouldThrow(new InvalidArgumentException('The Channel entity should implement the "Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface" class'))->during(
             '__invoke', [new EcommerceCustomerCreate(12, 1)]
         );
     }
@@ -74,7 +74,7 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
     ): void {
         $customerRepository->find(12)->shouldBeCalledOnce()->willReturn(null);
 
-        $this->shouldThrow(InvalidArgumentException::class)->during(
+        $this->shouldThrow(new InvalidArgumentException('Customer with id "12" does not exists'))->during(
             '__invoke', [new EcommerceCustomerCreate(12, 1)]
         );
     }
@@ -85,7 +85,7 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
     ): void {
         $customerRepository->find(12)->shouldBeCalledOnce()->willReturn($syliusCustomer);
 
-        $this->shouldThrow(InvalidArgumentException::class)->during(
+        $this->shouldThrow(new InvalidArgumentException('The Customer entity should implement the "Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface" class'))->during(
             '__invoke', [new EcommerceCustomerCreate(12, 1)]
         );
     }
@@ -95,7 +95,7 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
     ): void {
         $customer->getActiveCampaignId()->willReturn('321');
 
-        $this->shouldThrow(InvalidArgumentException::class)->during(
+        $this->shouldThrow(new InvalidArgumentException('The Customer with id "12" has been already created on ActiveCampaign on the EcommerceCustomer with id "321"'))->during(
             '__invoke', [new EcommerceCustomerCreate(12, 1)]
         );
     }

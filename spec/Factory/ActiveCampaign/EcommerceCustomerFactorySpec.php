@@ -31,7 +31,7 @@ class EcommerceCustomerFactorySpec extends ObjectBehavior
         $this->createNew('info@domain.org', '10', '512')->shouldReturnAnInstanceOf(EcommerceCustomerInterface::class);
     }
 
-    public function it_should_returns_an_active_campaign_ecommerce_customer_with_email(): void
+    public function it_should_returns_an_active_campaign_ecommerce_customer_with_data(): void
     {
         $result = $this->createNew('info@domain.org', '10', '512');
         $result->getEmail()->shouldReturn('info@domain.org');

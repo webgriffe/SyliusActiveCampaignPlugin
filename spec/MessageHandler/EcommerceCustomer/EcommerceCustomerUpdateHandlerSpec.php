@@ -18,7 +18,6 @@ use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCust
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceCustomer\EcommerceCustomerUpdateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceCustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 
 final class EcommerceCustomerUpdateHandlerSpec extends ObjectBehavior
@@ -53,7 +52,7 @@ final class EcommerceCustomerUpdateHandlerSpec extends ObjectBehavior
     ): void {
         $channelRepository->find(1)->shouldBeCalledOnce()->willReturn(null);
 
-        $this->shouldThrow(InvalidArgumentException::class)->during(
+        $this->shouldThrow(new InvalidArgumentException('Channel with id "1" does not exists'))->during(
             '__invoke', [new EcommerceCustomerUpdate(12, 3423, 1)]
         );
     }
@@ -64,7 +63,7 @@ final class EcommerceCustomerUpdateHandlerSpec extends ObjectBehavior
     ): void {
         $channelRepository->find(1)->shouldBeCalledOnce()->willReturn($syliusChannel);
 
-        $this->shouldThrow(InvalidArgumentException::class)->during(
+        $this->shouldThrow(new InvalidArgumentException('The Channel entity should implement the "Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface" class'))->during(
             '__invoke', [new EcommerceCustomerUpdate(12, 3423, 1)]
         );
     }
@@ -74,7 +73,7 @@ final class EcommerceCustomerUpdateHandlerSpec extends ObjectBehavior
     ): void {
         $customerRepository->find(12)->shouldBeCalledOnce()->willReturn(null);
 
-        $this->shouldThrow(InvalidArgumentException::class)->during(
+        $this->shouldThrow(new InvalidArgumentException('Customer with id "12" does not exists'))->during(
             '__invoke', [new EcommerceCustomerUpdate(12, 3423, 1)]
         );
     }
@@ -85,7 +84,7 @@ final class EcommerceCustomerUpdateHandlerSpec extends ObjectBehavior
     ): void {
         $customerRepository->find(12)->shouldBeCalledOnce()->willReturn($syliusCustomer);
 
-        $this->shouldThrow(InvalidArgumentException::class)->during(
+        $this->shouldThrow(new InvalidArgumentException('The Customer entity should implement the "Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface" class'))->during(
             '__invoke', [new EcommerceCustomerUpdate(12, 3423, 1)]
         );
     }
@@ -95,7 +94,7 @@ final class EcommerceCustomerUpdateHandlerSpec extends ObjectBehavior
     ): void {
         $customer->getActiveCampaignId()->willReturn(null);
 
-        $this->shouldThrow(InvalidArgumentException::class)->during(
+        $this->shouldThrow(new InvalidArgumentException('The Customer with id "12" has an ActiveCampaign id that does not match. Expected "3423", given "".'))->during(
             '__invoke', [new EcommerceCustomerUpdate(12, 3423, 1)]
         );
     }
@@ -103,17 +102,15 @@ final class EcommerceCustomerUpdateHandlerSpec extends ObjectBehavior
     public function it_throws_if_customer_has_an_active_campaign_id_that_differs_from_the_one_on_the_message(
         ActiveCampaignAwareInterface $customer
     ): void {
-        $customer->getActiveCampaignId()->willReturn(null);
+        $customer->getActiveCampaignId()->willReturn(432);
 
-        $this->shouldThrow(InvalidArgumentException::class)->during(
-            '__invoke', [new EcommerceCustomerUpdate(12, 9999, 1)]
+        $this->shouldThrow(new InvalidArgumentException('The Customer with id "12" has an ActiveCampaign id that does not match. Expected "3423", given "432".'))->during(
+            '__invoke', [new EcommerceCustomerUpdate(12, 3423, 1)]
         );
     }
 
     public function it_updates_ecommerce_customer_on_active_campaign(
         ActiveCampaignResourceClientInterface $activeCampaignClient,
-        CustomerInterface $customer,
-        CustomerRepositoryInterface $customerRepository,
         EcommerceCustomerInterface $ecommerceCustomer,
         UpdateResourceResponseInterface $updateEcommerceCustomerResponse
     ): void {

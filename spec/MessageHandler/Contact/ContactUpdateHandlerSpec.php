@@ -61,7 +61,17 @@ class ContactUpdateHandlerSpec extends ObjectBehavior
         );
     }
 
-    public function it_throws_if_customer_has_has_a_different_id_on_active_campaign_than_the_message_provided(
+    public function it_throws_if_customer_has_not_been_exported_to_active_campaign_yet(
+        ActiveCampaignAwareInterface $customer
+    ): void {
+        $customer->getActiveCampaignId()->willReturn(null);
+
+        $this->shouldThrow(new InvalidArgumentException('The Customer with id "12" has an ActiveCampaign id that does not match. Expected "1234", given "".'))->during(
+            '__invoke', [new ContactUpdate(12, 1234)]
+        );
+    }
+
+    public function it_throws_if_customer_has_a_different_id_on_active_campaign_than_the_message_provided(
         ActiveCampaignAwareInterface $customer
     ): void {
         $customer->getActiveCampaignId()->willReturn('321');

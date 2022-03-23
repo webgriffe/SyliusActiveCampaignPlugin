@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Mapper;
 
+use App\Entity\Channel\ChannelInterface;
 use PhpSpec\ObjectBehavior;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Exception\ChannelConnectionNotSetException;
@@ -20,7 +21,7 @@ class EcommerceCustomerMapperSpec extends ObjectBehavior
         EcommerceCustomerFactoryInterface $factory,
         CustomerInterface $customer,
         EcommerceCustomerInterface $ecommerceCustomer,
-        ActiveCampaignAwareInterface $channel
+        ChannelInterface $channel
     ): void {
         $channel->getActiveCampaignId()->willReturn('10');
 
@@ -38,17 +39,18 @@ class EcommerceCustomerMapperSpec extends ObjectBehavior
         $this->shouldBeAnInstanceOf(EcommerceCustomerMapper::class);
     }
 
-    public function it_implements_contact_mapper_interface(): void
+    public function it_implements_ecommerce_customer_mapper_interface(): void
     {
         $this->shouldImplement(EcommerceCustomerMapperInterface::class);
     }
 
-    public function it_throws_if_channel_does_not_have_an_active_campaign_id(CustomerInterface $customer, ActiveCampaignAwareInterface $channel): void
+    public function it_throws_if_channel_does_not_have_an_active_campaign_id(CustomerInterface $customer, ChannelInterface $channel): void
     {
         $channel->getActiveCampaignId()->willReturn(null);
+        $channel->getCode()->shouldBeCalledOnce()->willReturn('ecommerce');
 
         $this
-            ->shouldThrow(ChannelConnectionNotSetException::class)
+            ->shouldThrow(new ChannelConnectionNotSetException('Unable to create a new ActiveCampaign Ecommerce Customer, the channel "ecommerce" does not have a connection id.'))
             ->during('mapFromCustomerAndChannel', [$customer, $channel]);
     }
 
@@ -57,19 +59,19 @@ class EcommerceCustomerMapperSpec extends ObjectBehavior
         $customer->getEmail()->willReturn(null);
 
         $this
-            ->shouldThrow(CustomerDoesNotHaveEmailException::class)
+            ->shouldThrow(new CustomerDoesNotHaveEmailException('Unable to create a new ActiveCampaign Ecommerce Customer, the customer "512" does not have a valid email.'))
             ->during('mapFromCustomerAndChannel', [$customer, $channel]);
     }
 
-    public function it_returns_an_instance_of_active_campaign_contact(CustomerInterface $customer, ActiveCampaignAwareInterface $channel): void
+    public function it_returns_an_instance_of_active_campaign_ecommerce_customer(CustomerInterface $customer, ChannelInterface $channel): void
     {
         $this->mapFromCustomerAndChannel($customer, $channel)->shouldReturnAnInstanceOf(EcommerceCustomerInterface::class);
     }
 
-    public function it_returns_an_active_campaign_contact_mapped_by_customer(
+    public function it_returns_an_active_campaign_ecommerce_mapped_by_customer_and_channel(
         CustomerInterface $customer,
         EcommerceCustomerInterface $ecommerceCustomer,
-        ActiveCampaignAwareInterface $channel
+        ChannelInterface $channel
     ): void {
         $customer->isSubscribedToNewsletter()->willReturn(true);
         $ecommerceCustomer->setAcceptsMarketing('1')->shouldBeCalledOnce();

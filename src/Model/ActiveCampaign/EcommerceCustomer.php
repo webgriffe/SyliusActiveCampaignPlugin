@@ -10,7 +10,7 @@ final class EcommerceCustomer implements EcommerceCustomerInterface
         private string $email,
         private string $connectionId,
         private string $externalId,
-        private ?string $acceptsMarketing = null,
+        private ?string $acceptsMarketing = self::MARKETING_NOT_OPTED_IN,
     ) {
     }
 

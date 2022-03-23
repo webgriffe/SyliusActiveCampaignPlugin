@@ -61,7 +61,17 @@ class EcommerceOrderUpdateHandlerSpec extends ObjectBehavior
         );
     }
 
-    public function it_throws_if_order_has_has_a_different_id_on_active_campaign_than_the_message_provided(
+    public function it_throws_if_order_not_been_exported_to_active_campaign_yet(
+        ActiveCampaignAwareInterface $order
+    ): void {
+        $order->getActiveCampaignId()->willReturn(null);
+
+        $this->shouldThrow(new InvalidArgumentException('The Order with id "54" has an ActiveCampaign id that does not match. Expected "364", given "".'))->during(
+            '__invoke', [new EcommerceOrderUpdate(54, 364, true)]
+        );
+    }
+
+    public function it_throws_if_order_has_a_different_id_on_active_campaign_than_the_message_provided(
         ActiveCampaignAwareInterface $order
     ): void {
         $order->getActiveCampaignId()->willReturn(312);

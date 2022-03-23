@@ -9,7 +9,6 @@ use Webgriffe\SyliusActiveCampaignPlugin\Exception\ChannelConnectionNotSetExcept
 use Webgriffe\SyliusActiveCampaignPlugin\Exception\CustomerDoesNotHaveEmailException;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceCustomerFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceCustomerInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 
 final class EcommerceCustomerMapper implements EcommerceCustomerMapperInterface
 {
@@ -18,11 +17,14 @@ final class EcommerceCustomerMapper implements EcommerceCustomerMapperInterface
     ) {
     }
 
-    public function mapFromCustomerAndChannel(CustomerInterface $customer, ActiveCampaignAwareInterface $channel): EcommerceCustomerInterface
+    public function mapFromCustomerAndChannel(CustomerInterface $customer, $channel): EcommerceCustomerInterface
     {
         $connectionId = $channel->getActiveCampaignId();
         if ($connectionId === null) {
-            throw new ChannelConnectionNotSetException();
+            throw new ChannelConnectionNotSetException(sprintf(
+                'Unable to create a new ActiveCampaign Ecommerce Customer, the channel "%s" does not have a connection id.',
+                (string) $channel->getCode()
+            ));
         }
 
         /** @var string|int|null $customerId */
@@ -35,7 +37,7 @@ final class EcommerceCustomerMapper implements EcommerceCustomerMapperInterface
             ));
         }
         $ecommerceCustomer = $this->ecommerceCustomerFactory->createNew($customerEmail, (string) $connectionId, (string) $customerId);
-        $ecommerceCustomer->setAcceptsMarketing($customer->isSubscribedToNewsletter() ? '1' : '0');
+        $ecommerceCustomer->setAcceptsMarketing($customer->isSubscribedToNewsletter() ? EcommerceCustomerInterface::MARKETING_OPTED_IN : EcommerceCustomerInterface::MARKETING_NOT_OPTED_IN);
 
         return $ecommerceCustomer;
     }
