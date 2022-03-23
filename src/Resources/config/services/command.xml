@@ -5,6 +5,7 @@
         <parameter key="webgriffe_sylius_active_campaign.command.enqueue_contact.name">webgriffe:active-campaign:enqueue-contact</parameter>
         <parameter key="webgriffe_sylius_active_campaign.command.enqueue_connection.name">webgriffe:active-campaign:enqueue-connection</parameter>
         <parameter key="webgriffe_sylius_active_campaign.command.enqueue_ecommerce_order.name">webgriffe:active-campaign:enqueue-ecommerce-order</parameter>
+        <parameter key="webgriffe_sylius_active_campaign.cart_becomes_abandoned_period">1 day</parameter>
     </parameters>
     <services>
         <service id="webgriffe.sylius_active_campaign_plugin.command.enqueue_contact"
@@ -27,6 +28,15 @@
                  class="Webgriffe\SyliusActiveCampaignPlugin\Command\EnqueueEcommerceOrderCommand">
             <argument type="service" id="sylius.repository.order"/>
             <argument type="service" id="messenger.default_bus"/>
+            <argument>%webgriffe_sylius_active_campaign.command.enqueue_ecommerce_order.name%</argument>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.command.enqueue_ecommerce_abandoned_cart"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Command\EnqueueEcommerceAbandonedCartCommand">
+            <argument type="service" id="sylius.repository.order"/>
+            <argument type="service" id="messenger.default_bus"/>
+            <argument>%webgriffe_sylius_active_campaign.cart_becomes_abandoned_period%</argument>
             <argument>%webgriffe_sylius_active_campaign.command.enqueue_ecommerce_order.name%</argument>
             <tag name="console.command"/>
         </service>
