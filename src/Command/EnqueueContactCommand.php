@@ -110,6 +110,11 @@ final class EnqueueContactCommand extends Command
             }
             $customersToExport = [$customer];
         }
+        if (count($customersToExport) === 0) {
+            $this->io->writeln('No new customers founded to enqueue.');
+
+            return Command::SUCCESS;
+        }
 
         $progressBar = new ProgressBar($output, count($customersToExport));
         $progressBar->setFormat(

@@ -110,6 +110,11 @@ final class EnqueueConnectionCommand extends Command
             }
             $channelsToExport = [$channel];
         }
+        if (count($channelsToExport) === 0) {
+            $this->io->writeln('No new channels founded to enqueue.');
+
+            return Command::SUCCESS;
+        }
 
         $progressBar = new ProgressBar($output, count($channelsToExport));
         $progressBar->setFormat(

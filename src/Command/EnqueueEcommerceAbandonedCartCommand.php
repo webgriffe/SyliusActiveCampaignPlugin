@@ -59,6 +59,11 @@ final class EnqueueEcommerceAbandonedCartCommand extends Command
         $stopwatch->start(self::ENQUEUE_ECOMMERCE_ABANDONED_CART_COMMAND_STOPWATCH_NAME);
 
         $abandonedCarts = $this->orderRepository->findNewCartsNotModifiedSince(new DateTime('-' . $this->cartBecomesAbandonedPeriod));
+        if (count($abandonedCarts) === 0) {
+            $this->io->writeln('No new carts founded to enqueue.');
+
+            return Command::SUCCESS;
+        }
 
         $progressBar = new ProgressBar($output, count($abandonedCarts));
         $progressBar->setFormat(

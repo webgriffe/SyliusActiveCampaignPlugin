@@ -110,6 +110,11 @@ final class EnqueueEcommerceOrderCommand extends Command
             }
             $ordersToExport = [$order];
         }
+        if (count($ordersToExport) === 0) {
+            $this->io->writeln('No new orders founded to enqueue.');
+
+            return Command::SUCCESS;
+        }
 
         $progressBar = new ProgressBar($output, count($ordersToExport));
         $progressBar->setFormat(

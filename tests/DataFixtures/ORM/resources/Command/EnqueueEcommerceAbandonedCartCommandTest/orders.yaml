@@ -13,7 +13,7 @@ App\Entity\Order\Order:
         currency_code: 'EUR'
         locale_code: 'en_US'
         customer: '@customer_bob'
-        updatedAt: '<(new DateTime("-1 day"))>'
+        updatedAt: '<(new DateTime("-2 day"))>'
         activeCampaignId: null
     cart_new:
         channel: '@fashion_shop'
