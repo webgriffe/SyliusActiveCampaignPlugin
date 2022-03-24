@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\EventSubscriber;
 
-use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
-use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -19,13 +17,14 @@ use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCust
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Repository\ChannelActiveCampaignAwareRepositoryInterface;
 use Webmozart\Assert\Assert;
 
 final class CustomerSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private MessageBusInterface $messageBus,
-        private ChannelRepositoryInterface $channelRepository,
+        private ChannelActiveCampaignAwareRepositoryInterface $channelRepository,
         private RepositoryInterface $channelCustomerRepository
     ) {
     }
@@ -71,8 +70,7 @@ final class CustomerSubscriber implements EventSubscriberInterface
         if (!is_int($customerId)) {
             $customerId = (string) $customerId;
         }
-        /** @var ChannelInterface $channel */
-        foreach ($this->channelRepository->findBy(['enabled' => true]) as $channel) {
+        foreach ($this->channelRepository->findAllEnabledForActiveCampaign() as $channel) {
             /** @var mixed $channelId */
             $channelId = $channel->getId();
             if ($channelId === null) {
