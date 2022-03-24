@@ -7,10 +7,11 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Mapper;
 use DateTime;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
+use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderInterface as BaseOrderInterface;
 use Sylius\Component\Core\Model\ShipmentInterface;
-use Symfony\Component\Routing\RouterInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderFactoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Generator\ChannelHostnameUrlGeneratorInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderDiscountInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderProductInterface;
@@ -22,9 +23,10 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
 {
     public function __construct(
         private EcommerceOrderFactoryInterface $ecommerceOrderFactory,
-        private RouterInterface $router,
         private EcommerceOrderProductMapperInterface $ecommerceOrderProductMapper,
-        private EcommerceOrderDiscountMapperInterface $ecommerceOrderDiscountMapper
+        private EcommerceOrderDiscountMapperInterface $ecommerceOrderDiscountMapper,
+        private ChannelHostnameUrlGeneratorInterface $channelHostnameUrlGenerator,
+        private string $defaultLocale
     ) {
     }
 
@@ -80,10 +82,7 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
         $ecommerceOrder->setShippingAmount($order->getShippingTotal());
         $ecommerceOrder->setTaxAmount($order->getTaxTotal());
         $ecommerceOrder->setDiscountAmount($order->getOrderPromotionTotal());
-        $ecommerceOrder->setOrderUrl($this->router->generate('sylius_shop_order_show', [
-            'tokenValue' => $order->getTokenValue(),
-            '_locale' => $order->getLocaleCode(),
-        ]));
+        $ecommerceOrder->setOrderUrl($this->getOrderUrl($order, $channel, $this->getLocaleCodeFromOrder($order), $isCart));
         $ecommerceOrder->setExternalUpdatedDate($order->getUpdatedAt());
         $firstShipment = $order->getShipments()->first();
         if ($firstShipment instanceof ShipmentInterface && (null !== $shippingMethod = $firstShipment->getMethod())) {
@@ -106,5 +105,41 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
         $ecommerceOrder->setOrderDiscounts($orderDiscounts);
 
         return $ecommerceOrder;
+    }
+
+    private function getLocaleCodeFromOrder(OrderInterface $order): string
+    {
+        $orderLocaleCode = $order->getLocaleCode();
+        if ($orderLocaleCode !== null) {
+            return $orderLocaleCode;
+        }
+        $channel = $order->getChannel();
+        if ($channel instanceof ChannelInterface && null !== ($channelLocale = $channel->getDefaultLocale())) {
+            return $channelLocale->getCode() ?? $this->defaultLocale;
+        }
+
+        return $this->defaultLocale;
+    }
+
+    private function getOrderUrl(BaseOrderInterface $order, ChannelInterface $channel, string $localeCode, bool $isCart): string
+    {
+        if ($isCart) {
+            return $this->channelHostnameUrlGenerator->generate(
+                $channel,
+                'sylius_shop_cart_summary',
+                [
+                    '_locale' => $localeCode,
+                ]
+            );
+        }
+
+        return $this->channelHostnameUrlGenerator->generate(
+            $channel,
+            'sylius_shop_order_show',
+            [
+                'tokenValue' => $order->getTokenValue(),
+                '_locale' => $localeCode,
+            ]
+        );
     }
 }

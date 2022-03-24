@@ -10,8 +10,8 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Core\Model\TaxonInterface;
-use Symfony\Component\Routing\RouterInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderProductFactoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Generator\ChannelHostnameUrlGeneratorInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderProductInterface;
 use Webmozart\Assert\Assert;
 
@@ -19,7 +19,7 @@ final class EcommerceOrderProductMapper implements EcommerceOrderProductMapperIn
 {
     public function __construct(
         private EcommerceOrderProductFactoryInterface $ecommerceOrderProductFactory,
-        private RouterInterface $router,
+        private ChannelHostnameUrlGeneratorInterface $channelHostnameUrlGenerator,
         private string $defaultLocale,
         private ?string $imageType = null
     ) {
@@ -49,10 +49,9 @@ final class EcommerceOrderProductMapper implements EcommerceOrderProductMapperIn
         $ecommerceOrderProduct->setSku($product->getCode());
         $ecommerceOrderProduct->setDescription($product->getDescription());
         $ecommerceOrderProduct->setImageUrl($this->getImageUrlFromProduct($product));
-        $ecommerceOrderProduct->setProductUrl($this->router->generate('sylius_shop_product_show', [
-            '_locale' => $this->getLocaleCodeFromOrder($order),
-            'slug' => $product->getSlug(),
-        ]));
+        $channel = $order->getChannel();
+        Assert::isInstanceOf($channel, ChannelInterface::class, 'The order\'s channel should not be null.');
+        $ecommerceOrderProduct->setProductUrl($this->getProductUrl($product, $channel, $this->getLocaleCodeFromOrder($order)));
 
         return $ecommerceOrderProduct;
     }
@@ -87,5 +86,17 @@ final class EcommerceOrderProductMapper implements EcommerceOrderProductMapperIn
         }
 
         return $this->defaultLocale;
+    }
+
+    private function getProductUrl(ProductInterface $product, ChannelInterface $channel, string $localeCode): string
+    {
+        return $this->channelHostnameUrlGenerator->generate(
+            $channel,
+            'sylius_shop_product_show',
+            [
+                '_locale' => $localeCode,
+                'slug' => $product->getSlug(),
+            ]
+        );
     }
 }

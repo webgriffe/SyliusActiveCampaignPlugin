@@ -16,9 +16,11 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\ShipmentInterface;
 use Sylius\Component\Core\Model\ShippingMethodInterface;
+use Sylius\Component\Locale\Model\LocaleInterface;
 use Sylius\Component\Promotion\Model\PromotionInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderFactoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Generator\ChannelHostnameUrlGeneratorInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderDiscountMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderMapper;
 use PhpSpec\ObjectBehavior;
@@ -49,9 +51,11 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
         EcommerceOrderProductInterface $firstOrderProduct,
         PromotionInterface $firstPromotion,
         EcommerceOrderDiscountInterface $firstOrderDiscount,
-        ChannelCustomerInterface $channelCustomer
+        ChannelCustomerInterface $channelCustomer,
+        ChannelHostnameUrlGeneratorInterface $channelHostnameUrlGenerator,
+        LocaleInterface $frenchLocale
     ): void {
-        $router->generate('sylius_shop_order_show', ['tokenValue' => 'sD4ew_w4s5T', '_locale' => 'en_US'])->willReturn('https://localhost/order/sD4ew_w4s5T');
+        $channelHostnameUrlGenerator->generate($channel, 'sylius_shop_order_show', ['tokenValue' => 'sD4ew_w4s5T', '_locale' => 'it_IT'])->willReturn('https://localhost/order/sD4ew_w4s5T');
 
         $ecommerceOrderProductMapper->mapFromOrderItem($firstOrderItem)->willReturn($firstOrderProduct);
 
@@ -60,7 +64,7 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
         $order->getCustomer()->willReturn($customer);
         $order->getChannel()->willReturn($channel);
         $order->getState()->willReturn(OrderInterface::STATE_NEW);
-        $order->getLocaleCode()->willReturn('en_US');
+        $order->getLocaleCode()->willReturn('it_IT');
         $order->getCurrencyCode()->willReturn('EUR');
         $order->getCreatedAt()->willReturn(new DateTime('2022-03-18'));
         $order->getUpdatedAt()->willReturn(new DateTime('2022-03-19'));
@@ -87,6 +91,9 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
         $channelCustomer->getActiveCampaignId()->willReturn(432);
 
         $channel->getActiveCampaignId()->willReturn(1);
+        $channel->getDefaultLocale()->willReturn($frenchLocale);
+
+        $frenchLocale->getCode()->willReturn('fr_FR');
 
         $ecommerceOrder->setShippingAmount(1000);
         $ecommerceOrder->setTaxAmount(2500);
@@ -111,7 +118,7 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
             null
         )->willReturn($ecommerceOrder);
 
-        $this->beConstructedWith($ecommerceOrderFactory, $router, $ecommerceOrderProductMapper, $ecommerceOrderDiscountMapper);
+        $this->beConstructedWith($ecommerceOrderFactory, $ecommerceOrderProductMapper, $ecommerceOrderDiscountMapper, $channelHostnameUrlGenerator, 'en_US');
     }
 
     public function it_is_initializable(): void
@@ -236,11 +243,54 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
         $this->mapFromOrder($order, false)->shouldReturn($ecommerceOrder);
     }
 
+    public function it_maps_ecommerce_order_product_with_default_channel_locale_if_not_existing_on_order(
+        ChannelHostnameUrlGeneratorInterface $channelHostnameUrlGenerator,
+        OrderInterface $order,
+        ChannelInterface $channel,
+        EcommerceOrderInterface $ecommerceOrder
+    ): void {
+        $order->getLocaleCode()->willReturn(null);
+        $channelHostnameUrlGenerator->generate($channel, 'sylius_shop_order_show', ['tokenValue' => 'sD4ew_w4s5T', '_locale' => 'fr_FR'])->shouldBeCalledOnce()->willReturn('https://localhost/order/sD4ew_w4s5T');
+
+        $this->mapFromOrder($order, true)->shouldReturn($ecommerceOrder);
+    }
+
+    public function it_maps_ecommerce_order_with_default_app_locale_if_not_existing_on_order_nor_channel(
+        ChannelInterface $channel,
+        ChannelHostnameUrlGeneratorInterface $channelHostnameUrlGenerator,
+        OrderInterface $order,
+        EcommerceOrderInterface $ecommerceOrder
+    ): void {
+        $order->getLocaleCode()->willReturn(null);
+        $channel->getDefaultLocale()->willReturn(null);
+        $channelHostnameUrlGenerator->generate($channel, 'sylius_shop_order_show', ['tokenValue' => 'sD4ew_w4s5T', '_locale' => 'en_US'])->shouldBeCalledOnce()->willReturn('https://localhost/order/sD4ew_w4s5T');
+
+        $this->mapFromOrder($order, true)->shouldReturn($ecommerceOrder);
+    }
+
+    public function it_maps_ecommerce_order_product_with_default_app_locale_if_not_existing_code_on_channel_default_locale(
+        LocaleInterface $frenchLocale,
+        ChannelHostnameUrlGeneratorInterface $channelHostnameUrlGenerator,
+        OrderInterface $order,
+        ChannelInterface $channel,
+        EcommerceOrderInterface $ecommerceOrder
+    ): void {
+        $order->getLocaleCode()->willReturn(null);
+        $frenchLocale->getCode()->willReturn(null);
+        $channelHostnameUrlGenerator->generate($channel, 'sylius_shop_order_show', ['tokenValue' => 'sD4ew_w4s5T', '_locale' => 'en_US'])->shouldBeCalledOnce()->willReturn('https://localhost/order/sD4ew_w4s5T');
+
+        $this->mapFromOrder($order, true)->shouldReturn($ecommerceOrder);
+    }
+
     public function it_maps_ecommerce_abandoned_cart_from_order(
         OrderInterface $order,
+        ChannelInterface $channel,
         EcommerceOrderInterface $ecommerceOrder,
-        EcommerceOrderFactoryInterface $ecommerceOrderFactory
+        EcommerceOrderFactoryInterface $ecommerceOrderFactory,
+        ChannelHostnameUrlGeneratorInterface $channelHostnameUrlGenerator
     ): void {
+        $channelHostnameUrlGenerator->generate($channel, 'sylius_shop_cart_summary', ['_locale' => 'it_IT'])->shouldBeCalledOnce()->willReturn('https://localhost/cart');
+        $ecommerceOrder->setOrderUrl('https://localhost/cart')->shouldBeCalledOnce();
         $order->getState()->willReturn(OrderInterface::STATE_CART);
         $ecommerceOrderFactory->createNew(
             'info@activecampaign.org',
