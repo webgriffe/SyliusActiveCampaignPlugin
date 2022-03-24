@@ -40,7 +40,7 @@
         </MixedArgument>
         <UnusedMethodCall>
             <errorLevel type="suppress">
-                <file name="src/DependencyInjection/WebgriffeSyliusActiveCampaignExtension.php" />
+                <file name="src/DependencyInjection/Configuration.php" />
             </errorLevel>
         </UnusedMethodCall>
     </issueHandlers>
