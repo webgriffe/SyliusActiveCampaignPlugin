@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Webgriffe\SyliusActiveCampaignPlugin\Command;
 
 use InvalidArgumentException;
+use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
+use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
@@ -17,10 +19,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignAwareRepositoryInterface;
 use Webmozart\Assert\Assert;
 
-final class EnqueueContactCommand extends Command
+final class EnqueueContactAndEcommerceCustomerCommand extends Command
 {
     use LockableTrait;
 
@@ -37,6 +40,7 @@ final class EnqueueContactCommand extends Command
     public function __construct(
         private ActiveCampaignAwareRepositoryInterface $customerRepository,
         private MessageBusInterface $messageBus,
+        private ChannelRepositoryInterface $channelRepository,
         private ?string $name = null
     ) {
         parent::__construct($this->name);
@@ -115,6 +119,8 @@ final class EnqueueContactCommand extends Command
 
             return Command::SUCCESS;
         }
+        /** @var ChannelInterface[] $channels */
+        $channels = $this->channelRepository->findBy(['enabled' => true]);
 
         $progressBar = new ProgressBar($output, count($customersToExport));
         $progressBar->setFormat(
@@ -132,6 +138,16 @@ final class EnqueueContactCommand extends Command
             $customerId = $customer->getId();
             Assert::notNull($customerId);
             $this->messageBus->dispatch(new ContactCreate($customerId));
+
+            foreach ($channels as $channel) {
+                /** @var string|int|null $channelId */
+                $channelId = $channel->getId();
+                if ($channelId === null) {
+                    continue;
+                }
+                $this->messageBus->dispatch(new EcommerceCustomerCreate($customerId, $channelId));
+            }
+
             $progressBar->setMessage(sprintf('Customer "%s" enqueued!', (string) $customer->getId()), 'status');
             $progressBar->advance();
         }
