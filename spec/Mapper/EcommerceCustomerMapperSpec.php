@@ -50,7 +50,7 @@ class EcommerceCustomerMapperSpec extends ObjectBehavior
         $channel->getCode()->shouldBeCalledOnce()->willReturn('ecommerce');
 
         $this
-            ->shouldThrow(new ChannelConnectionNotSetException('Unable to create a new ActiveCampaign Ecommerce Customer, the channel "ecommerce" does not have a connection id.'))
+            ->shouldThrow(new ChannelConnectionNotSetException('Unable to create a new ActiveCampaign Ecommerce Customer, the channel "ecommerce" does not have a connection id. Please, create the connection from the channel before create the ecommerce customer for the channel.'))
             ->during('mapFromCustomerAndChannel', [$customer, $channel]);
     }
 

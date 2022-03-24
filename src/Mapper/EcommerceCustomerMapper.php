@@ -22,7 +22,7 @@ final class EcommerceCustomerMapper implements EcommerceCustomerMapperInterface
         $connectionId = $channel->getActiveCampaignId();
         if ($connectionId === null) {
             throw new ChannelConnectionNotSetException(sprintf(
-                'Unable to create a new ActiveCampaign Ecommerce Customer, the channel "%s" does not have a connection id.',
+                'Unable to create a new ActiveCampaign Ecommerce Customer, the channel "%s" does not have a connection id. Please, create the connection from the channel before create the ecommerce customer for the channel.',
                 (string) $channel->getCode()
             ));
         }

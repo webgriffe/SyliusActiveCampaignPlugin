@@ -8,5 +8,4 @@ use InvalidArgumentException;
 
 final class ChannelConnectionNotSetException extends InvalidArgumentException
 {
-    // todo: better error message: explain what to do
 }
