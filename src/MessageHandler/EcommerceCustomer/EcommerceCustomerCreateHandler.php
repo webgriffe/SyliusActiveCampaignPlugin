@@ -17,7 +17,6 @@ use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCust
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
-use Webmozart\Assert\Assert;
 
 final class EcommerceCustomerCreateHandler
 {
@@ -49,16 +48,17 @@ final class EcommerceCustomerCreateHandler
         if ($customer === null) {
             throw new InvalidArgumentException(sprintf('Customer with id "%s" does not exists', $customerId));
         }
-        if (!$customer instanceof ActiveCampaignAwareInterface) {
-            throw new InvalidArgumentException(sprintf('The Customer entity should implement the "%s" class', ActiveCampaignAwareInterface::class));
+        if (!$customer instanceof CustomerActiveCampaignAwareInterface) {
+            throw new InvalidArgumentException(sprintf('The Customer entity should implement the "%s" class', CustomerActiveCampaignAwareInterface::class));
         }
 
-        $activeCampaignId = $customer->getActiveCampaignId();
-        if ($activeCampaignId !== null) {
+        $channelCustomer = $customer->getChannelCustomerByChannel($channel);
+        if ($channelCustomer !== null) {
+            $activeCampaignId = $channelCustomer->getActiveCampaignId();
+
             throw new InvalidArgumentException(sprintf('The Customer with id "%s" has been already created on ActiveCampaign on the EcommerceCustomer with id "%s"', $customerId, $activeCampaignId));
         }
         $response = $this->activeCampaignClient->create($this->ecommerceCustomerMapper->mapFromCustomerAndChannel($customer, $channel));
-        Assert::isInstanceOf($customer, CustomerActiveCampaignAwareInterface::class);
         /** @var ChannelCustomerInterface $channelCustomer */
         $channelCustomer = $this->channelCustomerFactory->createNew();
         $channelCustomer->setCustomer($customer);

@@ -20,8 +20,8 @@ use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceCustomerMapperInterface
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceCustomer\EcommerceCustomerCreateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceCustomerInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseInterface;
 
@@ -43,6 +43,7 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
 
         $channel->getActiveCampaignId()->willReturn(567);
         $customer->getActiveCampaignId()->willReturn(null);
+        $customer->getChannelCustomerByChannel($channel)->willReturn(null);
 
         $channelRepository->find(1)->willReturn($channel);
         $customerRepository->find(12)->willReturn($customer);
@@ -91,22 +92,25 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
         );
     }
 
-    public function it_throws_if_customer_is_not_an_implementation_of_active_campaign_aware_interface(
+    public function it_throws_if_customer_is_not_an_implementation_of_customer_active_campaign_aware_interface(
         CustomerRepositoryInterface $customerRepository,
         SyliusCustomerInterface $syliusCustomer
     ): void {
         $customerRepository->find(12)->shouldBeCalledOnce()->willReturn($syliusCustomer);
 
-        $this->shouldThrow(new InvalidArgumentException('The Customer entity should implement the "Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface" class'))->during(
+        $this->shouldThrow(new InvalidArgumentException('The Customer entity should implement the "Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface" class'))->during(
             '__invoke',
             [new EcommerceCustomerCreate(12, 1)]
         );
     }
 
     public function it_throws_if_customer_has_been_already_exported_to_active_campaign(
-        ActiveCampaignAwareInterface $customer
+        CustomerActiveCampaignAwareInterface $customer,
+        ChannelInterface $channel,
+        ChannelCustomerInterface $channelCustomer
     ): void {
-        $customer->getActiveCampaignId()->willReturn('321');
+        $customer->getChannelCustomerByChannel($channel)->willReturn($channelCustomer);
+        $channelCustomer->getActiveCampaignId()->willReturn(321);
 
         $this->shouldThrow(new InvalidArgumentException('The Customer with id "12" has been already created on ActiveCampaign on the EcommerceCustomer with id "321"'))->during(
             '__invoke',

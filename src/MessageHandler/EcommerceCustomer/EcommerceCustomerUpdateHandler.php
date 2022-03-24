@@ -13,6 +13,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInte
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceCustomerMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
 
 final class EcommerceCustomerUpdateHandler
 {
@@ -42,11 +43,15 @@ final class EcommerceCustomerUpdateHandler
         if ($customer === null) {
             throw new InvalidArgumentException(sprintf('Customer with id "%s" does not exists', $customerId));
         }
-        if (!$customer instanceof ActiveCampaignAwareInterface) {
-            throw new InvalidArgumentException(sprintf('The Customer entity should implement the "%s" class', ActiveCampaignAwareInterface::class));
+        if (!$customer instanceof CustomerActiveCampaignAwareInterface) {
+            throw new InvalidArgumentException(sprintf('The Customer entity should implement the "%s" class', CustomerActiveCampaignAwareInterface::class));
         }
 
-        $activeCampaignId = $customer->getActiveCampaignId();
+        $channelCustomer = $customer->getChannelCustomerByChannel($channel);
+        if ($channelCustomer === null) {
+            throw new InvalidArgumentException(sprintf('The Customer with id "%s" does not have an ActiveCampaign Ecommerce customer for the channel "%s".', $customerId, (string) $channel->getCode()));
+        }
+        $activeCampaignId = $channelCustomer->getActiveCampaignId();
         if ($activeCampaignId !== $message->getActiveCampaignId()) {
             throw new InvalidArgumentException(sprintf('The Customer with id "%s" has an ActiveCampaign id that does not match. Expected "%s", given "%s".', $customerId, $message->getActiveCampaignId(), (string) $activeCampaignId));
         }

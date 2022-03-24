@@ -17,7 +17,8 @@ use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceCustomerMapperInterface
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceCustomer\EcommerceCustomerUpdateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceCustomerInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 
 final class EcommerceCustomerUpdateHandlerSpec extends ObjectBehavior
@@ -29,12 +30,18 @@ final class EcommerceCustomerUpdateHandlerSpec extends ObjectBehavior
         ChannelRepositoryInterface $channelRepository,
         CustomerInterface $customer,
         ChannelInterface $channel,
-        EcommerceCustomerInterface $ecommerceCustomer
+        EcommerceCustomerInterface $ecommerceCustomer,
+        ChannelCustomerInterface $channelCustomer
     ): void {
         $ecommerceCustomerMapper->mapFromCustomerAndChannel($customer, $channel)->willReturn($ecommerceCustomer);
 
         $channel->getActiveCampaignId()->willReturn(567);
+        $channel->getCode()->willReturn('ecommerce');
+
         $customer->getActiveCampaignId()->willReturn(3423);
+        $customer->getChannelCustomerByChannel($channel)->willReturn($channelCustomer);
+
+        $channelCustomer->getActiveCampaignId()->willReturn(3423);
 
         $channelRepository->find(1)->willReturn($channel);
         $customerRepository->find(12)->willReturn($customer);
@@ -78,31 +85,35 @@ final class EcommerceCustomerUpdateHandlerSpec extends ObjectBehavior
         );
     }
 
-    public function it_throws_if_customer_is_not_an_implementation_of_active_campaign_aware_interface(
+    public function it_throws_if_customer_is_not_an_implementation_of_customer_active_campaign_aware_interface(
         CustomerRepositoryInterface $customerRepository,
         SyliusCustomerInterface $syliusCustomer
     ): void {
         $customerRepository->find(12)->shouldBeCalledOnce()->willReturn($syliusCustomer);
 
-        $this->shouldThrow(new InvalidArgumentException('The Customer entity should implement the "Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface" class'))->during(
+        $this->shouldThrow(new InvalidArgumentException('The Customer entity should implement the "Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface" class'))->during(
             '__invoke', [new EcommerceCustomerUpdate(12, 3423, 1)]
         );
     }
 
     public function it_throws_if_customer_has_not_been_exported_to_active_campaign_yet(
-        ActiveCampaignAwareInterface $customer
+        CustomerActiveCampaignAwareInterface $customer,
+        ChannelInterface $channel
     ): void {
-        $customer->getActiveCampaignId()->willReturn(null);
+        $customer->getChannelCustomerByChannel($channel)->willReturn(null);
 
-        $this->shouldThrow(new InvalidArgumentException('The Customer with id "12" has an ActiveCampaign id that does not match. Expected "3423", given "".'))->during(
+        $this->shouldThrow(new InvalidArgumentException('The Customer with id "12" does not have an ActiveCampaign Ecommerce customer for the channel "ecommerce".'))->during(
             '__invoke', [new EcommerceCustomerUpdate(12, 3423, 1)]
         );
     }
 
     public function it_throws_if_customer_has_an_active_campaign_id_that_differs_from_the_one_on_the_message(
-        ActiveCampaignAwareInterface $customer
+        CustomerActiveCampaignAwareInterface $customer,
+        ChannelInterface $channel,
+        ChannelCustomerInterface $channelCustomer
     ): void {
-        $customer->getActiveCampaignId()->willReturn(432);
+        $customer->getChannelCustomerByChannel($channel)->willReturn($channelCustomer);
+        $channelCustomer->getActiveCampaignId()->willReturn(432);
 
         $this->shouldThrow(new InvalidArgumentException('The Customer with id "12" has an ActiveCampaign id that does not match. Expected "3423", given "432".'))->during(
             '__invoke', [new EcommerceCustomerUpdate(12, 3423, 1)]
