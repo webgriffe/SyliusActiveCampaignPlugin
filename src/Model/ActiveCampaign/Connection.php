@@ -6,9 +6,9 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign;
 
 final class Connection implements ConnectionInterface
 {
-    private const SYLIUS_GITHUB_ORGANIZATION_LOGO_URL = 'https://avatars.githubusercontent.com/u/719423';
+    private const SYLIUS_GITHUB_ORGANIZATION_LOGO_URL = 'https://github.com/webgriffe/sylius-active-campaign-plugin/docs/images/sylius-logo.png';
 
-    private const WEBGRIFFE_SYLIUS_ACTIVE_CAMPAIGN_PLUGIN_GITHUB_URL = 'https://github.com/webgriffe/SyliusActiveCampaignPlugin';
+    private const WEBGRIFFE_SYLIUS_ACTIVE_CAMPAIGN_PLUGIN_GITHUB_URL = 'https://github.com/webgriffe/sylius-active-campaign-plugin';
 
     public function __construct(
         private string $service,
