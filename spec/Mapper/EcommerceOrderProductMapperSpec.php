@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Mapper;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\ImageInterface;
+use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Core\Model\TaxonInterface;
+use Sylius\Component\Locale\Model\LocaleInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderProductFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderProductMapper;
@@ -26,12 +29,23 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
         ProductInterface $product,
         TaxonInterface $mainTaxon,
         ImageInterface $firstImage,
+        OrderInterface $order,
+        ChannelInterface $channel,
+        LocaleInterface $frenchLocale,
         EcommerceOrderProductInterface $ecommerceOrderProduct
     ): void {
         $ecommerceOrderProductFactory->createNew('Wine bottle', 1200, 2, '432')->willReturn($ecommerceOrderProduct);
 
-        $router->generate('sylius_shop_product_show', ['slug' => 'wine-bottle'])->willReturn('https://localhost/products/wine-bottle');
+        $router->generate('sylius_shop_product_show', ['_locale' => 'it_IT', 'slug' => 'wine-bottle'])->willReturn('https://localhost/products/wine-bottle');
 
+        $frenchLocale->getCode()->willReturn('fr_FR');
+
+        $channel->getDefaultLocale()->willReturn($frenchLocale);
+
+        $order->getLocaleCode()->willReturn('it_IT');
+        $order->getChannel()->willReturn($channel);
+
+        $orderItem->getOrder()->willReturn($order);
         $orderItem->getProductName()->willReturn('Wine bottle');
         $orderItem->getProduct()->willReturn($product);
         $orderItem->getUnitPrice()->willReturn(1200);
@@ -54,7 +68,7 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
         $ecommerceOrderProduct->setImageUrl('path/wine.png');
         $ecommerceOrderProduct->setProductUrl('https://localhost/products/wine-bottle');
 
-        $this->beConstructedWith($ecommerceOrderProductFactory, $router, null);
+        $this->beConstructedWith($ecommerceOrderProductFactory, $router, 'en_US', null);
     }
 
     public function it_is_initializable(): void
@@ -65,6 +79,13 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
     public function it_implements_ecommerce_order_product_mapper_interface(): void
     {
         $this->shouldImplement(EcommerceOrderProductMapperInterface::class);
+    }
+
+    public function it_throws_if_order_item_order_is_null(OrderItemInterface $orderItem): void
+    {
+        $orderItem->getOrder()->willReturn(null);
+        $this->shouldThrow(new InvalidArgumentException('The order item\'s order should not be null.'))
+            ->during('mapFromOrderItem', [$orderItem]);
     }
 
     public function it_throws_if_order_item_product_name_is_null(OrderItemInterface $orderItem): void
@@ -118,7 +139,7 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
         ProductInterface $product,
         EcommerceOrderProductInterface $ecommerceOrderProduct
     ): void {
-        $this->beConstructedWith($ecommerceOrderProductFactory, $router, 'main');
+        $this->beConstructedWith($ecommerceOrderProductFactory, $router, 'en_US', 'main');
         $product->getImagesByType('main')->willReturn(new ArrayCollection());
         $ecommerceOrderProduct->setImageUrl('path/wine.png')->shouldNotBeCalled();
         $ecommerceOrderProduct->setImageUrl(null)->shouldBeCalledOnce();
@@ -134,7 +155,7 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
         EcommerceOrderProductInterface $ecommerceOrderProduct,
         ImageInterface $typedImage
     ): void {
-        $this->beConstructedWith($ecommerceOrderProductFactory, $router, 'main');
+        $this->beConstructedWith($ecommerceOrderProductFactory, $router, 'en_US', 'main');
         $product->getImagesByType('main')->willReturn(new ArrayCollection([$typedImage->getWrappedObject()]));
         $typedImage->getPath()->willReturn('path/main.jpg');
         $ecommerceOrderProduct->setImageUrl('path/wine.png')->shouldNotBeCalled();
@@ -155,6 +176,46 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
         $product->getImagesByType('')->shouldNotBeCalled();
         $ecommerceOrderProduct->setImageUrl('path/wine.png')->shouldBeCalledOnce();
         $ecommerceOrderProduct->setImageUrl(null)->shouldNotBeCalled();
+
+        $this->mapFromOrderItem($orderItem)->shouldReturn($ecommerceOrderProduct);
+    }
+
+    public function it_maps_ecommerce_order_product_with_default_channel_locale_if_not_existing_on_order(
+        RouterInterface $router,
+        OrderInterface $order,
+        OrderItemInterface $orderItem,
+        EcommerceOrderProductInterface $ecommerceOrderProduct
+    ): void {
+        $order->getLocaleCode()->willReturn(null);
+        $router->generate('sylius_shop_product_show', ['_locale' => 'fr_FR', 'slug' => 'wine-bottle'])->shouldBeCalledOnce()->willReturn('https://localhost/products/wine-bottle');
+
+        $this->mapFromOrderItem($orderItem)->shouldReturn($ecommerceOrderProduct);
+    }
+
+    public function it_maps_ecommerce_order_product_with_default_app_locale_if_not_existing_on_order_nor_channel(
+        ChannelInterface $channel,
+        RouterInterface $router,
+        OrderInterface $order,
+        OrderItemInterface $orderItem,
+        EcommerceOrderProductInterface $ecommerceOrderProduct
+    ): void {
+        $order->getLocaleCode()->willReturn(null);
+        $channel->getDefaultLocale()->willReturn(null);
+        $router->generate('sylius_shop_product_show', ['_locale' => 'en_US', 'slug' => 'wine-bottle'])->shouldBeCalledOnce()->willReturn('https://localhost/products/wine-bottle');
+
+        $this->mapFromOrderItem($orderItem)->shouldReturn($ecommerceOrderProduct);
+    }
+
+    public function it_maps_ecommerce_order_product_with_default_app_locale_if_not_existing_code_on_channel_default_locale(
+        LocaleInterface $frenchLocale,
+        RouterInterface $router,
+        OrderInterface $order,
+        OrderItemInterface $orderItem,
+        EcommerceOrderProductInterface $ecommerceOrderProduct
+    ): void {
+        $order->getLocaleCode()->willReturn(null);
+        $frenchLocale->getCode()->willReturn(null);
+        $router->generate('sylius_shop_product_show', ['_locale' => 'en_US', 'slug' => 'wine-bottle'])->shouldBeCalledOnce()->willReturn('https://localhost/products/wine-bottle');
 
         $this->mapFromOrderItem($orderItem)->shouldReturn($ecommerceOrderProduct);
     }

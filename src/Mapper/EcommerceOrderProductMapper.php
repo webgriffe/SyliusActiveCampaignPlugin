@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Mapper;
 
+use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\ImageInterface;
+use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Core\Model\TaxonInterface;
@@ -18,12 +20,15 @@ final class EcommerceOrderProductMapper implements EcommerceOrderProductMapperIn
     public function __construct(
         private EcommerceOrderProductFactoryInterface $ecommerceOrderProductFactory,
         private RouterInterface $router,
+        private string $defaultLocale,
         private ?string $imageType = null
     ) {
     }
 
     public function mapFromOrderItem(OrderItemInterface $orderItem): EcommerceOrderProductInterface
     {
+        $order = $orderItem->getOrder();
+        Assert::isInstanceOf($order, OrderInterface::class, 'The order item\'s order should not be null.');
         $productName = $orderItem->getProductName();
         Assert::notNull($productName, 'The order item\'s product name should not be null.');
         $product = $orderItem->getProduct();
@@ -44,7 +49,10 @@ final class EcommerceOrderProductMapper implements EcommerceOrderProductMapperIn
         $ecommerceOrderProduct->setSku($product->getCode());
         $ecommerceOrderProduct->setDescription($product->getDescription());
         $ecommerceOrderProduct->setImageUrl($this->getImageUrlFromProduct($product));
-        $ecommerceOrderProduct->setProductUrl($this->router->generate('sylius_shop_product_show', ['slug' => $product->getSlug()]));
+        $ecommerceOrderProduct->setProductUrl($this->router->generate('sylius_shop_product_show', [
+            '_locale' => $this->getLocaleCodeFromOrder($order),
+            'slug' => $product->getSlug(),
+        ]));
 
         return $ecommerceOrderProduct;
     }
@@ -65,5 +73,19 @@ final class EcommerceOrderProductMapper implements EcommerceOrderProductMapperIn
         }
 
         return $imageForType->getPath();
+    }
+
+    private function getLocaleCodeFromOrder(OrderInterface $order): string
+    {
+        $orderLocaleCode = $order->getLocaleCode();
+        if ($orderLocaleCode !== null) {
+            return $orderLocaleCode;
+        }
+        $channel = $order->getChannel();
+        if ($channel instanceof ChannelInterface && null !== ($channelLocale = $channel->getDefaultLocale())) {
+            return $channelLocale->getCode() ?? $this->defaultLocale;
+        }
+
+        return $this->defaultLocale;
     }
 }
