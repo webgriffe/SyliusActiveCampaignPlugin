@@ -5,6 +5,7 @@
         <parameter key="webgriffe_sylius_active_campaign.command.enqueue_contact_and_ecommerce_customer.name">webgriffe:active-campaign:enqueue-contact-and-ecommerce-customer</parameter>
         <parameter key="webgriffe_sylius_active_campaign.command.enqueue_connection.name">webgriffe:active-campaign:enqueue-connection</parameter>
         <parameter key="webgriffe_sylius_active_campaign.command.enqueue_ecommerce_order.name">webgriffe:active-campaign:enqueue-ecommerce-order</parameter>
+        <parameter key="webgriffe_sylius_active_campaign.command.enqueue_ecommerce_abandoned_cart.name">webgriffe:active-campaign:enqueue-ecommerce-abandoned-cart</parameter>
         <parameter key="webgriffe_sylius_active_campaign.cart_becomes_abandoned_period">1 day</parameter>
     </parameters>
     <services>
@@ -38,7 +39,7 @@
             <argument type="service" id="sylius.repository.order"/>
             <argument type="service" id="messenger.default_bus"/>
             <argument>%webgriffe_sylius_active_campaign.cart_becomes_abandoned_period%</argument>
-            <argument>%webgriffe_sylius_active_campaign.command.enqueue_ecommerce_order.name%</argument>
+            <argument>%webgriffe_sylius_active_campaign.command.enqueue_ecommerce_abandoned_cart.name%</argument>
             <tag name="console.command"/>
         </service>
     </services>
