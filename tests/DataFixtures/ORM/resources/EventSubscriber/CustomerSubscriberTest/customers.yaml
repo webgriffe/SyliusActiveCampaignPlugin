@@ -4,3 +4,37 @@ App\Entity\Customer\Customer:
         first_name: 'James'
         last_name: 'Rodriguez'
         activeCampaignId: 1234
+    customer_bob:
+        email: 'bob@email.com'
+        first_name: 'Bob'
+        last_name: 'Rodriguez'
+        activeCampaignId: 1256
+        channelCustomers:
+            - "@customer_bob_fashion_shop"
+            - "@customer_bob_digital_shop"
+    customer_sam:
+        email: 'sam@email.com'
+        first_name: 'Samuel'
+        last_name: 'Storm'
+        activeCampaignId: 542
+        channelCustomers:
+            - "@customer_sam_fashion_shop"
+            - "@customer_sam_digital_shop"
+
+App\Entity\Customer\ChannelCustomer:
+    customer_bob_fashion_shop:
+        channel: "@fashion_shop"
+        customer: "@customer_bob"
+        activeCampaignId: 576
+    customer_bob_digital_shop:
+        channel: "@digital_shop"
+        customer: "@customer_bob"
+        activeCampaignId: 234
+    customer_sam_fashion_shop:
+        channel: "@fashion_shop"
+        customer: "@customer_sam"
+        activeCampaignId: 13
+    customer_sam_digital_shop:
+        channel: "@digital_shop"
+        customer: "@customer_sam"
+        activeCampaignId: 143

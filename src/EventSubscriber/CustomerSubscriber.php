@@ -7,6 +7,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\EventSubscriber;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
+use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -17,12 +18,15 @@ use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCust
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerRemove;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
+use Webmozart\Assert\Assert;
 
 final class CustomerSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private MessageBusInterface $messageBus,
-        private ChannelRepositoryInterface $channelRepository
+        private ChannelRepositoryInterface $channelRepository,
+        private RepositoryInterface $channelCustomerRepository
     ) {
     }
 
@@ -106,7 +110,7 @@ final class CustomerSubscriber implements EventSubscriberInterface
     public function updateEcommerceCustomer(GenericEvent $event): void
     {
         $customer = $event->getSubject();
-        if (!$customer instanceof CustomerInterface || !$customer instanceof ActiveCampaignAwareInterface) {
+        if (!$customer instanceof CustomerInterface || !$customer instanceof CustomerActiveCampaignAwareInterface) {
             return;
         }
         /** @var mixed $customerId */
@@ -121,17 +125,11 @@ final class CustomerSubscriber implements EventSubscriberInterface
         if ($activeCampaignId === null) {
             return;
         }
-        /** @var ChannelInterface $channel */
-        foreach ($this->channelRepository->findBy(['enabled' => true]) as $channel) {
-            /** @var mixed $channelId */
-            $channelId = $channel->getId();
-            if ($channelId === null) {
-                continue;
-            }
-            if (!is_int($channelId)) {
-                $channelId = (string) $channelId;
-            }
-            $this->messageBus->dispatch(new EcommerceCustomerUpdate($customerId, $activeCampaignId, $channelId));
+        foreach ($customer->getChannelCustomers() as $channelCustomer) {
+            /** @var int|string|null $channelId */
+            $channelId = $channelCustomer->getChannel()->getId();
+            Assert::notNull($channelId);
+            $this->messageBus->dispatch(new EcommerceCustomerUpdate($customerId, $channelCustomer->getActiveCampaignId(), $channelId));
         }
     }
 
@@ -152,16 +150,15 @@ final class CustomerSubscriber implements EventSubscriberInterface
     public function removeEcommerceCustomer(GenericEvent $event): void
     {
         $customer = $event->getSubject();
-        if (!$customer instanceof ActiveCampaignAwareInterface) {
+        if (!$customer instanceof CustomerActiveCampaignAwareInterface) {
             return;
         }
         $activeCampaignId = $customer->getActiveCampaignId();
         if ($activeCampaignId === null) {
             return;
         }
-        /** @var ChannelInterface $channel */
-        foreach ($this->channelRepository->findBy(['enabled' => true]) as $channel) {
-            $this->messageBus->dispatch(new EcommerceCustomerRemove($activeCampaignId));
+        foreach ($customer->getChannelCustomers() as $channelCustomer) {
+            $this->messageBus->dispatch(new EcommerceCustomerRemove($channelCustomer->getActiveCampaignId()));
         }
     }
 }
