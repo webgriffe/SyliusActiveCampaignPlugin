@@ -4,15 +4,20 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceCustomer;
 
+use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
+use Sylius\Component\Resource\Factory\FactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceCustomerMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
+use Webmozart\Assert\Assert;
 
 final class EcommerceCustomerCreateHandler
 {
@@ -20,7 +25,9 @@ final class EcommerceCustomerCreateHandler
         private EcommerceCustomerMapperInterface $ecommerceCustomerMapper,
         private ActiveCampaignResourceClientInterface $activeCampaignClient,
         private CustomerRepositoryInterface $customerRepository,
-        private ChannelRepositoryInterface $channelRepository
+        private ChannelRepositoryInterface $channelRepository,
+        private FactoryInterface $channelCustomerFactory,
+        private EntityManagerInterface $entityManager
     ) {
     }
 
@@ -51,7 +58,14 @@ final class EcommerceCustomerCreateHandler
             throw new InvalidArgumentException(sprintf('The Customer with id "%s" has been already created on ActiveCampaign on the EcommerceCustomer with id "%s"', $customerId, $activeCampaignId));
         }
         $response = $this->activeCampaignClient->create($this->ecommerceCustomerMapper->mapFromCustomerAndChannel($customer, $channel));
-        $customer->setActiveCampaignId($response->getResourceResponse()->getId());
+        Assert::isInstanceOf($customer, CustomerActiveCampaignAwareInterface::class);
+        /** @var ChannelCustomerInterface $channelCustomer */
+        $channelCustomer = $this->channelCustomerFactory->createNew();
+        $channelCustomer->setCustomer($customer);
+        $channelCustomer->setActiveCampaignId($response->getResourceResponse()->getId());
+        $channelCustomer->setChannel($channel);
+        $this->entityManager->persist($channelCustomer);
+        $customer->addChannelCustomer($channelCustomer);
         $this->customerRepository->add($customer);
     }
 }

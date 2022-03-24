@@ -52,6 +52,8 @@
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.ecommerce_customer"/>
             <argument type="service" id="sylius.repository.customer"/>
             <argument type="service" id="sylius.repository.channel"/>
+            <argument type="service" id="webgriffe_sylius_active_campaign.factory.channel_customer"/>
+            <argument type="service" id="doctrine.orm.entity_manager"/>
             <tag name="messenger.message_handler"/>
         </service>
 

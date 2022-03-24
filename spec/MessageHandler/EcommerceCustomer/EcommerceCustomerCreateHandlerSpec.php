@@ -6,18 +6,22 @@ namespace spec\Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceCust
 
 use App\Entity\Channel\ChannelInterface;
 use App\Entity\Customer\CustomerInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
-use Sylius\Component\Core\Model\CustomerInterface as SyliusCustomerInterface;
 use Sylius\Component\Core\Model\ChannelInterface as SyliusChannelInterface;
+use Sylius\Component\Core\Model\CustomerInterface as SyliusCustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
+use Sylius\Component\Resource\Factory\FactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceCustomerMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceCustomer\EcommerceCustomerCreateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceCustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseInterface;
 
@@ -30,7 +34,10 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
         ChannelRepositoryInterface $channelRepository,
         CustomerInterface $customer,
         ChannelInterface $channel,
-        EcommerceCustomerInterface $ecommerceCustomer
+        EcommerceCustomerInterface $ecommerceCustomer,
+        FactoryInterface $channelCustomerFactory,
+        ChannelCustomerInterface $channelCustomer,
+        EntityManagerInterface $entityManager
     ): void {
         $ecommerceCustomerMapper->mapFromCustomerAndChannel($customer, $channel)->willReturn($ecommerceCustomer);
 
@@ -40,7 +47,9 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
         $channelRepository->find(1)->willReturn($channel);
         $customerRepository->find(12)->willReturn($customer);
 
-        $this->beConstructedWith($ecommerceCustomerMapper, $activeCampaignClient, $customerRepository, $channelRepository);
+        $channelCustomerFactory->createNew()->willReturn($channelCustomer);
+
+        $this->beConstructedWith($ecommerceCustomerMapper, $activeCampaignClient, $customerRepository, $channelRepository, $channelCustomerFactory, $entityManager);
     }
 
     public function it_is_initializable(): void
@@ -54,7 +63,8 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
         $channelRepository->find(1)->shouldBeCalledOnce()->willReturn(null);
 
         $this->shouldThrow(new InvalidArgumentException('Channel with id "1" does not exists'))->during(
-            '__invoke', [new EcommerceCustomerCreate(12, 1)]
+            '__invoke',
+            [new EcommerceCustomerCreate(12, 1)]
         );
     }
 
@@ -65,7 +75,8 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
         $channelRepository->find(1)->shouldBeCalledOnce()->willReturn($syliusChannel);
 
         $this->shouldThrow(new InvalidArgumentException('The Channel entity should implement the "Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface" class'))->during(
-            '__invoke', [new EcommerceCustomerCreate(12, 1)]
+            '__invoke',
+            [new EcommerceCustomerCreate(12, 1)]
         );
     }
 
@@ -75,7 +86,8 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
         $customerRepository->find(12)->shouldBeCalledOnce()->willReturn(null);
 
         $this->shouldThrow(new InvalidArgumentException('Customer with id "12" does not exists'))->during(
-            '__invoke', [new EcommerceCustomerCreate(12, 1)]
+            '__invoke',
+            [new EcommerceCustomerCreate(12, 1)]
         );
     }
 
@@ -86,7 +98,8 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
         $customerRepository->find(12)->shouldBeCalledOnce()->willReturn($syliusCustomer);
 
         $this->shouldThrow(new InvalidArgumentException('The Customer entity should implement the "Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface" class'))->during(
-            '__invoke', [new EcommerceCustomerCreate(12, 1)]
+            '__invoke',
+            [new EcommerceCustomerCreate(12, 1)]
         );
     }
 
@@ -96,7 +109,8 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
         $customer->getActiveCampaignId()->willReturn('321');
 
         $this->shouldThrow(new InvalidArgumentException('The Customer with id "12" has been already created on ActiveCampaign on the EcommerceCustomer with id "321"'))->during(
-            '__invoke', [new EcommerceCustomerCreate(12, 1)]
+            '__invoke',
+            [new EcommerceCustomerCreate(12, 1)]
         );
     }
 
@@ -106,12 +120,24 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
         CustomerRepositoryInterface $customerRepository,
         EcommerceCustomerInterface $ecommerceCustomer,
         CreateResourceResponseInterface $createEcommerceCustomerResponse,
-        ResourceResponseInterface $ecommerceCustomerResponse
+        ResourceResponseInterface $ecommerceCustomerResponse,
+        ChannelCustomerInterface $channelCustomer,
+        ChannelInterface $channel,
+        EntityManagerInterface $entityManager
     ): void {
         $ecommerceCustomerResponse->getId()->willReturn(3423);
         $createEcommerceCustomerResponse->getResourceResponse()->willReturn($ecommerceCustomerResponse);
         $activeCampaignClient->create($ecommerceCustomer)->shouldBeCalledOnce()->willReturn($createEcommerceCustomerResponse);
-        $customer->setActiveCampaignId(3423)->shouldBeCalledOnce();
+
+        $channelCustomer->setCustomer($customer)->shouldBeCalledOnce();
+        $channelCustomer->setActiveCampaignId(3423)->shouldBeCalledOnce();
+        $channelCustomer->setChannel($channel)->shouldBeCalledOnce();
+
+        $customer->setActiveCampaignId(Argument::any())->shouldNotBeCalled();
+        $customer->addChannelCustomer($channelCustomer)->shouldBeCalledOnce();
+
+        $entityManager->persist($channelCustomer)->shouldBeCalledOnce();
+
         $customerRepository->add($customer)->shouldBeCalledOnce();
 
         $this->__invoke(new EcommerceCustomerCreate(12, 1));

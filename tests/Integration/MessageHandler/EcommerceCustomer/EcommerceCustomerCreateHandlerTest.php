@@ -8,17 +8,21 @@ use Fidry\AliceDataFixtures\Persistence\PurgeMode;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
+use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\ActiveCampaignEcommerceCustomerClientStub;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceCustomer\EcommerceCustomerCreateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
 
 final class EcommerceCustomerCreateHandlerTest extends KernelTestCase
 {
     private const FIXTURE_BASE_DIR = __DIR__ . '/../../../DataFixtures/ORM/resources/MessageHandler/EcommerceCustomerCreateHandlerTest';
 
     private CustomerRepositoryInterface $customerRepository;
+
+    private RepositoryInterface $channelCustomerRepository;
 
     private ChannelRepositoryInterface $channelRepository;
 
@@ -27,6 +31,7 @@ final class EcommerceCustomerCreateHandlerTest extends KernelTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->channelCustomerRepository = self::getContainer()->get('webgriffe_sylius_active_campaign.repository.channel_customer');
         $this->customerRepository = self::getContainer()->get('sylius.repository.customer');
         $this->channelRepository = self::getContainer()->get('sylius.repository.channel');
 
@@ -41,7 +46,9 @@ final class EcommerceCustomerCreateHandlerTest extends KernelTestCase
             self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.mapper.ecommerce_customer'),
             new ActiveCampaignEcommerceCustomerClientStub(),
             $this->customerRepository,
-            $this->channelRepository
+            $this->channelRepository,
+            self::getContainer()->get('webgriffe_sylius_active_campaign.factory.channel_customer'),
+            self::getContainer()->get('doctrine.orm.entity_manager'),
         );
     }
 
@@ -51,8 +58,11 @@ final class EcommerceCustomerCreateHandlerTest extends KernelTestCase
         $customer = $this->customerRepository->findOneBy(['email' => 'jim@email.com']);
         $this->ecommerceCustomerCreateHandler->__invoke(new EcommerceCustomerCreate($customer->getId(), $channel->getId()));
 
+        /** @var ChannelCustomerInterface $channelCustomer */
+        $channelCustomer = $this->channelCustomerRepository->findOneBy(['customer' => $customer, 'channel' => $channel]);
         /** @var CustomerInterface&ActiveCampaignAwareInterface $customer */
         $customer = $this->customerRepository->find($customer->getId());
-        $this->assertEquals(3423, $customer->getActiveCampaignId());
+        $this->assertNull($customer->getActiveCampaignId());
+        $this->assertEquals(3423, $channelCustomer->getActiveCampaignId());
     }
 }
