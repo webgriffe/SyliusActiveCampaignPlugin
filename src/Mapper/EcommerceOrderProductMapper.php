@@ -10,6 +10,8 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Core\Model\TaxonInterface;
+use Symfony\Component\Asset\UrlPackage;
+use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderProductFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Generator\ChannelHostnameUrlGeneratorInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderProductInterface;
@@ -21,6 +23,7 @@ final class EcommerceOrderProductMapper implements EcommerceOrderProductMapperIn
         private EcommerceOrderProductFactoryInterface $ecommerceOrderProductFactory,
         private ChannelHostnameUrlGeneratorInterface $channelHostnameUrlGenerator,
         private string $defaultLocale,
+        private string $scheme = 'http',
         private ?string $imageType = null
     ) {
     }
@@ -48,30 +51,43 @@ final class EcommerceOrderProductMapper implements EcommerceOrderProductMapperIn
         }
         $ecommerceOrderProduct->setSku($product->getCode());
         $ecommerceOrderProduct->setDescription($product->getDescription());
-        $ecommerceOrderProduct->setImageUrl($this->getImageUrlFromProduct($product));
         $channel = $order->getChannel();
         Assert::isInstanceOf($channel, ChannelInterface::class, 'The order\'s channel should not be null.');
         $ecommerceOrderProduct->setProductUrl($this->getProductUrl($product, $channel, $this->getLocaleCodeFromOrder($order)));
+        $ecommerceOrderProduct->setImageUrl($this->getImageUrlFromProductAndChannel($product, $channel));
 
         return $ecommerceOrderProduct;
     }
 
-    private function getImageUrlFromProduct(ProductInterface $product): ?string
+    private function getImageUrlFromPathAndChannel(string $path, ChannelInterface $channel): string
+    {
+        $hostname = $channel->getHostname();
+        Assert::notNull($hostname, 'The channel\'s hostname should not be null.');
+        // TODO: is there any better way to handle this? Especially the media/image directory
+        $urlPackage = new UrlPackage(
+            $this->scheme . '://' . $hostname . (str_ends_with($hostname, '/') ? '' : '/') . 'media/image',
+            new EmptyVersionStrategy()
+        );
+
+        return $urlPackage->getUrl($path);
+    }
+
+    private function getImageUrlFromProductAndChannel(ProductInterface $product, ChannelInterface $channel): ?string
     {
         if ($this->imageType === null || $this->imageType === '') {
             $firstImage = $product->getImages()->first();
-            if (!$firstImage instanceof ImageInterface) {
+            if (!$firstImage instanceof ImageInterface || ($path = $firstImage->getPath()) === null) {
                 return null;
             }
 
-            return $firstImage->getPath();
+            return $this->getImageUrlFromPathAndChannel($path, $channel);
         }
         $imageForType = $product->getImagesByType($this->imageType)->first();
-        if (!$imageForType instanceof ImageInterface) {
+        if (!$imageForType instanceof ImageInterface || ($path = $imageForType->getPath()) === null) {
             return null;
         }
 
-        return $imageForType->getPath();
+        return $this->getImageUrlFromPathAndChannel($path, $channel);
     }
 
     private function getLocaleCodeFromOrder(OrderInterface $order): string

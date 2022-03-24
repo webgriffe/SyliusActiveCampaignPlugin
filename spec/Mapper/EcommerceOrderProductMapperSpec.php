@@ -12,7 +12,6 @@ use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Core\Model\TaxonInterface;
 use Sylius\Component\Locale\Model\LocaleInterface;
-use Symfony\Component\Routing\RouterInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderProductFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Generator\ChannelHostnameUrlGeneratorInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderProductMapper;
@@ -25,7 +24,6 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
 {
     public function let(
         EcommerceOrderProductFactoryInterface $ecommerceOrderProductFactory,
-        RouterInterface $router,
         ChannelHostnameUrlGeneratorInterface $channelHostnameUrlGenerator,
         OrderItemInterface $orderItem,
         ProductInterface $product,
@@ -43,6 +41,7 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
         $frenchLocale->getCode()->willReturn('fr_FR');
 
         $channel->getDefaultLocale()->willReturn($frenchLocale);
+        $channel->getHostname()->willReturn('domain.org');
 
         $order->getLocaleCode()->willReturn('it_IT');
         $order->getChannel()->willReturn($channel);
@@ -67,10 +66,10 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
         $ecommerceOrderProduct->setCategory('Wine');
         $ecommerceOrderProduct->setSku('wine_bottle');
         $ecommerceOrderProduct->setDescription('Wine bottle of the 1956.');
-        $ecommerceOrderProduct->setImageUrl('path/wine.png');
+        $ecommerceOrderProduct->setImageUrl('https://domain.org/path/wine.png');
         $ecommerceOrderProduct->setProductUrl('https://localhost/products/wine-bottle');
 
-        $this->beConstructedWith($ecommerceOrderProductFactory, $channelHostnameUrlGenerator, 'en_US', null);
+        $this->beConstructedWith($ecommerceOrderProductFactory, $channelHostnameUrlGenerator, 'en_US', 'https', null);
     }
 
     public function it_is_initializable(): void
@@ -118,6 +117,13 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
             ->during('mapFromOrderItem', [$orderItem]);
     }
 
+    public function it_throws_if_order_item_order_channel_hostname_is_null(OrderItemInterface $orderItem, ChannelInterface $channel): void
+    {
+        $channel->getHostname()->willReturn(null);
+        $this->shouldThrow(new InvalidArgumentException('The channel\'s hostname should not be null.'))
+            ->during('mapFromOrderItem', [$orderItem]);
+    }
+
     public function it_maps_ecommerce_order_product_without_category_if_main_taxon_does_not_exist(
         OrderItemInterface $orderItem,
         ProductInterface $product,
@@ -148,7 +154,7 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
         ProductInterface $product,
         EcommerceOrderProductInterface $ecommerceOrderProduct
     ): void {
-        $this->beConstructedWith($ecommerceOrderProductFactory, $channelHostnameUrlGenerator, 'en_US', 'main');
+        $this->beConstructedWith($ecommerceOrderProductFactory, $channelHostnameUrlGenerator, 'en_US', 'https', 'main');
         $product->getImagesByType('main')->willReturn(new ArrayCollection());
         $ecommerceOrderProduct->setImageUrl('path/wine.png')->shouldNotBeCalled();
         $ecommerceOrderProduct->setImageUrl(null)->shouldBeCalledOnce();
@@ -164,12 +170,12 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
         EcommerceOrderProductInterface $ecommerceOrderProduct,
         ImageInterface $typedImage
     ): void {
-        $this->beConstructedWith($ecommerceOrderProductFactory, $channelHostnameUrlGenerator, 'en_US', 'main');
+        $this->beConstructedWith($ecommerceOrderProductFactory, $channelHostnameUrlGenerator, 'en_US', 'https', 'main');
         $product->getImagesByType('main')->willReturn(new ArrayCollection([$typedImage->getWrappedObject()]));
         $typedImage->getPath()->willReturn('path/main.jpg');
-        $ecommerceOrderProduct->setImageUrl('path/wine.png')->shouldNotBeCalled();
+        $ecommerceOrderProduct->setImageUrl('https://domain.org/path/wine.png')->shouldNotBeCalled();
         $ecommerceOrderProduct->setImageUrl(null)->shouldNotBeCalled();
-        $ecommerceOrderProduct->setImageUrl('path/main.jpg')->shouldBeCalledOnce();
+        $ecommerceOrderProduct->setImageUrl('https://domain.org/path/main.jpg')->shouldBeCalledOnce();
 
         $this->mapFromOrderItem($orderItem)->shouldReturn($ecommerceOrderProduct);
     }
@@ -181,9 +187,9 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
         ProductInterface $product,
         EcommerceOrderProductInterface $ecommerceOrderProduct
     ): void {
-        $this->beConstructedWith($ecommerceOrderProductFactory, $channelHostnameUrlGenerator, 'en_US', '');
+        $this->beConstructedWith($ecommerceOrderProductFactory, $channelHostnameUrlGenerator, 'en_US', 'https', '');
         $product->getImagesByType('')->shouldNotBeCalled();
-        $ecommerceOrderProduct->setImageUrl('path/wine.png')->shouldBeCalledOnce();
+        $ecommerceOrderProduct->setImageUrl('https://domain.org/path/wine.png')->shouldBeCalledOnce();
         $ecommerceOrderProduct->setImageUrl(null)->shouldNotBeCalled();
 
         $this->mapFromOrderItem($orderItem)->shouldReturn($ecommerceOrderProduct);
