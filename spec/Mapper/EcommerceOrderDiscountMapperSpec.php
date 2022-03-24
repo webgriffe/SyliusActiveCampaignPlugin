@@ -35,25 +35,25 @@ class EcommerceOrderDiscountMapperSpec extends ObjectBehavior
         $winterSalePromotion->getCode()->willReturn('WINTER_SALE');
         $winterSalePromotion->getName()->willReturn('Winter Sale');
 
-        $firstShippingAdjustment->getAmount()->willReturn(5000);
+        $firstShippingAdjustment->getAmount()->willReturn(-5000);
         $firstShippingAdjustment->getOriginCode()->willReturn('FREE_SHIPMENT');
         $order->getAdjustmentsRecursively(AdjustmentInterface::ORDER_SHIPPING_PROMOTION_ADJUSTMENT)->willReturn(new ArrayCollection([
             $firstShippingAdjustment->getWrappedObject()
         ]));
 
-        $firstOrderUnitAdjustment->getAmount()->willReturn(1600);
+        $firstOrderUnitAdjustment->getAmount()->willReturn(-1600);
         $firstOrderUnitAdjustment->getOriginCode()->willReturn('WINTER_SALE');
         $order->getAdjustmentsRecursively(AdjustmentInterface::ORDER_UNIT_PROMOTION_ADJUSTMENT)->willReturn(new ArrayCollection([
             $firstOrderUnitAdjustment->getWrappedObject()
         ]));
 
-        $firstOrderItemAdjustment->getAmount()->willReturn(1350);
+        $firstOrderItemAdjustment->getAmount()->willReturn(-1350);
         $firstOrderItemAdjustment->getOriginCode()->willReturn('WINTER_SALE');
         $order->getAdjustmentsRecursively(AdjustmentInterface::ORDER_ITEM_PROMOTION_ADJUSTMENT)->willReturn(new ArrayCollection([
             $firstOrderItemAdjustment->getWrappedObject()
         ]));
 
-        $firstOrderPromotionAdjustment->getAmount()->willReturn(2000);
+        $firstOrderPromotionAdjustment->getAmount()->willReturn(-2000);
         $firstOrderPromotionAdjustment->getOriginCode()->willReturn('WINTER_SALE');
         $order->getAdjustmentsRecursively(AdjustmentInterface::ORDER_PROMOTION_ADJUSTMENT)->willReturn(new ArrayCollection([
             $firstOrderPromotionAdjustment->getWrappedObject()

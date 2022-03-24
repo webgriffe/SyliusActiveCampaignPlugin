@@ -73,7 +73,7 @@ final class EcommerceOrderDiscountMapper implements EcommerceOrderDiscountMapper
     {
         $totalDiscountAmount = 0;
         foreach ($promotionAdjustments as $promotionAdjustment) {
-            $totalDiscountAmount += $promotionAdjustment->getAmount();
+            $totalDiscountAmount += -1 * $promotionAdjustment->getAmount();
         }
 
         return $totalDiscountAmount;
