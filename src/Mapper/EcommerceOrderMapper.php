@@ -15,6 +15,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderDisc
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderProductInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
 use Webmozart\Assert\Assert;
 
 final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
@@ -29,21 +30,23 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
 
     public function mapFromOrder(BaseOrderInterface $order, bool $isInRealTime): EcommerceOrderInterface
     {
-        /** @var CustomerInterface|(CustomerInterface&ActiveCampaignAwareInterface)|null $customer */
+        /** @var CustomerInterface|(CustomerInterface&CustomerActiveCampaignAwareInterface)|null $customer */
         $customer = $order->getCustomer();
         Assert::isInstanceOf($customer, CustomerInterface::class, sprintf('Order customer should implement "%s".', CustomerInterface::class));
-        Assert::isInstanceOf($customer, ActiveCampaignAwareInterface::class, sprintf('Order customer should implement "%s".', ActiveCampaignAwareInterface::class));
+        Assert::isInstanceOf($customer, CustomerActiveCampaignAwareInterface::class, sprintf('Order customer should implement "%s".', CustomerActiveCampaignAwareInterface::class));
         $customerEmail = $customer->getEmail();
         Assert::notNull($customerEmail, 'The customer\'s email should not be null.');
-        $ecommerceCustomerId = $customer->getActiveCampaignId();
-        Assert::notNull($ecommerceCustomerId, 'The customer\'s ActiveCampaign customer id should not be null.');
 
         /** @var ChannelInterface|(ChannelInterface&ActiveCampaignAwareInterface)|null $channel */
         $channel = $order->getChannel();
-        Assert::notNull($channel, 'Order does not have a channel.');
+        Assert::isInstanceOf($channel, ChannelInterface::class, sprintf('Order channel should implement "%s".', ChannelInterface::class));
         Assert::isInstanceOf($channel, ActiveCampaignAwareInterface::class, sprintf('Order channel should implement "%s".', ActiveCampaignAwareInterface::class));
         $connectionId = $channel->getActiveCampaignId();
         Assert::notNull($connectionId, 'The channel\'s ActiveCampaign connection id should not be null.');
+
+        $channelCustomer = $customer->getChannelCustomerByChannel($channel);
+        Assert::notNull($channelCustomer, 'The customer\'s ActiveCampaign Ecommerce Customer id should not be null.');
+        $ecommerceCustomerId = $channelCustomer->getActiveCampaignId();
 
         $currencyCode = $order->getCurrencyCode();
         Assert::notNull($currencyCode, 'The order currency code should not be null.');

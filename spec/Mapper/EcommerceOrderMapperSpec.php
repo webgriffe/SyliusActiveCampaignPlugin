@@ -27,6 +27,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderProductMapperInter
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderDiscountInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderProductInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
 use Webmozart\Assert\InvalidArgumentException;
 
 class EcommerceOrderMapperSpec extends ObjectBehavior
@@ -47,7 +48,8 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
         OrderItemInterface $firstOrderItem,
         EcommerceOrderProductInterface $firstOrderProduct,
         PromotionInterface $firstPromotion,
-        EcommerceOrderDiscountInterface $firstOrderDiscount
+        EcommerceOrderDiscountInterface $firstOrderDiscount,
+        ChannelCustomerInterface $channelCustomer
     ): void {
         $router->generate('sylius_shop_order_show', ['tokenValue' => 'sD4ew_w4s5T', '_locale' => 'en_US'])->willReturn('https://localhost/order/sD4ew_w4s5T');
 
@@ -80,7 +82,9 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
         $secondShippingMethod->getName()->willReturn('DHL');
 
         $customer->getEmail()->willReturn('info@activecampaign.org');
-        $customer->getActiveCampaignId()->willReturn(432);
+        $customer->getChannelCustomerByChannel($channel)->willReturn($channelCustomer);
+
+        $channelCustomer->getActiveCampaignId()->willReturn(432);
 
         $channel->getActiveCampaignId()->willReturn(1);
 
@@ -130,7 +134,7 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
     public function it_throws_if_order_customer_is_not_an_instance_of_active_campaign_aware_interface(OrderInterface $order, SyliusCustomerInterface $syliusCustomer): void
     {
         $order->getCustomer()->willReturn($syliusCustomer);
-        $this->shouldThrow(new InvalidArgumentException('Order customer should implement "Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface".'))
+        $this->shouldThrow(new InvalidArgumentException('Order customer should implement "Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface".'))
             ->during('mapFromOrder', [$order, true]);
     }
 
@@ -141,17 +145,17 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
             ->during('mapFromOrder', [$order, true]);
     }
 
-    public function it_throws_if_order_customer_active_campaign_id_is_null(OrderInterface $order, CustomerInterface $customer): void
+    public function it_throws_if_order_customer_active_campaign_id_is_null(OrderInterface $order, CustomerInterface $customer, ChannelInterface $channel): void
     {
-        $customer->getActiveCampaignId()->willReturn(null);
-        $this->shouldThrow(new InvalidArgumentException('The customer\'s ActiveCampaign customer id should not be null.'))
+        $customer->getChannelCustomerByChannel($channel)->willReturn(null);
+        $this->shouldThrow(new InvalidArgumentException('The customer\'s ActiveCampaign Ecommerce Customer id should not be null.'))
             ->during('mapFromOrder', [$order, true]);
     }
 
-    public function it_throws_if_order_channel_is_null(OrderInterface $order): void
+    public function it_throws_if_order_channel_is_not_an_instance_of_channel_interface(OrderInterface $order): void
     {
         $order->getChannel()->willReturn(null);
-        $this->shouldThrow(new InvalidArgumentException('Order does not have a channel.'))
+        $this->shouldThrow(new InvalidArgumentException('Order channel should implement "Sylius\Component\Core\Model\ChannelInterface".'))
             ->during('mapFromOrder', [$order, true]);
     }
 

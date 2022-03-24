@@ -3,4 +3,11 @@ App\Entity\Customer\Customer:
         email: 'jim@email.com'
         first_name: 'James'
         last_name: 'Rodriguez'
+        channelCustomers:
+            - "@customer_01_fashion_shop"
+
+App\Entity\Customer\ChannelCustomer:
+    customer_01_fashion_shop:
+        channel: "@fashion_shop"
+        customer: "@customer_01"
         activeCampaignId: 354
