@@ -6,6 +6,7 @@ App\Entity\Channel\Channel:
         defaultLocale: "@en_US"
         baseCurrency: "@EUR"
         activeCampaignId: 1
+        hostname: "localhost"
 
 Sylius\Component\Locale\Model\Locale:
     en_US:
