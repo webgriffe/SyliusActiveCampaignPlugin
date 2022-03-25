@@ -27,10 +27,17 @@
             <tag name="serializer.normalizer"/>
         </service>
 
+        <service id="webgriffe.sylius_active_campaign_plugin.serializer.list_resources_response" class="Webgriffe\SyliusActiveCampaignPlugin\Serializer\ListResourcesResponseNormalizer">
+            <argument type="service" id="serializer.denormalizer.array"/>
+            <tag name="serializer.normalizer"/>
+        </service>
+
         <service id="webgriffe.sylius_active_campaign_plugin.serializer"
                  class="Symfony\Component\Serializer\Serializer">
             <argument type="collection">
                 <argument type="service" id="serializer.normalizer.datetime"/>
+                <argument type="service" id="serializer.denormalizer.array"/>
+                <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer.list_resources_response"/>
                 <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer.normalizer.object"/>
             </argument>
             <argument type="collection">

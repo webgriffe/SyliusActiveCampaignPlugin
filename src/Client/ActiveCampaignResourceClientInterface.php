@@ -11,6 +11,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ResourceInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 
 interface ActiveCampaignResourceClientInterface
@@ -23,6 +24,11 @@ interface ActiveCampaignResourceClientInterface
      * @throws NotFoundHttpException
      */
     public function create(ResourceInterface $resource): CreateResourceResponseInterface;
+
+    /**
+     * @param array<string, string> $queryParams
+     */
+    public function list(array $queryParams = []): ListResourcesResponseInterface;
 
     /**
      * @throws GuzzleException

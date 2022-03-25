@@ -16,10 +16,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
+use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignAwareRepositoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Repository\ChannelActiveCampaignAwareRepositoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ContactResponse;
 use Webmozart\Assert\Assert;
 
 final class EnqueueContactAndEcommerceCustomerCommand extends Command
@@ -40,6 +42,7 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
         private ActiveCampaignAwareRepositoryInterface $customerRepository,
         private MessageBusInterface $messageBus,
         private ChannelActiveCampaignAwareRepositoryInterface $channelRepository,
+        private ActiveCampaignResourceClientInterface $activeCampaignContactClient,
         private ?string $name = null
     ) {
         parent::__construct($this->name);
@@ -132,6 +135,18 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
         $progressBar->start();
 
         foreach ($customersToExport as $customer) {
+            $email = $customer->getEmail();
+            Assert::notNull($email);
+            $searchContactsForEmail = $this->activeCampaignContactClient->list(['email' => $email])->getResourceResponseLists();
+            if (count($searchContactsForEmail) > 0) {
+                /** @var ContactResponse $contact */
+                $contact = $searchContactsForEmail[0];
+                $activeCampaignContactId = $contact->getId();
+
+                // TODO: update the contact and store the ActiveCampaign ID on customer
+
+                continue;
+            }
             /** @var string|int|null $customerId */
             $customerId = $customer->getId();
             Assert::notNull($customerId);

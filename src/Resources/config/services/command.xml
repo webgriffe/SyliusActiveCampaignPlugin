@@ -14,6 +14,7 @@
             <argument type="service" id="sylius.repository.customer"/>
             <argument type="service" id="messenger.default_bus"/>
             <argument type="service" id="sylius.repository.channel"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.contact"/>
             <argument>%webgriffe_sylius_active_campaign.command.enqueue_contact_and_ecommerce_customer.name%</argument>
             <tag name="console.command"/>
         </service>

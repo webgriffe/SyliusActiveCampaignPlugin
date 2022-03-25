@@ -12,6 +12,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\CreateCont
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\UpdateContactContactResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\UpdateContactResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 
 final class ActiveCampaignContactClientStub implements ActiveCampaignResourceClientInterface
@@ -25,6 +26,11 @@ final class ActiveCampaignContactClientStub implements ActiveCampaignResourceCli
                 $this->activeCampaignResourceId
             )
         );
+    }
+
+    public function list(array $queryParams = []): ListResourcesResponseInterface
+    {
+        throw new RuntimeException('Not implemented');
     }
 
     public function update(int $activeCampaignResourceId, ResourceInterface $resource): UpdateResourceResponseInterface

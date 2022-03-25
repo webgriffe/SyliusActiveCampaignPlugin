@@ -11,6 +11,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResp
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\EcommerceCustomerResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\CreateEcommerceCustomerResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\UpdateEcommerceCustomerResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 
 final class ActiveCampaignEcommerceCustomerClientStub implements ActiveCampaignResourceClientInterface
@@ -24,6 +25,11 @@ final class ActiveCampaignEcommerceCustomerClientStub implements ActiveCampaignR
                 $this->activeCampaignResourceId
             )
         );
+    }
+
+    public function list(array $queryParams = []): ListResourcesResponseInterface
+    {
+        throw new RuntimeException('Not implemented');
     }
 
     public function update(int $activeCampaignResourceId, ResourceInterface $resource): UpdateResourceResponseInterface

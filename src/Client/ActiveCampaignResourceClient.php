@@ -6,12 +6,15 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Client;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ResourceInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ContactResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 
 final class ActiveCampaignResourceClient implements ActiveCampaignResourceClientInterface
@@ -23,6 +26,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
         private SerializerInterface $serializer,
         private string $resourceName,
         private string $createResourceResponseType,
+        private string $listResourcesResponseType,
         private string $updateResourceResponseType
     ) {
     }
@@ -67,6 +71,36 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
         );
 
         return $createResourceResponse;
+    }
+
+    public function list(array $queryParams = []): ListResourcesResponseInterface
+    {
+        $httpBuildQuery = http_build_query($queryParams);
+        $response = $this->httpClient->send(new Request(
+            'GET',
+            self::API_ENDPOINT_VERSIONED . '/' . $this->resourceName . 's' . ($httpBuildQuery !== '' ? '?' . $httpBuildQuery : ''),
+        ));
+        if (($statusCode = $response->getStatusCode()) !== 200) {
+            if ($statusCode === 400) {
+                throw new BadRequestHttpException($response->getReasonPhrase(), null, 0, $response->getHeaders());
+            }
+
+            throw new HttpException($statusCode, $response->getReasonPhrase(), null, $response->getHeaders());
+        }
+
+        /** @var ListResourcesResponseInterface $listResourcesResponse */
+        $listResourcesResponse = $this->serializer->deserialize(
+            $response->getBody()->getContents(),
+            $this->listResourcesResponseType,
+            'json',
+            [
+                'resource' => $this->resourceName,
+                'responseType' => ContactResponse::class,
+                'type' => ListResourcesResponseInterface::class,
+            ]
+        );
+
+        return $listResourcesResponse;
     }
 
     public function update(int $activeCampaignResourceId, ResourceInterface $resource): UpdateResourceResponseInterface

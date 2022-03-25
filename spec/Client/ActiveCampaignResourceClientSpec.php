@@ -10,13 +10,16 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ContactResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 
 final class ActiveCampaignResourceClientSpec extends ObjectBehavior
@@ -27,9 +30,10 @@ final class ActiveCampaignResourceClientSpec extends ObjectBehavior
 
     private const UPDATE_CONTACT_RESPONSE_PAYLOAD = '{"fieldValues":[{"contact":"113","field":"1","value":"TheValueforFirstField","cdate":"2020-08-01T10:54:59-05:00","udate":"2020-08-01T14:13:34-05:00","links":{"owner":"https://:account.api-us1.com/api/3/fieldValues/11797/owner","field":"https://:account.api-us1.com/api/3/fieldValues/11797/field"},"id":"11797","owner":"113"},{"contact":"113","field":"6","value":"2008-01-20","cdate":"2020-08-01T10:54:59-05:00","udate":"2020-08-01T14:13:34-05:00","links":{"owner":"https://:account.api-us1.com/api/3/fieldValues/11798/owner","field":"https://:account.api-us1.com/api/3/fieldValues/11798/field"},"id":"11798","owner":"113"}],"contact":{"cdate":"2018-09-28T13:50:41-05:00","email":"johndoe@example.com","phone":"","firstName":"John","lastName":"Doe","orgid":"0","segmentio_id":"","bounced_hard":"0","bounced_soft":"0","bounced_date":null,"ip":"0","ua":null,"hash":"8309146b50af1ed5f9cb40c7465a0315","socialdata_lastcheck":null,"email_local":"","email_domain":"","sentcnt":"0","rating_tstamp":null,"gravatar":"0","deleted":"0","anonymized":"0","adate":null,"udate":"2018-09-28T13:55:59-05:00","edate":null,"deleted_at":null,"created_utc_timestamp":"2018-09-2813:50:41","updated_utc_timestamp":"2018-09-2813:50:41","links":{"bounceLogs":"https://:account.api-us1.com/api/:version/contacts/113/bounceLogs","contactAutomations":"https://:account.api-us1.com/api/:version/contacts/113/contactAutomations","contactData":"https://:account.api-us1.com/api/:version/contacts/113/contactData","contactGoals":"https://:account.api-us1.com/api/:version/contacts/113/contactGoals","contactLists":"https://:account.api-us1.com/api/:version/contacts/113/contactLists","contactLogs":"https://:account.api-us1.com/api/:version/contacts/113/contactLogs","contactTags":"https://:account.api-us1.com/api/:version/contacts/113/contactTags","contactDeals":"https://:account.api-us1.com/api/:version/contacts/113/contactDeals","deals":"https://:account.api-us1.com/api/:version/contacts/113/deals","fieldValues":"https://:account.api-us1.com/api/:version/contacts/113/fieldValues","geoIps":"https://:account.api-us1.com/api/:version/contacts/113/geoIps","notes":"https://:account.api-us1.com/api/:version/contacts/113/notes","organization":"https://:account.api-us1.com/api/:version/contacts/113/organization","plusAppend":"https://:account.api-us1.com/api/:version/contacts/113/plusAppend","trackingLogs":"https://:account.api-us1.com/api/:version/contacts/113/trackingLogs","scoreValues":"https://:account.api-us1.com/api/:version/contacts/113/scoreValues"},"id":"113","organization":null}}';
 
+    private const LIST_CONTACTS_RESPONSE_PAYLOAD = '{"scoreValues":[],"contacts":[{"cdate":"2022-03-24T11:23:40-05:00","email":"shop@example.com","phone":"+1-848-218-4354","firstName":"John","lastName":"Doe","orgid":"0","orgname":"","segmentio_id":"","bounced_hard":"0","bounced_soft":"0","bounced_date":null,"ip":"0","ua":null,"hash":"c368260bfe7c0fad03600117189d11ed","socialdata_lastcheck":null,"email_local":"","email_domain":"example.com","sentcnt":"0","rating_tstamp":null,"gravatar":"0","deleted":"0","anonymized":"0","adate":null,"udate":"2022-03-24T11:23:40-05:00","edate":null,"deleted_at":null,"created_utc_timestamp":"2022-03-2411:23:40","updated_utc_timestamp":"2022-03-2411:23:40","created_timestamp":"2022-03-2411:23:40","updated_timestamp":"2022-03-2411:23:40","created_by":null,"updated_by":null,"email_empty":false,"mpp_tracking":"0","scoreValues":[],"accountContacts":[],"links":{"bounceLogs":"https://webgriffe1646663336.api-us1.com/api/3/contacts/76/bounceLogs","contactAutomations":"https://webgriffe1646663336.api-us1.com/api/3/contacts/76/contactAutomations?limit=1000&orders%5Blastdate%5D=DESC","contactData":"https://webgriffe1646663336.api-us1.com/api/3/contacts/76/contactData","contactGoals":"https://webgriffe1646663336.api-us1.com/api/3/contacts/76/contactGoals","contactLists":"https://webgriffe1646663336.api-us1.com/api/3/contacts/76/contactLists","contactLogs":"https://webgriffe1646663336.api-us1.com/api/3/contacts/76/contactLogs","contactTags":"https://webgriffe1646663336.api-us1.com/api/3/contacts/76/contactTags","contactDeals":"https://webgriffe1646663336.api-us1.com/api/3/contacts/76/contactDeals","deals":"https://webgriffe1646663336.api-us1.com/api/3/contacts/76/deals","fieldValues":"https://webgriffe1646663336.api-us1.com/api/3/contacts/76/fieldValues","geoIps":"https://webgriffe1646663336.api-us1.com/api/3/contacts/76/geoIps","notes":"https://webgriffe1646663336.api-us1.com/api/3/contacts/76/notes","organization":"https://webgriffe1646663336.api-us1.com/api/3/contacts/76/organization","plusAppend":"https://webgriffe1646663336.api-us1.com/api/3/contacts/76/plusAppend","trackingLogs":"https://webgriffe1646663336.api-us1.com/api/3/contacts/76/trackingLogs","scoreValues":"https://webgriffe1646663336.api-us1.com/api/3/contacts/76/scoreValues","accountContacts":"https://webgriffe1646663336.api-us1.com/api/3/contacts/76/accountContacts","automationEntryCounts":"https://webgriffe1646663336.api-us1.com/api/3/contacts/76/automationEntryCounts"},"id":"76","organization":null}],"meta":{"page_input":{"segmentid":0,"formid":0,"listid":0,"tagid":0,"limit":20,"offset":0,"search":null,"sort":null,"seriesid":0,"waitid":0,"status":-1,"forceQuery":0,"cacheid":"60d276cba96b2e2c64db05a694810408","email":"shop@example.com"},"total":"1","sortable":true}}';
+
     public function let(
         ClientInterface $httpClient,
-        SerializerInterface $deserializer,
         SerializerInterface $serializer,
         ContactInterface $contact,
         ResponseInterface $response
@@ -39,6 +43,7 @@ final class ActiveCampaignResourceClientSpec extends ObjectBehavior
             $serializer,
             'contact',
             'Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\CreateContactResponse',
+            'Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ListContactsResponse',
             'Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\UpdateContactResponse'
         );
 
@@ -105,6 +110,50 @@ final class ActiveCampaignResourceClientSpec extends ObjectBehavior
         $response->getReasonPhrase()->willReturn('Internal Server Error');
 
         $this->shouldThrow(new HttpException(500, 'Internal Server Error'))->during('create', [$contact]);
+    }
+
+    public function it_lists_resources_on_active_campaign_filtered_by_query_params(
+        SerializerInterface $serializer,
+        ResponseInterface $response,
+        StreamInterface $responseBody,
+        ListResourcesResponseInterface $listResourcesResponse
+    ): void {
+        $response->getStatusCode()->willReturn(200);
+        $response->getBody()->willReturn($responseBody);
+        $responseBody->getContents()->willReturn(self::LIST_CONTACTS_RESPONSE_PAYLOAD);
+        $serializer->deserialize(
+            self::LIST_CONTACTS_RESPONSE_PAYLOAD,
+            'Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ListContactsResponse',
+            'json',
+            [
+                'resource' => 'contact',
+                'responseType' => ContactResponse::class,
+                'type' => ListResourcesResponseInterface::class,
+            ]
+        )->shouldBeCalledOnce()->willReturn($listResourcesResponse);
+
+        $this->list(['email' => 'info@test.com'])->shouldReturn($listResourcesResponse);
+    }
+
+    public function it_throws_while_listing_resources_when_the_request_is_bad(
+        ResponseInterface $response
+    ): void {
+        $response->getStatusCode()->willReturn(400);
+        $response->getHeaders()->willReturn([]);
+        $response->getReasonPhrase()->willReturn('The field "email2" does not exists!');
+
+        $this->shouldThrow(new BadRequestHttpException('The field "email2" does not exists!'))->during('list', [['email2' => 'info@test.com']]);
+    }
+
+    public function it_throws_while_listing_resources_when_the_response_is_not_recognized(
+        ResponseInterface $response,
+        ContactInterface $contact
+    ): void {
+        $response->getStatusCode()->willReturn(500);
+        $response->getHeaders()->willReturn([]);
+        $response->getReasonPhrase()->willReturn('Internal Server Error');
+
+        $this->shouldThrow(new HttpException(500, 'Internal Server Error'))->during('list', [['email' => 'info@test.com']]);
     }
 
     public function it_updates_a_resource_on_active_campaign(
