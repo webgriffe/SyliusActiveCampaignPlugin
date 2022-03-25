@@ -66,7 +66,7 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
         $ecommerceOrderProduct->setCategory('Wine');
         $ecommerceOrderProduct->setSku('wine_bottle');
         $ecommerceOrderProduct->setDescription('Wine bottle of the 1956.');
-        $ecommerceOrderProduct->setImageUrl('https://domain.org/path/wine.png');
+        $ecommerceOrderProduct->setImageUrl('https://domain.org/media/image/path/wine.png');
         $ecommerceOrderProduct->setProductUrl('https://localhost/products/wine-bottle');
 
         $this->beConstructedWith($ecommerceOrderProductFactory, $channelHostnameUrlGenerator, 'en_US', 'https', null);
@@ -141,7 +141,7 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
         EcommerceOrderProductInterface $ecommerceOrderProduct
     ): void {
         $product->getImages()->willReturn(new ArrayCollection());
-        $ecommerceOrderProduct->setImageUrl('path/wine.png')->shouldNotBeCalled();
+        $ecommerceOrderProduct->setImageUrl('media/image/path/wine.png')->shouldNotBeCalled();
         $ecommerceOrderProduct->setImageUrl(null)->shouldBeCalledOnce();
 
         $this->mapFromOrderItem($orderItem)->shouldReturn($ecommerceOrderProduct);
@@ -156,7 +156,7 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
     ): void {
         $this->beConstructedWith($ecommerceOrderProductFactory, $channelHostnameUrlGenerator, 'en_US', 'https', 'main');
         $product->getImagesByType('main')->willReturn(new ArrayCollection());
-        $ecommerceOrderProduct->setImageUrl('path/wine.png')->shouldNotBeCalled();
+        $ecommerceOrderProduct->setImageUrl('media/image/path/wine.png')->shouldNotBeCalled();
         $ecommerceOrderProduct->setImageUrl(null)->shouldBeCalledOnce();
 
         $this->mapFromOrderItem($orderItem)->shouldReturn($ecommerceOrderProduct);
@@ -173,9 +173,9 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
         $this->beConstructedWith($ecommerceOrderProductFactory, $channelHostnameUrlGenerator, 'en_US', 'https', 'main');
         $product->getImagesByType('main')->willReturn(new ArrayCollection([$typedImage->getWrappedObject()]));
         $typedImage->getPath()->willReturn('path/main.jpg');
-        $ecommerceOrderProduct->setImageUrl('https://domain.org/path/wine.png')->shouldNotBeCalled();
+        $ecommerceOrderProduct->setImageUrl('https://domain.org/media/image/path/wine.png')->shouldNotBeCalled();
         $ecommerceOrderProduct->setImageUrl(null)->shouldNotBeCalled();
-        $ecommerceOrderProduct->setImageUrl('https://domain.org/path/main.jpg')->shouldBeCalledOnce();
+        $ecommerceOrderProduct->setImageUrl('https://domain.org/media/image/path/main.jpg')->shouldBeCalledOnce();
 
         $this->mapFromOrderItem($orderItem)->shouldReturn($ecommerceOrderProduct);
     }
@@ -189,7 +189,7 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
     ): void {
         $this->beConstructedWith($ecommerceOrderProductFactory, $channelHostnameUrlGenerator, 'en_US', 'https', '');
         $product->getImagesByType('')->shouldNotBeCalled();
-        $ecommerceOrderProduct->setImageUrl('https://domain.org/path/wine.png')->shouldBeCalledOnce();
+        $ecommerceOrderProduct->setImageUrl('https://domain.org/media/image/path/wine.png')->shouldBeCalledOnce();
         $ecommerceOrderProduct->setImageUrl(null)->shouldNotBeCalled();
 
         $this->mapFromOrderItem($orderItem)->shouldReturn($ecommerceOrderProduct);
