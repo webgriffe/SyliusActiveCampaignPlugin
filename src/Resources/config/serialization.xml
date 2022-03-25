@@ -25,6 +25,7 @@
         <attribute name="externalId" serialized-name="externalid"/>
         <attribute name="connectionId" serialized-name="connectionid"/>
         <attribute name="customerId" serialized-name="customerid"/>
+        <attribute name="externalCheckoutId" serialized-name="externalcheckoutid"/>
     </class>
     <class name="Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderProduct">
         <attribute name="externalId" serialized-name="externalid"/>
