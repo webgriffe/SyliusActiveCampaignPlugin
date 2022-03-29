@@ -35,7 +35,6 @@ trait ActiveCampaignOrderRepositoryTrait
 
         return $this->findOneBy([
             'id' => $id,
-            'activeCampaignId' => null,
         ]);
     }
 
@@ -45,8 +44,7 @@ trait ActiveCampaignOrderRepositoryTrait
         assert($this instanceof EntityRepository);
 
         return $this->createQueryBuilder('o')
-            ->andWhere('o.customer IS NOT NULL')
-            ->andWhere('o.activeCampaignId IS NULL')
+            ->where('o.customer IS NOT NULL')
             ->getQuery()
             ->getResult()
         ;

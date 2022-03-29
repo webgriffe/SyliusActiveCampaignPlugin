@@ -14,11 +14,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\EcommerceOrderEnqueuerInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface;
-use Webmozart\Assert\Assert;
 
 final class EnqueueEcommerceOrderCommand extends Command
 {
@@ -36,7 +35,7 @@ final class EnqueueEcommerceOrderCommand extends Command
     /** @param ActiveCampaignResourceRepositoryInterface<OrderInterface> $orderRepository */
     public function __construct(
         private ActiveCampaignResourceRepositoryInterface $orderRepository,
-        private MessageBusInterface $messageBus,
+        private EcommerceOrderEnqueuerInterface $ecommerceOrderEnqueuer,
         private ?string $name = null
     ) {
         parent::__construct($this->name);
@@ -47,7 +46,7 @@ final class EnqueueEcommerceOrderCommand extends Command
         $this
             ->setHelp($this->getCommandHelp())
             ->addArgument(self::ORDER_ID_ARGUMENT_CODE, InputArgument::OPTIONAL, 'The identifier id of the order to enqueue.')
-            ->addOption(self::ALL_OPTION_CODE, 'a', InputOption::VALUE_NONE, 'If set, the command will enqueue all the orders without an ActiveCampaign\'s id.')
+            ->addOption(self::ALL_OPTION_CODE, 'a', InputOption::VALUE_NONE, 'If set, the command will enqueue all the orders.')
         ;
     }
 
@@ -111,27 +110,19 @@ final class EnqueueEcommerceOrderCommand extends Command
             $ordersToExport = [$order];
         }
         if (count($ordersToExport) === 0) {
-            $this->io->writeln('No new orders founded to enqueue.');
+            $this->io->writeln('No orders founded to enqueue.');
 
             return Command::SUCCESS;
         }
 
-        $progressBar = new ProgressBar($output, count($ordersToExport));
-        $progressBar->setFormat(
-            "<fg=white;bg=black> %status:-45s%</>\n%current%/%max% [%bar%] %percent:3s%%\n🏁  %estimated:-21s% %memory:21s%"
-        );
-        $progressBar->setBarCharacter('<fg=red>⚬</>');
-        $progressBar->setEmptyBarCharacter('<fg=blue>⚬</>');
-        $progressBar->setProgressCharacter('🚀');
-        $progressBar->setRedrawFrequency(10);
-        $progressBar->setMessage(sprintf('Starting the enqueue for %s orders...', count($ordersToExport)), 'status');
-        $progressBar->start();
+        $progressBar = $this->getProgressBar($output, $ordersToExport);
 
         foreach ($ordersToExport as $order) {
-            /** @var string|int|null $orderId */
-            $orderId = $order->getId();
-            Assert::notNull($orderId);
-            $this->messageBus->dispatch(new EcommerceOrderCreate($orderId, false));
+            if (!$order instanceof ActiveCampaignAwareInterface) {
+                continue;
+            }
+            $this->ecommerceOrderEnqueuer->enqueue($order, false);
+
             $progressBar->setMessage(sprintf('Order "%s" enqueued!', (string) $order->getId()), 'status');
             $progressBar->advance();
         }
@@ -174,7 +165,7 @@ final class EnqueueEcommerceOrderCommand extends Command
     private function getCommandHelp(): string
     {
         return <<<'HELP'
-            The <info>%command.name%</info> command enqueue all Sylius orders without an ActiveCampaign's id to export them on ActiveCampaign:
+            The <info>%command.name%</info> command enqueue all Sylius orders to export them on ActiveCampaign:
 
               <info>php %command.full_name%</info> <comment>order-id</comment>
 
@@ -189,5 +180,21 @@ final class EnqueueEcommerceOrderCommand extends Command
               # command will ask you for the order id
               <info>php %command.full_name%</info>
             HELP;
+    }
+
+    protected function getProgressBar(OutputInterface $output, array $ordersToExport): ProgressBar
+    {
+        $progressBar = new ProgressBar($output, count($ordersToExport));
+        $progressBar->setFormat(
+            "<fg=white;bg=black> %status:-45s%</>\n%current%/%max% [%bar%] %percent:3s%%\n🏁  %estimated:-21s% %memory:21s%"
+        );
+        $progressBar->setBarCharacter('<fg=red>⚬</>');
+        $progressBar->setEmptyBarCharacter('<fg=blue>⚬</>');
+        $progressBar->setProgressCharacter('🚀');
+        $progressBar->setRedrawFrequency(10);
+        $progressBar->setMessage(sprintf('Starting the enqueue for %s orders...', count($ordersToExport)), 'status');
+        $progressBar->start();
+
+        return $progressBar;
     }
 }

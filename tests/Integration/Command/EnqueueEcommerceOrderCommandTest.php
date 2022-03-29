@@ -8,6 +8,8 @@ use Fidry\AliceDataFixtures\Persistence\PurgeMode;
 use Sylius\Component\Core\Repository\OrderRepositoryInterface;
 use Symfony\Component\Messenger\Envelope;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderRemove;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderUpdate;
 
 final class EnqueueEcommerceOrderCommandTest extends AbstractCommandTest
 {
@@ -72,16 +74,24 @@ final class EnqueueEcommerceOrderCommandTest extends AbstractCommandTest
 
         $order0001 = $this->orderRepository->findOneBy(['number' => '0001']);
         $order0002 = $this->orderRepository->findOneBy(['number' => '0002']);
+        $order0003 = $this->orderRepository->findOneBy(['number' => '0003']);
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
-        $this->assertCount(2, $messages);
+        $this->assertCount(3, $messages);
         $message = $messages[0];
         $this->assertInstanceOf(EcommerceOrderCreate::class, $message->getMessage());
         $this->assertEquals($order0001->getId(), $message->getMessage()->getOrderId());
+
         $message = $messages[1];
-        $this->assertInstanceOf(EcommerceOrderCreate::class, $message->getMessage());
+        $this->assertInstanceOf(EcommerceOrderUpdate::class, $message->getMessage());
         $this->assertEquals($order0002->getId(), $message->getMessage()->getOrderId());
+        $this->assertEquals($order0002->getActiveCampaignId(), $message->getMessage()->getActiveCampaignId());
+
+        $message = $messages[2];
+        $this->assertInstanceOf(EcommerceOrderRemove::class, $message->getMessage());
+        $this->assertEquals(6, $message->getMessage()->getActiveCampaignId());
+        $this->assertNull($order0003->getActiveCampaignId());
     }
 
     protected function getCommandDefinition(): string
