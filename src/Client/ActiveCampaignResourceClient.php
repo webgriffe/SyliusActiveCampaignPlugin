@@ -12,7 +12,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ResourceInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ContactResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
@@ -25,6 +24,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
         private ClientInterface $httpClient,
         private SerializerInterface $serializer,
         private string $resourceName,
+        private string $resourceResponseType,
         private string $createResourceResponseType,
         private string $listResourcesResponseType,
         private string $updateResourceResponseType
@@ -95,7 +95,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
             'json',
             [
                 'resource' => $this->resourceName,
-                'responseType' => ContactResponse::class,
+                'responseType' => $this->resourceResponseType,
                 'type' => ListResourcesResponseInterface::class,
             ]
         );

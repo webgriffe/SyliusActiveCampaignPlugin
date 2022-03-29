@@ -9,7 +9,9 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\HttpClientStub;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\Connection;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\ConnectionResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\CreateConnectionResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\ListConnectionsResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\UpdateConnectionResponse;
 
 final class ActiveCampaignConnectionClientTest extends KernelTestCase
@@ -42,6 +44,30 @@ final class ActiveCampaignConnectionClientTest extends KernelTestCase
         self::assertNotNull($createdConnection);
         self::assertInstanceOf(CreateConnectionResponse::class, $createdConnection);
         self::assertEquals(1, $createdConnection->getResourceResponse()->getId());
+    }
+
+    public function test_it_lists_connections_on_active_campaign(): void
+    {
+        HttpClientStub::$responseStatusCode = 200;
+        HttpClientStub::$responseBodyContent = '{"connections":[{"service":"shopify","externalid":"foo.myshopify.com","name":"Foo,Inc.","isInternal":"1","status":"1","syncStatus":"0","lastSync":"2017-02-02T13:09:07-06:00","logoUrl":"","linkUrl":"","cdate":"2017-02-02T13:09:07-06:00","udate":"2017-02-02T13:09:12-06:00","links":{"customers":"/api/3/connections/1/customers"},"id":"1"},{"service":"fooCommerce","externalid":"johndoe@example.com","name":"Acme,Inc.","isInternal":"0","status":"1","syncStatus":"0","lastSync":null,"logoUrl":"http://example.com/i/foo.png","linkUrl":"http://example.com/foo/","cdate":"2017-02-02T14:56:05-06:00","udate":"2017-02-03T15:54:51-06:00","links":{"customers":"/api/3/connections/2/customers"},"id":"2"}],"meta":{"total":"2"}}';
+
+        $listConnectionsResponse = $this->client->list([
+            'filters[service]' => 'sylius',
+            'filters[externalid]' => 'ecommerce',
+        ]);
+
+        self::assertCount(1, HttpClientStub::$sentRequests);
+        $sentRequest = reset(HttpClientStub::$sentRequests);
+        self::assertInstanceOf(RequestInterface::class, $sentRequest);
+        self::assertEquals('/api/3/connections', $sentRequest->getUri()->getPath());
+        self::assertEquals('filters%5Bservice%5D=sylius&filters%5Bexternalid%5D=ecommerce', $sentRequest->getUri()->getQuery());
+        self::assertEquals('GET', $sentRequest->getMethod());
+
+        self::assertNotNull($listConnectionsResponse);
+        self::assertInstanceOf(ListConnectionsResponse::class, $listConnectionsResponse);
+        self::assertCount(2, $listConnectionsResponse->getResourceResponseLists());
+        self::assertInstanceOf(ConnectionResponse::class, $listConnectionsResponse->getResourceResponseLists()[0]);
+        self::assertEquals('1', $listConnectionsResponse->getResourceResponseLists()[0]->getId());
     }
 
     public function test_it_updates_connection_on_active_campaign(): void

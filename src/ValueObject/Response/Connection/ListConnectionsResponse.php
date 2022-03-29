@@ -6,7 +6,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection;
 
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
 
-final class ListConnectionResponse implements ListResourcesResponseInterface
+final class ListConnectionsResponse implements ListResourcesResponseInterface
 {
     /**
      * @param ConnectionResponse[] $connections

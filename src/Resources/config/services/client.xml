@@ -7,6 +7,7 @@
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
             <argument type="string">contact</argument>
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ContactResponse</argument>
             <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\CreateContactResponse</argument>
             <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ListContactsResponse</argument>
             <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\UpdateContactResponse</argument>
@@ -17,6 +18,7 @@
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
             <argument type="string">connection</argument>
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\ConnectionResponse</argument>
             <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\CreateConnectionResponse</argument>
             <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\ListConnectionsResponse</argument>
             <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\UpdateConnectionResponse</argument>
@@ -27,6 +29,7 @@
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
             <argument type="string">ecomCustomer</argument>
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\EcommerceCustomerResponse</argument>
             <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\CreateEcommerceCustomerResponse</argument>
             <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\ListEcommerceCustomersResponse</argument>
             <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\UpdateEcommerceCustomerResponse</argument>
@@ -37,6 +40,7 @@
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
             <argument type="string">ecomOrder</argument>
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\EcommerceOrderResponse</argument>
             <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\CreateEcommerceOrderResponse</argument>
             <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\ListEcommerceOrdersResponse</argument>
             <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\UpdateEcommerceOrderResponse</argument>
