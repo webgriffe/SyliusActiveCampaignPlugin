@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Command;
 
+use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
+use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
+use Sylius\Component\Resource\Factory\FactoryInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -18,10 +21,16 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerUpdate;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignChannelRepositoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ContactResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\EcommerceCustomerResponse;
 use Webmozart\Assert\Assert;
 
 final class EnqueueContactAndEcommerceCustomerCommand extends Command
@@ -43,6 +52,9 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
         private MessageBusInterface $messageBus,
         private ActiveCampaignChannelRepositoryInterface $channelRepository,
         private ActiveCampaignResourceClientInterface $activeCampaignContactClient,
+        private ActiveCampaignResourceClientInterface $activeCampaignEcommerceCustomerClient,
+        private EntityManagerInterface $entityManager,
+        private FactoryInterface $channelCustomerFactory,
         private ?string $name = null
     ) {
         parent::__construct($this->name);
@@ -117,48 +129,28 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
             $customersToExport = [$customer];
         }
         if (count($customersToExport) === 0) {
-            $this->io->writeln('No new customers founded to enqueue.');
+            $this->io->writeln('No customers founded to enqueue.');
 
             return Command::SUCCESS;
         }
         $channels = $this->channelRepository->findAllEnabledForActiveCampaign();
-
-        $progressBar = new ProgressBar($output, count($customersToExport));
-        $progressBar->setFormat(
-            "<fg=white;bg=black> %status:-45s%</>\n%current%/%max% [%bar%] %percent:3s%%\n🏁  %estimated:-21s% %memory:21s%"
-        );
-        $progressBar->setBarCharacter('<fg=red>⚬</>');
-        $progressBar->setEmptyBarCharacter('<fg=blue>⚬</>');
-        $progressBar->setProgressCharacter('🚀');
-        $progressBar->setRedrawFrequency(10);
-        $progressBar->setMessage(sprintf('Starting the enqueue for %s customers...', count($customersToExport)), 'status');
-        $progressBar->start();
+        $progressBar = $this->getProgressBar($output, $customersToExport);
 
         foreach ($customersToExport as $customer) {
-            $email = $customer->getEmail();
-            Assert::notNull($email);
-            $searchContactsForEmail = $this->activeCampaignContactClient->list(['email' => $email])->getResourceResponseLists();
-            if (count($searchContactsForEmail) > 0) {
-                /** @var ContactResponse $contact */
-                $contact = $searchContactsForEmail[0];
-                $activeCampaignContactId = $contact->getId();
-
-                // TODO: update the contact and store the ActiveCampaign ID on customer
-
+            if (!$customer instanceof CustomerActiveCampaignAwareInterface) {
                 continue;
             }
             /** @var string|int|null $customerId */
             $customerId = $customer->getId();
             Assert::notNull($customerId);
-            $this->messageBus->dispatch(new ContactCreate($customerId));
+
+            $this->enqueueCustomerContact($customer);
 
             foreach ($channels as $channel) {
-                /** @var string|int|null $channelId */
-                $channelId = $channel->getId();
-                if ($channelId === null) {
+                if (!$channel instanceof ActiveCampaignAwareInterface) {
                     continue;
                 }
-                $this->messageBus->dispatch(new EcommerceCustomerCreate($customerId, $channelId));
+                $this->enqueueCustomerEcommerceCustomer($customer, $channel);
             }
 
             $progressBar->setMessage(sprintf('Customer "%s" enqueued!', (string) $customer->getId()), 'status');
@@ -218,5 +210,98 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
               # command will ask you for the customer id
               <info>php %command.full_name%</info>
             HELP;
+    }
+
+    private function getProgressBar(OutputInterface $output, array $customersToExport): ProgressBar
+    {
+        $progressBar = new ProgressBar($output, count($customersToExport));
+        $progressBar->setFormat(
+            "<fg=white;bg=black> %status:-45s%</>\n%current%/%max% [%bar%] %percent:3s%%\n🏁  %estimated:-21s% %memory:21s%"
+        );
+        $progressBar->setBarCharacter('<fg=red>⚬</>');
+        $progressBar->setEmptyBarCharacter('<fg=blue>⚬</>');
+        $progressBar->setProgressCharacter('🚀');
+        $progressBar->setRedrawFrequency(10);
+        $progressBar->setMessage(sprintf('Starting the enqueue for %s customers...', count($customersToExport)), 'status');
+        $progressBar->start();
+
+        return $progressBar;
+    }
+
+    /** @param CustomerInterface&CustomerActiveCampaignAwareInterface $customer */
+    private function enqueueCustomerContact($customer): void
+    {
+        /** @var string|int|null $customerId */
+        $customerId = $customer->getId();
+        Assert::notNull($customerId);
+        $activeCampaignContactId = $customer->getActiveCampaignId();
+        if ($activeCampaignContactId !== null) {
+            $this->messageBus->dispatch(new ContactUpdate($customerId, $activeCampaignContactId));
+
+            return;
+        }
+        $email = $customer->getEmail();
+        Assert::notNull($email);
+        $searchContactsForEmail = $this->activeCampaignContactClient->list(['email' => $email])->getResourceResponseLists();
+        if (count($searchContactsForEmail) > 0) {
+            /** @var ContactResponse $contact */
+            $contact = reset($searchContactsForEmail);
+            $activeCampaignContactId = $contact->getId();
+            $customer->setActiveCampaignId($activeCampaignContactId);
+            $this->entityManager->flush();
+
+            $this->messageBus->dispatch(new ContactUpdate($customerId, $activeCampaignContactId));
+
+            return;
+        }
+
+        $this->messageBus->dispatch(new ContactCreate($customerId));
+    }
+
+    /**
+     * @param CustomerInterface&CustomerActiveCampaignAwareInterface $customer
+     * @param ChannelInterface&ActiveCampaignAwareInterface $channel
+     */
+    private function enqueueCustomerEcommerceCustomer($customer, $channel): void
+    {
+        /** @var string|int|null $customerId */
+        $customerId = $customer->getId();
+        Assert::notNull($customerId);
+        /** @var string|int|null $channelId */
+        $channelId = $channel->getId();
+        Assert::notNull($channelId);
+
+        $channelCustomer = $customer->getChannelCustomerByChannel($channel);
+        if ($channelCustomer !== null) {
+            $this->messageBus->dispatch(new EcommerceCustomerUpdate($customerId, $channelCustomer->getActiveCampaignId(), $channelId));
+
+            return;
+        }
+        $email = $customer->getEmail();
+        Assert::notNull($email);
+        $activeCampaignChannelId = $channel->getActiveCampaignId();
+        Assert::notNull($activeCampaignChannelId);
+        $searchEcommerceCustomerForEmail = $this->activeCampaignEcommerceCustomerClient->list([
+            'filters[email]' => $email,
+            'filters[connectionid]' => (string) $activeCampaignChannelId,
+        ])->getResourceResponseLists();
+        if (count($searchEcommerceCustomerForEmail) > 0) {
+            /** @var EcommerceCustomerResponse $ecommerceCustomer */
+            $ecommerceCustomer = reset($searchEcommerceCustomerForEmail);
+            $activeCampaignEcommerceCustomerId = $ecommerceCustomer->getId();
+            /** @var ChannelCustomerInterface $channelCustomer */
+            $channelCustomer = $this->channelCustomerFactory->createNew();
+            $channelCustomer->setActiveCampaignId($activeCampaignEcommerceCustomerId);
+            $channelCustomer->setChannel($channel);
+            $channelCustomer->setCustomer($customer);
+            $this->entityManager->persist($channelCustomer);
+            $this->entityManager->flush();
+
+            $this->messageBus->dispatch(new EcommerceCustomerUpdate($customerId, $activeCampaignEcommerceCustomerId, $channelId));
+
+            return;
+        }
+
+        $this->messageBus->dispatch(new EcommerceCustomerCreate($customerId, $channelId));
     }
 }
