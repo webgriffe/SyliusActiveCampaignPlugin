@@ -9,8 +9,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInte
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ResourceInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ContactResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\CreateContactResponse;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\UpdateContactContactResponse;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\UpdateContactResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ListContactsResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
@@ -18,6 +17,9 @@ use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResp
 final class ActiveCampaignContactClientStub implements ActiveCampaignResourceClientInterface
 {
     public int $activeCampaignResourceId = 1234;
+
+    /** @var ContactResponse[] */
+    public array $activeCampaignResources = [];
 
     public function create(ResourceInterface $resource): CreateResourceResponseInterface
     {
@@ -30,7 +32,7 @@ final class ActiveCampaignContactClientStub implements ActiveCampaignResourceCli
 
     public function list(array $queryParams = []): ListResourcesResponseInterface
     {
-        throw new RuntimeException('Not implemented');
+        return new ListContactsResponse($this->activeCampaignResources);
     }
 
     public function update(int $activeCampaignResourceId, ResourceInterface $resource): UpdateResourceResponseInterface

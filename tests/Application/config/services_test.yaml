@@ -9,3 +9,6 @@ services:
 
     webgriffe.sylius_active_campaign_plugin.http_client.active_campaign:
         class: 'Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\HttpClientStub'
+
+    webgriffe.sylius_active_campaign_plugin.client.active_campaign.contact:
+        class: Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\ActiveCampaignContactClientStub

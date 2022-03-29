@@ -20,8 +20,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactUpdate;
+use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\ContactEnqueuerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
@@ -29,7 +28,6 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignChannelRepositoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ContactResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\EcommerceCustomerResponse;
 use Webmozart\Assert\Assert;
 
@@ -51,10 +49,10 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
         private ActiveCampaignResourceRepositoryInterface $customerRepository,
         private MessageBusInterface $messageBus,
         private ActiveCampaignChannelRepositoryInterface $channelRepository,
-        private ActiveCampaignResourceClientInterface $activeCampaignContactClient,
         private ActiveCampaignResourceClientInterface $activeCampaignEcommerceCustomerClient,
         private EntityManagerInterface $entityManager,
         private FactoryInterface $channelCustomerFactory,
+        private ContactEnqueuerInterface $contactEnqueuer,
         private ?string $name = null
     ) {
         parent::__construct($this->name);
@@ -144,7 +142,7 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
             $customerId = $customer->getId();
             Assert::notNull($customerId);
 
-            $this->enqueueCustomerContact($customer);
+            $this->contactEnqueuer->enqueue($customer);
 
             foreach ($channels as $channel) {
                 if (!$channel instanceof ActiveCampaignAwareInterface) {
@@ -226,36 +224,6 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
         $progressBar->start();
 
         return $progressBar;
-    }
-
-    /** @param CustomerInterface&CustomerActiveCampaignAwareInterface $customer */
-    private function enqueueCustomerContact($customer): void
-    {
-        /** @var string|int|null $customerId */
-        $customerId = $customer->getId();
-        Assert::notNull($customerId);
-        $activeCampaignContactId = $customer->getActiveCampaignId();
-        if ($activeCampaignContactId !== null) {
-            $this->messageBus->dispatch(new ContactUpdate($customerId, $activeCampaignContactId));
-
-            return;
-        }
-        $email = $customer->getEmail();
-        Assert::notNull($email);
-        $searchContactsForEmail = $this->activeCampaignContactClient->list(['email' => $email])->getResourceResponseLists();
-        if (count($searchContactsForEmail) > 0) {
-            /** @var ContactResponse $contact */
-            $contact = reset($searchContactsForEmail);
-            $activeCampaignContactId = $contact->getId();
-            $customer->setActiveCampaignId($activeCampaignContactId);
-            $this->entityManager->flush();
-
-            $this->messageBus->dispatch(new ContactUpdate($customerId, $activeCampaignContactId));
-
-            return;
-        }
-
-        $this->messageBus->dispatch(new ContactCreate($customerId));
     }
 
     /**
