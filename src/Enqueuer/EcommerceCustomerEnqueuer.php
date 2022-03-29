@@ -24,17 +24,14 @@ final class EcommerceCustomerEnqueuer implements EcommerceCustomerEnqueuerInterf
     ) {
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function queue($customer, $channel): void
+    public function enqueue($customer, $channel): void
     {
         /** @var string|int|null $customerId */
         $customerId = $customer->getId();
-        Assert::notNull($customerId);
+        Assert::notNull($customerId, 'The customer id should not be null');
         /** @var string|int|null $channelId */
         $channelId = $channel->getId();
-        Assert::notNull($channelId);
+        Assert::notNull($channelId, 'The channel id should not be null');
 
         $channelCustomer = $customer->getChannelCustomerByChannel($channel);
         if ($channelCustomer !== null) {
@@ -44,9 +41,9 @@ final class EcommerceCustomerEnqueuer implements EcommerceCustomerEnqueuerInterf
         }
 
         $email = $customer->getEmail();
-        Assert::notNull($email);
+        Assert::notNull($email, 'The customer email should not be null');
         $activeCampaignChannelId = $channel->getActiveCampaignId();
-        Assert::notNull($activeCampaignChannelId);
+        Assert::notNull($activeCampaignChannelId, sprintf('You should export the channel "%s" to Active Campaign before enqueuing the customer "%s"', $channelId, $email));
 
         $ecommerceCustomerList = $this->activeCampaignEcommerceCustomerClient->list([
             'filters[email]' => $email,

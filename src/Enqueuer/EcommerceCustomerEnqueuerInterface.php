@@ -15,5 +15,5 @@ interface EcommerceCustomerEnqueuerInterface
      * @param CustomerInterface&CustomerActiveCampaignAwareInterface $customer
      * @param ChannelInterface&ActiveCampaignAwareInterface $channel
      */
-    public function queue($customer, $channel): void;
+    public function enqueue($customer, $channel): void;
 }

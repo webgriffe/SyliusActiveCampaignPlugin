@@ -137,7 +137,7 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
                 if (!$channel instanceof ActiveCampaignAwareInterface) {
                     continue;
                 }
-                $this->ecommerceCustomerEnqueuer->queue($customer, $channel);
+                $this->ecommerceCustomerEnqueuer->enqueue($customer, $channel);
             }
 
             $progressBar->setMessage(sprintf('Customer "%s" enqueued!', (string) $customer->getId()), 'status');

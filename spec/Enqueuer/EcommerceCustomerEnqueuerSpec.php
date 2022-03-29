@@ -54,7 +54,7 @@ final class EcommerceCustomerEnqueuerSpec extends ObjectBehavior
         $this->shouldBeAnInstanceOf(EcommerceCustomerEnqueuer::class);
     }
 
-    public function it_implements_queue_interface(): void
+    public function it_implements_ecommerce_customer_enqueuer_interface(): void
     {
         $this->shouldImplement(EcommerceCustomerEnqueuerInterface::class);
     }
@@ -62,13 +62,13 @@ final class EcommerceCustomerEnqueuerSpec extends ObjectBehavior
     public function it_throws_if_customer_has_no_id(CustomerInterface $customer, ChannelInterface $channel): void
     {
         $customer->getId()->willReturn(null);
-        $this->shouldThrow(InvalidArgumentException::class)->during('queue', [$customer, $channel]);
+        $this->shouldThrow(new InvalidArgumentException('The customer id should not be null'))->during('enqueue', [$customer, $channel]);
     }
 
     public function it_throws_if_channel_has_no_id(CustomerInterface $customer, ChannelInterface $channel): void
     {
         $channel->getId()->willReturn(null);
-        $this->shouldThrow(InvalidArgumentException::class)->during('queue', [$customer, $channel]);
+        $this->shouldThrow(new InvalidArgumentException('The channel id should not be null'))->during('enqueue', [$customer, $channel]);
     }
 
     public function it_dispatches_customer_update_message_if_channel_customer_already_exists(
@@ -82,8 +82,8 @@ final class EcommerceCustomerEnqueuerSpec extends ObjectBehavior
         $messageBus
             ->dispatch(Argument::type(EcommerceCustomerUpdate::class))
             ->shouldBeCalledOnce()
-            ->willReturn(new Envelope(new \stdClass()));
-        $this->queue($customer, $channel);
+            ->willReturn(new Envelope(new EcommerceCustomerUpdate(1, 50, 111)));
+        $this->enqueue($customer, $channel);
     }
 
     public function it_throws_if_customer_has_no_channel_customer_for_channel_and_he_has_no_email(
@@ -93,7 +93,7 @@ final class EcommerceCustomerEnqueuerSpec extends ObjectBehavior
     ): void {
         $customer->getEmail()->willReturn(null);
         $messageBus->dispatch(Argument::any())->shouldNotBeCalled();
-        $this->shouldThrow(InvalidArgumentException::class)->during('queue', [$customer, $channel]);
+        $this->shouldThrow(new InvalidArgumentException('The customer email should not be null'))->during('enqueue', [$customer, $channel]);
     }
 
     public function it_throws_if_customer_has_no_channel_customer_for_channel_and_this_has_no_active_campaign_id(
@@ -103,7 +103,7 @@ final class EcommerceCustomerEnqueuerSpec extends ObjectBehavior
     ): void {
         $channel->getActiveCampaignId()->willReturn(null);
         $messageBus->dispatch(Argument::any())->shouldNotBeCalled();
-        $this->shouldThrow(InvalidArgumentException::class)->during('queue', [$customer, $channel]);
+        $this->shouldThrow(new InvalidArgumentException('You should export the channel "1" to Active Campaign before enqueuing the customer "email@domain.com"'))->during('enqueue', [$customer, $channel]);
     }
 
     public function it_dispatches_customer_update_message_if_customer_has_no_channel_customer_but_this_exists_on_active_campaign(
@@ -126,9 +126,9 @@ final class EcommerceCustomerEnqueuerSpec extends ObjectBehavior
         $messageBus
             ->dispatch(Argument::type(EcommerceCustomerUpdate::class))
             ->shouldBeCalledOnce()
-            ->willReturn(new Envelope(new \stdClass()));
+            ->willReturn(new Envelope(new EcommerceCustomerUpdate(1, 999, 111)));
 
-        $this->queue($customer, $channel);
+        $this->enqueue($customer, $channel);
     }
 
     public function it_dispatches_customer_create_message_if_customer_has_no_channel_customer_and_this_does_not_exist_on_active_campaign(
@@ -139,8 +139,8 @@ final class EcommerceCustomerEnqueuerSpec extends ObjectBehavior
         $messageBus
             ->dispatch(Argument::type(EcommerceCustomerCreate::class))
             ->shouldBeCalledOnce()
-            ->willReturn(new Envelope(new \stdClass()));
-        $this->queue($customer, $channel);
+            ->willReturn(new Envelope(new EcommerceCustomerCreate(1, 111)));
+        $this->enqueue($customer, $channel);
     }
 
 }
