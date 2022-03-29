@@ -16,23 +16,33 @@ use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResp
 
 final class ActiveCampaignContactClientStub implements ActiveCampaignResourceClientInterface
 {
-    public int $activeCampaignResourceId = 1234;
+    public static int $activeCampaignResourceId = 1234;
 
-    /** @var ContactResponse[] */
-    public array $activeCampaignResources = [];
+    /** @var array<string, ContactResponse> */
+    public static array $activeCampaignResources = [];
 
     public function create(ResourceInterface $resource): CreateResourceResponseInterface
     {
         return new CreateContactResponse(
             new ContactResponse(
-                $this->activeCampaignResourceId
+                self::$activeCampaignResourceId
             )
         );
     }
 
     public function list(array $queryParams = []): ListResourcesResponseInterface
     {
-        return new ListContactsResponse($this->activeCampaignResources);
+        $contacts = [];
+        $emailToSearch = null;
+        if (array_key_exists('email', $queryParams)) {
+            $emailToSearch = $queryParams['email'];
+        }
+        foreach (self::$activeCampaignResources as $email => $activeCampaignResource) {
+            if ($emailToSearch === null || $emailToSearch === $email) {
+                $contacts[] = $activeCampaignResource;
+            }
+        }
+        return new ListContactsResponse($contacts);
     }
 
     public function update(int $activeCampaignResourceId, ResourceInterface $resource): UpdateResourceResponseInterface

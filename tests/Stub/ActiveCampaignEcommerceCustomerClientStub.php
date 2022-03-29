@@ -17,23 +17,37 @@ use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResp
 
 final class ActiveCampaignEcommerceCustomerClientStub implements ActiveCampaignResourceClientInterface
 {
-    public int $activeCampaignResourceId = 3423;
+    public static int $activeCampaignResourceId = 3423;
 
-    /** @var EcommerceCustomerResponse[] */
-    public array $activeCampaignResources = [];
+    /** @var array{email: string, connectionid: string, ecommerceCustomer: EcommerceCustomerResponse} */
+    public static array $activeCampaignResources = [];
 
     public function create(ResourceInterface $resource): CreateResourceResponseInterface
     {
         return new CreateEcommerceCustomerResponse(
             new EcommerceCustomerResponse(
-                $this->activeCampaignResourceId
+                self::$activeCampaignResourceId
             )
         );
     }
 
     public function list(array $queryParams = []): ListResourcesResponseInterface
     {
-        return new ListEcommerceCustomerResponse($this->activeCampaignResources);
+        $ecommerceCustomers = [];
+        $emailToSearch = null;
+        $connectionToSearch = null;
+        if (array_key_exists('filters[email]', $queryParams)) {
+            $emailToSearch = $queryParams['filters[email]'];
+        }
+        if (array_key_exists('filters[connectionid]', $queryParams)) {
+            $connectionToSearch = $queryParams['filters[connectionid]'];
+        }
+        foreach (self::$activeCampaignResources as $activeCampaignResource) {
+            if (($emailToSearch === null && $connectionToSearch === null) || ($emailToSearch === $activeCampaignResource['email'] && $connectionToSearch === $activeCampaignResource['connectionid'])) {
+                $ecommerceCustomers[] = $activeCampaignResource['ecommerceCustomer'];
+            }
+        }
+        return new ListEcommerceCustomerResponse($ecommerceCustomers);
     }
 
     public function update(int $activeCampaignResourceId, ResourceInterface $resource): UpdateResourceResponseInterface
