@@ -44,7 +44,7 @@ final class EcommerceCustomerCreateHandlerTest extends KernelTestCase
         // todo: it would be great to have only one stub for all resources
         $this->ecommerceCustomerCreateHandler = new EcommerceCustomerCreateHandler(
             self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.mapper.ecommerce_customer'),
-            new ActiveCampaignEcommerceCustomerClientStub(),
+            self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.client_stub.active_campaign.ecommerce_customer'),
             $this->customerRepository,
             $this->channelRepository,
             self::getContainer()->get('webgriffe_sylius_active_campaign.factory.channel_customer'),

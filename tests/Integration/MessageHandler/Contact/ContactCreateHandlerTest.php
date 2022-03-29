@@ -33,7 +33,7 @@ final class ContactCreateHandlerTest extends KernelTestCase
 
         $this->contactCreateHandler = new ContactCreateHandler(
             self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.mapper.contact'),
-            new ActiveCampaignContactClientStub(),
+            self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.client_stub.active_campaign.contact'),
             $this->customerRepository
         );
     }
