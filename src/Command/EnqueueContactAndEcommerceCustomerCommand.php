@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Command;
 
-use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
-use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
-use Sylius\Component\Resource\Factory\FactoryInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -17,18 +14,13 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
-use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\ContactEnqueuerInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerUpdate;
+use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\EcommerceCustomerEnqueuerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignChannelRepositoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\EcommerceCustomerResponse;
 use Webmozart\Assert\Assert;
 
 final class EnqueueContactAndEcommerceCustomerCommand extends Command
@@ -47,12 +39,9 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
     /** @param ActiveCampaignResourceRepositoryInterface<CustomerInterface> $customerRepository */
     public function __construct(
         private ActiveCampaignResourceRepositoryInterface $customerRepository,
-        private MessageBusInterface $messageBus,
         private ActiveCampaignChannelRepositoryInterface $channelRepository,
-        private ActiveCampaignResourceClientInterface $activeCampaignEcommerceCustomerClient,
-        private EntityManagerInterface $entityManager,
-        private FactoryInterface $channelCustomerFactory,
         private ContactEnqueuerInterface $contactEnqueuer,
+        private EcommerceCustomerEnqueuerInterface $ecommerceCustomerEnqueuer,
         private ?string $name = null
     ) {
         parent::__construct($this->name);
@@ -148,7 +137,7 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
                 if (!$channel instanceof ActiveCampaignAwareInterface) {
                     continue;
                 }
-                $this->enqueueCustomerEcommerceCustomer($customer, $channel);
+                $this->ecommerceCustomerEnqueuer->queue($customer, $channel);
             }
 
             $progressBar->setMessage(sprintf('Customer "%s" enqueued!', (string) $customer->getId()), 'status');
@@ -224,52 +213,5 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
         $progressBar->start();
 
         return $progressBar;
-    }
-
-    /**
-     * @param CustomerInterface&CustomerActiveCampaignAwareInterface $customer
-     * @param ChannelInterface&ActiveCampaignAwareInterface $channel
-     */
-    private function enqueueCustomerEcommerceCustomer($customer, $channel): void
-    {
-        /** @var string|int|null $customerId */
-        $customerId = $customer->getId();
-        Assert::notNull($customerId);
-        /** @var string|int|null $channelId */
-        $channelId = $channel->getId();
-        Assert::notNull($channelId);
-
-        $channelCustomer = $customer->getChannelCustomerByChannel($channel);
-        if ($channelCustomer !== null) {
-            $this->messageBus->dispatch(new EcommerceCustomerUpdate($customerId, $channelCustomer->getActiveCampaignId(), $channelId));
-
-            return;
-        }
-        $email = $customer->getEmail();
-        Assert::notNull($email);
-        $activeCampaignChannelId = $channel->getActiveCampaignId();
-        Assert::notNull($activeCampaignChannelId);
-        $searchEcommerceCustomerForEmail = $this->activeCampaignEcommerceCustomerClient->list([
-            'filters[email]' => $email,
-            'filters[connectionid]' => (string) $activeCampaignChannelId,
-        ])->getResourceResponseLists();
-        if (count($searchEcommerceCustomerForEmail) > 0) {
-            /** @var EcommerceCustomerResponse $ecommerceCustomer */
-            $ecommerceCustomer = reset($searchEcommerceCustomerForEmail);
-            $activeCampaignEcommerceCustomerId = $ecommerceCustomer->getId();
-            /** @var ChannelCustomerInterface $channelCustomer */
-            $channelCustomer = $this->channelCustomerFactory->createNew();
-            $channelCustomer->setActiveCampaignId($activeCampaignEcommerceCustomerId);
-            $channelCustomer->setChannel($channel);
-            $channelCustomer->setCustomer($customer);
-            $this->entityManager->persist($channelCustomer);
-            $this->entityManager->flush();
-
-            $this->messageBus->dispatch(new EcommerceCustomerUpdate($customerId, $activeCampaignEcommerceCustomerId, $channelId));
-
-            return;
-        }
-
-        $this->messageBus->dispatch(new EcommerceCustomerCreate($customerId, $channelId));
     }
 }
