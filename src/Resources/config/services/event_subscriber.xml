@@ -21,6 +21,7 @@
         <service id="webgriffe.sylius_active_campaign_plugin.event_subscriber.order"
                  class="Webgriffe\SyliusActiveCampaignPlugin\EventSubscriber\OrderSubscriber">
             <argument type="service" id="messenger.default_bus"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.enqueuer.ecommerce_order"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 

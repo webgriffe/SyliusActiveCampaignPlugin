@@ -5,4 +5,10 @@ App\Entity\Order\Order:
         currency_code: 'EUR'
         locale_code: 'en_US'
         customer: '@customer_01'
+    order_2:
+        channel: '@fashion_shop'
+        number: '0002'
+        currency_code: 'EUR'
+        locale_code: 'en_US'
+        customer: '@customer_01'
         activeCampaignId: 15

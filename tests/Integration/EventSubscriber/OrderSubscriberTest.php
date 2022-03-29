@@ -49,7 +49,7 @@ final class OrderSubscriberTest extends AbstractEventDispatcherTest
 
     public function test_that_it_updates_ecommerce_order_on_active_campaign(): void
     {
-        $order = $this->orderRepository->findOneBy(['number' => '0001']);
+        $order = $this->orderRepository->findOneBy(['number' => '0002']);
         $this->eventDispatcher->dispatch(new ResourceControllerEvent($order), 'sylius.order.post_update');
         /** @var InMemoryTransport $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
@@ -65,7 +65,7 @@ final class OrderSubscriberTest extends AbstractEventDispatcherTest
 
     public function test_that_it_removes_ecommerce_order_on_active_campaign(): void
     {
-        $order = $this->orderRepository->findOneBy(['number' => '0001']);
+        $order = $this->orderRepository->findOneBy(['number' => '0002']);
         $this->eventDispatcher->dispatch(new ResourceControllerEvent($order), 'sylius.order.post_delete');
         /** @var InMemoryTransport $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
