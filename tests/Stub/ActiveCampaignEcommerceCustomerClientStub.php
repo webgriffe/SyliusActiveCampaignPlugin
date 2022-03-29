@@ -10,7 +10,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ResourceInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\EcommerceCustomerResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\CreateEcommerceCustomerResponse;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\ListEcommerceCustomerResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\ListEcommerceCustomersResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\UpdateEcommerceCustomerResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
@@ -47,7 +47,7 @@ final class ActiveCampaignEcommerceCustomerClientStub implements ActiveCampaignR
                 $ecommerceCustomers[] = $activeCampaignResource['ecommerceCustomer'];
             }
         }
-        return new ListEcommerceCustomerResponse($ecommerceCustomers);
+        return new ListEcommerceCustomersResponse($ecommerceCustomers);
     }
 
     public function update(int $activeCampaignResourceId, ResourceInterface $resource): UpdateResourceResponseInterface

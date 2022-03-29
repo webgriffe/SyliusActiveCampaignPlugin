@@ -6,7 +6,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCus
 
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
 
-final class ListEcommerceCustomerResponse implements ListResourcesResponseInterface
+final class ListEcommerceCustomersResponse implements ListResourcesResponseInterface
 {
     /**
      * @param EcommerceCustomerResponse[] $ecommerceCustomers
