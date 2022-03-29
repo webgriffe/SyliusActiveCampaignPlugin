@@ -14,11 +14,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\ConnectionEnqueuerInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface;
-use Webmozart\Assert\Assert;
 
 final class EnqueueConnectionCommand extends Command
 {
@@ -36,7 +35,7 @@ final class EnqueueConnectionCommand extends Command
     /** @param ActiveCampaignResourceRepositoryInterface<ChannelInterface> $channelRepository */
     public function __construct(
         private ActiveCampaignResourceRepositoryInterface $channelRepository,
-        private MessageBusInterface $messageBus,
+        private ConnectionEnqueuerInterface $connectionEnqueuer,
         private ?string $name = null
     ) {
         parent::__construct($this->name);
@@ -47,7 +46,7 @@ final class EnqueueConnectionCommand extends Command
         $this
             ->setHelp($this->getCommandHelp())
             ->addArgument(self::CHANNEL_ID_ARGUMENT_CODE, InputArgument::OPTIONAL, 'The identifier id of the channel to enqueue.')
-            ->addOption(self::ALL_OPTION_CODE, 'a', InputOption::VALUE_NONE, 'If set, the command will enqueue all the channels without an ActiveCampaign\'s id.')
+            ->addOption(self::ALL_OPTION_CODE, 'a', InputOption::VALUE_NONE, 'If set, the command will enqueue all the channels.')
         ;
     }
 
@@ -111,27 +110,17 @@ final class EnqueueConnectionCommand extends Command
             $channelsToExport = [$channel];
         }
         if (count($channelsToExport) === 0) {
-            $this->io->writeln('No new channels founded to enqueue.');
+            $this->io->writeln('No channels founded to enqueue.');
 
             return Command::SUCCESS;
         }
-
-        $progressBar = new ProgressBar($output, count($channelsToExport));
-        $progressBar->setFormat(
-            "<fg=white;bg=black> %status:-45s%</>\n%current%/%max% [%bar%] %percent:3s%%\n🏁  %estimated:-21s% %memory:21s%"
-        );
-        $progressBar->setBarCharacter('<fg=red>⚬</>');
-        $progressBar->setEmptyBarCharacter('<fg=blue>⚬</>');
-        $progressBar->setProgressCharacter('🚀');
-        $progressBar->setRedrawFrequency(10);
-        $progressBar->setMessage(sprintf('Starting the enqueue for %s channels...', count($channelsToExport)), 'status');
-        $progressBar->start();
+        $progressBar = $this->getProgressBar($output, $channelsToExport);
 
         foreach ($channelsToExport as $channel) {
-            /** @var string|int|null $channelId */
-            $channelId = $channel->getId();
-            Assert::notNull($channelId);
-            $this->messageBus->dispatch(new ConnectionCreate($channelId));
+            if (!$channel instanceof ActiveCampaignAwareInterface) {
+                continue;
+            }
+            $this->connectionEnqueuer->enqueue($channel);
             $progressBar->setMessage(sprintf('Channel "%s" enqueued!', (string) $channel->getId()), 'status');
             $progressBar->advance();
         }
@@ -174,7 +163,7 @@ final class EnqueueConnectionCommand extends Command
     private function getCommandHelp(): string
     {
         return <<<'HELP'
-            The <info>%command.name%</info> command enqueue all Sylius channels without an ActiveCampaign's id to export them on ActiveCampaign:
+            The <info>%command.name%</info> command enqueue all Sylius channels to export them on ActiveCampaign:
 
               <info>php %command.full_name%</info> <comment>channel-id</comment>
 
@@ -189,5 +178,21 @@ final class EnqueueConnectionCommand extends Command
               # command will ask you for the channel id
               <info>php %command.full_name%</info>
             HELP;
+    }
+
+    private function getProgressBar(OutputInterface $output, array $channelsToExport): ProgressBar
+    {
+        $progressBar = new ProgressBar($output, count($channelsToExport));
+        $progressBar->setFormat(
+            "<fg=white;bg=black> %status:-45s%</>\n%current%/%max% [%bar%] %percent:3s%%\n🏁  %estimated:-21s% %memory:21s%"
+        );
+        $progressBar->setBarCharacter('<fg=red>⚬</>');
+        $progressBar->setEmptyBarCharacter('<fg=blue>⚬</>');
+        $progressBar->setProgressCharacter('🚀');
+        $progressBar->setRedrawFrequency(10);
+        $progressBar->setMessage(sprintf('Starting the enqueue for %s channels...', count($channelsToExport)), 'status');
+        $progressBar->start();
+
+        return $progressBar;
     }
 }

@@ -7,7 +7,10 @@ namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Integration\Command;
 use Fidry\AliceDataFixtures\Persistence\PurgeMode;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
 use Symfony\Component\Messenger\Envelope;
+use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\ActiveCampaignConnectionClientStub;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionUpdate;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\ConnectionResponse;
 
 final class EnqueueConnectionCommandTest extends AbstractCommandTest
 {
@@ -18,6 +21,13 @@ final class EnqueueConnectionCommandTest extends AbstractCommandTest
     protected function setUp(): void
     {
         parent::setUp();
+        ActiveCampaignConnectionClientStub::$activeCampaignResources = [
+            [
+                'service' => 'sylius',
+                'externalid' => 'other_shop',
+                'connection' => new ConnectionResponse(132),
+            ],
+        ];
         $this->channelRepository = self::getContainer()->get('sylius.repository.channel');
 
         $fixtureLoader = self::getContainer()->get('fidry_alice_data_fixtures.loader.doctrine');
@@ -71,16 +81,24 @@ final class EnqueueConnectionCommandTest extends AbstractCommandTest
 
         $fashionChannel = $this->channelRepository->findOneBy(['code' => 'fashion_shop']);
         $digitalChannel = $this->channelRepository->findOneBy(['code' => 'digital_shop']);
+        $otherChannel = $this->channelRepository->findOneBy(['code' => 'other_shop']);
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
-        $this->assertCount(2, $messages);
+        $this->assertCount(3, $messages);
         $message = $messages[0];
         $this->assertInstanceOf(ConnectionCreate::class, $message->getMessage());
         $this->assertEquals($fashionChannel->getId(), $message->getMessage()->getChannelId());
+
         $message = $messages[1];
-        $this->assertInstanceOf(ConnectionCreate::class, $message->getMessage());
+        $this->assertInstanceOf(ConnectionUpdate::class, $message->getMessage());
         $this->assertEquals($digitalChannel->getId(), $message->getMessage()->getChannelId());
+        $this->assertEquals(12, $message->getMessage()->getActiveCampaignId());
+
+        $message = $messages[2];
+        $this->assertInstanceOf(ConnectionUpdate::class, $message->getMessage());
+        $this->assertEquals($otherChannel->getId(), $message->getMessage()->getChannelId());
+        $this->assertEquals(132, $message->getMessage()->getActiveCampaignId());
     }
 
     protected function getCommandDefinition(): string

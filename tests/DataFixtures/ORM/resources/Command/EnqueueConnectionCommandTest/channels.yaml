@@ -11,6 +11,13 @@ App\Entity\Channel\Channel:
         taxCalculationStrategy: "order_items_based"
         defaultLocale: "@en_US"
         baseCurrency: "@EUR"
+        activeCampaignId: 12
+    other_shop:
+        code: "other_shop"
+        name: "Other shop"
+        taxCalculationStrategy: "order_items_based"
+        defaultLocale: "@en_US"
+        baseCurrency: "@EUR"
 
 Sylius\Component\Locale\Model\Locale:
     en_US:

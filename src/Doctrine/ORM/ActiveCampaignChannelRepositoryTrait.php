@@ -16,7 +16,6 @@ trait ActiveCampaignChannelRepositoryTrait
 
         return $this->findOneBy([
             'id' => $id,
-            'activeCampaignId' => null,
         ]);
     }
 
@@ -38,7 +37,6 @@ trait ActiveCampaignChannelRepositoryTrait
         assert($this instanceof EntityRepository);
 
         return $this->findBy([
-            'activeCampaignId' => null,
             'enabled' => true,
         ]);
     }

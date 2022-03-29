@@ -21,7 +21,6 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignChannelRepositoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface;
-use Webmozart\Assert\Assert;
 
 final class EnqueueContactAndEcommerceCustomerCommand extends Command
 {
@@ -52,7 +51,7 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
         $this
             ->setHelp($this->getCommandHelp())
             ->addArgument(self::CUSTOMER_ID_ARGUMENT_CODE, InputArgument::OPTIONAL, 'The identifier id of the customer to enqueue.')
-            ->addOption(self::ALL_OPTION_CODE, 'a', InputOption::VALUE_NONE, 'If set, the command will enqueue all the customers without an ActiveCampaign\'s id.')
+            ->addOption(self::ALL_OPTION_CODE, 'a', InputOption::VALUE_NONE, 'If set, the command will enqueue all the customers.')
         ;
     }
 
@@ -127,10 +126,6 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
             if (!$customer instanceof CustomerActiveCampaignAwareInterface) {
                 continue;
             }
-            /** @var string|int|null $customerId */
-            $customerId = $customer->getId();
-            Assert::notNull($customerId);
-
             $this->contactEnqueuer->enqueue($customer);
 
             foreach ($channels as $channel) {
@@ -182,7 +177,7 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
     private function getCommandHelp(): string
     {
         return <<<'HELP'
-            The <info>%command.name%</info> command enqueue all Sylius customers without an ActiveCampaign's id to export them on ActiveCampaign:
+            The <info>%command.name%</info> command enqueue all Sylius customers to export them on ActiveCampaign:
 
               <info>php %command.full_name%</info> <comment>customer-id</comment>
 
