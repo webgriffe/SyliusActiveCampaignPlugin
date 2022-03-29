@@ -5,6 +5,12 @@ App\Entity\Channel\Channel:
         taxCalculationStrategy: "order_items_based"
         defaultLocale: "@en_US"
         baseCurrency: "@EUR"
+    digital_shop:
+        code: "digital_shop"
+        name: "Digital shop"
+        taxCalculationStrategy: "order_items_based"
+        defaultLocale: "@en_US"
+        baseCurrency: "@EUR"
         activeCampaignId: 15
 
 Sylius\Component\Locale\Model\Locale:

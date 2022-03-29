@@ -46,7 +46,7 @@ final class ChannelSubscriberTest extends AbstractEventDispatcherTest
 
     public function test_that_it_updates_connection_on_active_campaign(): void
     {
-        $channel = $this->channelRepository->findOneBy(['code' => 'fashion_shop']);
+        $channel = $this->channelRepository->findOneBy(['code' => 'digital_shop']);
         $channel->setActiveCampaignId(15);
         $this->channelRepository->add($channel);
         $this->eventDispatcher->dispatch(new ResourceControllerEvent($channel), 'sylius.channel.post_update');
@@ -63,7 +63,7 @@ final class ChannelSubscriberTest extends AbstractEventDispatcherTest
 
     public function test_that_it_removes_connection_on_active_campaign(): void
     {
-        $channel = $this->channelRepository->findOneBy(['code' => 'fashion_shop']);
+        $channel = $this->channelRepository->findOneBy(['code' => 'digital_shop']);
         $this->eventDispatcher->dispatch(new ResourceControllerEvent($channel), 'sylius.channel.post_delete');
         /** @var InMemoryTransport $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
