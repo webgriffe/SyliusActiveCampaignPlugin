@@ -3,15 +3,14 @@ App\Entity\Customer\Customer:
         email: 'jim@email.com'
         first_name: 'James'
         last_name: 'Rodriguez'
-        activeCampaignId: 1234
     customer_bob:
         email: 'bob@email.com'
         first_name: 'Bob'
         last_name: 'Rodriguez'
-        activeCampaignId: 1256
+        activeCampaignId: 32
         channelCustomers:
             - "@customer_bob_fashion_shop"
-            - "@customer_bob_digital_shop"
+            - "@customer_bob_disabled_shop"
     customer_sam:
         email: 'sam@email.com'
         first_name: 'Samuel'
@@ -26,10 +25,10 @@ App\Entity\Customer\ChannelCustomer:
         channel: "@fashion_shop"
         customer: "@customer_bob"
         activeCampaignId: 576
-    customer_bob_digital_shop:
-        channel: "@digital_shop"
+    customer_bob_disabled_shop:
+        channel: "@disabled_shop"
         customer: "@customer_bob"
-        activeCampaignId: 234
+        activeCampaignId: 543
     customer_sam_fashion_shop:
         channel: "@fashion_shop"
         customer: "@customer_sam"

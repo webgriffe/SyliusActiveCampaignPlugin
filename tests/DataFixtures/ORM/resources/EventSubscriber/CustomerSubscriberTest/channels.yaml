@@ -6,6 +6,7 @@ App\Entity\Channel\Channel:
         defaultLocale: "@en_US"
         baseCurrency: "@EUR"
         enabled: true
+        activeCampaignId: 5
     digital_shop:
         code: "digital_shop"
         name: "Digital shop"
@@ -13,6 +14,7 @@ App\Entity\Channel\Channel:
         defaultLocale: "@en_US"
         baseCurrency: "@EUR"
         enabled: true
+        activeCampaignId: 18
     disabled_shop:
         code: "disabled_shop"
         name: "Disabled shop"

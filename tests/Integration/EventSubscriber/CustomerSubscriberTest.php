@@ -39,7 +39,7 @@ final class CustomerSubscriberTest extends AbstractEventDispatcherTest
         ], [], [], PurgeMode::createDeleteMode());
     }
 
-    public function test_that_it_creates_contact_and_ecommerce_customer_on_active_campaign(): void
+    public function test_that_it_creates_new_contact_and_new_ecommerce_customer_on_active_campaign(): void
     {
         $customerJim = $this->customerRepository->findOneBy(['email' => 'jim@email.com']);
         $fashionChannel = $this->channelRepository->findOneBy(['code' => 'fashion_shop']);
@@ -63,7 +63,7 @@ final class CustomerSubscriberTest extends AbstractEventDispatcherTest
         $this->assertEquals($digitalChannel->getId(), $message->getMessage()->getChannelId());
     }
 
-    public function test_that_it_updates_contact_and_ecommerce_customer__on_active_campaign(): void
+    public function test_that_it_updates_existing_contact_and_existing_ecommerce_customer_on_active_campaign(): void
     {
         /** @var CustomerActiveCampaignAwareInterface $customerBob */
         $customerBob = $this->customerRepository->findOneBy(['email' => 'bob@email.com']);
@@ -85,13 +85,12 @@ final class CustomerSubscriberTest extends AbstractEventDispatcherTest
         $this->assertEquals(576, $message->getMessage()->getActiveCampaignId());
         $this->assertEquals($fashionChannel->getId(), $message->getMessage()->getChannelId());
         $message = $messages[2];
-        $this->assertInstanceOf(EcommerceCustomerUpdate::class, $message->getMessage());
+        $this->assertInstanceOf(EcommerceCustomerCreate::class, $message->getMessage());
         $this->assertEquals($customerBob->getId(), $message->getMessage()->getCustomerId());
-        $this->assertEquals(234, $message->getMessage()->getActiveCampaignId());
         $this->assertEquals($digitalChannel->getId(), $message->getMessage()->getChannelId());
     }
 
-    public function test_that_it_removes_contact_and_ecommerce_customer__on_active_campaign(): void
+    public function test_that_it_removes_contact_and_ecommerce_customer_on_active_campaign(): void
     {
         $customer = $this->customerRepository->findOneBy(['email' => 'sam@email.com']);
         $this->eventDispatcher->dispatch(new ResourceControllerEvent($customer), 'sylius.customer.post_delete');
