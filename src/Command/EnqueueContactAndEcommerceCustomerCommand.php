@@ -19,8 +19,8 @@ use Symfony\Component\Stopwatch\Stopwatch;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;
-use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignAwareRepositoryInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Repository\ChannelActiveCampaignAwareRepositoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignChannelRepositoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ContactResponse;
 use Webmozart\Assert\Assert;
 
@@ -37,11 +37,11 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
     /** @psalm-suppress PropertyNotSetInConstructor */
     private SymfonyStyle $io;
 
-    /** @param ActiveCampaignAwareRepositoryInterface<CustomerInterface> $customerRepository */
+    /** @param ActiveCampaignResourceRepositoryInterface<CustomerInterface> $customerRepository */
     public function __construct(
-        private ActiveCampaignAwareRepositoryInterface $customerRepository,
+        private ActiveCampaignResourceRepositoryInterface $customerRepository,
         private MessageBusInterface $messageBus,
-        private ChannelActiveCampaignAwareRepositoryInterface $channelRepository,
+        private ActiveCampaignChannelRepositoryInterface $channelRepository,
         private ActiveCampaignResourceClientInterface $activeCampaignContactClient,
         private ?string $name = null
     ) {

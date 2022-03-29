@@ -6,12 +6,11 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Doctrine\ORM;
 
 use Doctrine\ORM\EntityRepository;
 use Sylius\Component\Core\Model\ChannelInterface;
-use Sylius\Component\Resource\Model\ResourceInterface;
 
-trait ChannelActiveCampaignAwareRepositoryTrait
+trait ActiveCampaignChannelRepositoryTrait
 {
     /** @return ChannelInterface|null */
-    public function findOneToEnqueue(mixed $id): ?ResourceInterface
+    public function findOneToEnqueue(mixed $id): ?ChannelInterface
     {
         assert($this instanceof EntityRepository);
 

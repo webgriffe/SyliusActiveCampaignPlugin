@@ -8,9 +8,8 @@ use DateTimeInterface;
 use Doctrine\ORM\EntityRepository;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Order\Model\OrderInterface as BaseOrderInterface;
-use Sylius\Component\Resource\Model\ResourceInterface;
 
-trait OrderActiveCampaignAwareRepositoryTrait
+trait ActiveCampaignOrderRepositoryTrait
 {
     /** @return OrderInterface[] */
     public function findNewCartsNotModifiedSince(DateTimeInterface $terminalDate): array
@@ -30,7 +29,7 @@ trait OrderActiveCampaignAwareRepositoryTrait
     }
 
     /** @return OrderInterface|null */
-    public function findOneToEnqueue(mixed $id): ?ResourceInterface
+    public function findOneToEnqueue(mixed $id): ?OrderInterface
     {
         assert($this instanceof EntityRepository);
 

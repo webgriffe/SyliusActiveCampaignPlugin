@@ -8,9 +8,9 @@ use DateTimeInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 
 /**
- * @extends ActiveCampaignAwareRepositoryInterface<OrderInterface>
+ * @extends ActiveCampaignResourceRepositoryInterface<OrderInterface>
  */
-interface OrderActiveCampaignAwareRepositoryInterface extends ActiveCampaignAwareRepositoryInterface
+interface ActiveCampaignOrderRepositoryInterface extends ActiveCampaignResourceRepositoryInterface
 {
     /** @return OrderInterface[] */
     public function findNewCartsNotModifiedSince(DateTimeInterface $terminalDate): array;

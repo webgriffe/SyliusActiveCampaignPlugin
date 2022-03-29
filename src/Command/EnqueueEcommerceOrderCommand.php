@@ -17,7 +17,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderCreate;
-use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignAwareRepositoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface;
 use Webmozart\Assert\Assert;
 
 final class EnqueueEcommerceOrderCommand extends Command
@@ -33,9 +33,9 @@ final class EnqueueEcommerceOrderCommand extends Command
     /** @psalm-suppress PropertyNotSetInConstructor */
     private SymfonyStyle $io;
 
-    /** @param ActiveCampaignAwareRepositoryInterface<OrderInterface> $orderRepository */
+    /** @param ActiveCampaignResourceRepositoryInterface<OrderInterface> $orderRepository */
     public function __construct(
-        private ActiveCampaignAwareRepositoryInterface $orderRepository,
+        private ActiveCampaignResourceRepositoryInterface $orderRepository,
         private MessageBusInterface $messageBus,
         private ?string $name = null
     ) {

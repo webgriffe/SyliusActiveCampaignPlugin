@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Doctrine\ORM;
 
 use Sylius\Bundle\CoreBundle\Doctrine\ORM\CustomerRepository as BaseCustomerRepository;
-use Webgriffe\SyliusActiveCampaignPlugin\Doctrine\ORM\ActiveCampaignResourceRepositoryTrait;
-use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignAwareRepositoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Doctrine\ORM\ActiveCampaignCustomerRepositoryTrait;
+use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface;
 
-final class CustomerRepository extends BaseCustomerRepository implements ActiveCampaignAwareRepositoryInterface
+final class CustomerRepository extends BaseCustomerRepository implements ActiveCampaignResourceRepositoryInterface
 {
-    use ActiveCampaignResourceRepositoryTrait;
+    use ActiveCampaignCustomerRepositoryTrait;
 }

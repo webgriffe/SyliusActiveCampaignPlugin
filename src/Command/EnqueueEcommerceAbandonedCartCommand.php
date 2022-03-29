@@ -15,7 +15,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Repository\OrderActiveCampaignAwareRepositoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignOrderRepositoryInterface;
 use Webmozart\Assert\Assert;
 
 final class EnqueueEcommerceAbandonedCartCommand extends Command
@@ -28,7 +28,7 @@ final class EnqueueEcommerceAbandonedCartCommand extends Command
     private SymfonyStyle $io;
 
     public function __construct(
-        private OrderActiveCampaignAwareRepositoryInterface $orderRepository,
+        private ActiveCampaignOrderRepositoryInterface $orderRepository,
         private MessageBusInterface $messageBus,
         private string $cartBecomesAbandonedPeriod,
         private ?string $name = null

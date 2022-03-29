@@ -17,7 +17,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionCreate;
-use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignAwareRepositoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface;
 use Webmozart\Assert\Assert;
 
 final class EnqueueConnectionCommand extends Command
@@ -33,9 +33,9 @@ final class EnqueueConnectionCommand extends Command
     /** @psalm-suppress PropertyNotSetInConstructor */
     private SymfonyStyle $io;
 
-    /** @param ActiveCampaignAwareRepositoryInterface<ChannelInterface> $channelRepository */
+    /** @param ActiveCampaignResourceRepositoryInterface<ChannelInterface> $channelRepository */
     public function __construct(
-        private ActiveCampaignAwareRepositoryInterface $channelRepository,
+        private ActiveCampaignResourceRepositoryInterface $channelRepository,
         private MessageBusInterface $messageBus,
         private ?string $name = null
     ) {

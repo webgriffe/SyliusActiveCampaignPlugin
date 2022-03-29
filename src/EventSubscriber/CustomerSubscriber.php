@@ -17,14 +17,14 @@ use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCust
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Repository\ChannelActiveCampaignAwareRepositoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignChannelRepositoryInterface;
 use Webmozart\Assert\Assert;
 
 final class CustomerSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private MessageBusInterface $messageBus,
-        private ChannelActiveCampaignAwareRepositoryInterface $channelRepository,
+        private ActiveCampaignChannelRepositoryInterface $channelRepository,
         private RepositoryInterface $channelCustomerRepository
     ) {
     }

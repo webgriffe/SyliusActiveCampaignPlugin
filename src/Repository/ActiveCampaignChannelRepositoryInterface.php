@@ -7,9 +7,9 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Repository;
 use Sylius\Component\Core\Model\ChannelInterface;
 
 /**
- * @extends ActiveCampaignAwareRepositoryInterface<ChannelInterface>
+ * @extends ActiveCampaignResourceRepositoryInterface<ChannelInterface>
  */
-interface ChannelActiveCampaignAwareRepositoryInterface extends ActiveCampaignAwareRepositoryInterface
+interface ActiveCampaignChannelRepositoryInterface extends ActiveCampaignResourceRepositoryInterface
 {
     /** @return ChannelInterface[] */
     public function findAllEnabledForActiveCampaign(): array;

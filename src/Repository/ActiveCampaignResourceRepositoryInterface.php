@@ -9,7 +9,7 @@ use Sylius\Component\Resource\Model\ResourceInterface;
 /**
  * @template T of ResourceInterface
  */
-interface ActiveCampaignAwareRepositoryInterface
+interface ActiveCampaignResourceRepositoryInterface
 {
     /** @return T|null */
     public function findOneToEnqueue(mixed $id): ?ResourceInterface;
