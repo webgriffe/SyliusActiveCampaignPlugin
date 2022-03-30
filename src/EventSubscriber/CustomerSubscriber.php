@@ -29,6 +29,7 @@ final class CustomerSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
+            'sylius.customer.post_register' => [['enqueueContact'], ['enqueueEcommerceCustomer']],
             'sylius.customer.post_create' => [['enqueueContact'], ['enqueueEcommerceCustomer']],
             'sylius.customer.post_update' => [['enqueueContact'], ['enqueueEcommerceCustomer']],
             'sylius.customer.post_delete' => [['removeContact'], ['removeEcommerceCustomer']],
