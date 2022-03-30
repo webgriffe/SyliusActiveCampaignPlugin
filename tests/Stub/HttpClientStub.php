@@ -26,6 +26,7 @@ final class HttpClientStub implements ClientInterface
     public function send(RequestInterface $request, array $options = [])
     {
         self::$sentRequests[] = $request;
+
         return new Response(self::$responseStatusCode, [], self::$responseBodyContent);
     }
 

@@ -46,6 +46,7 @@ final class ActiveCampaignConnectionClientStub implements ActiveCampaignResource
                 $connections[] = $activeCampaignResource['connection'];
             }
         }
+
         return new ListConnectionsResponse($connections);
     }
 

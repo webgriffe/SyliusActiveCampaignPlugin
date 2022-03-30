@@ -14,6 +14,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         'src',
         'tests/Behat',
         'tests/Integration',
+        'tests/Stub',
     ]);
 
     $containerConfigurator->parameters()->set(Option::SKIP, [

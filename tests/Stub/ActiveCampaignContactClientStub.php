@@ -42,6 +42,7 @@ final class ActiveCampaignContactClientStub implements ActiveCampaignResourceCli
                 $contacts[] = $activeCampaignResource;
             }
         }
+
         return new ListContactsResponse($contacts);
     }
 

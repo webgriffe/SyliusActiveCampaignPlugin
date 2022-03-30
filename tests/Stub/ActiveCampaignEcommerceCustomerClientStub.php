@@ -8,8 +8,8 @@ use RuntimeException;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ResourceInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\EcommerceCustomerResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\CreateEcommerceCustomerResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\EcommerceCustomerResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\ListEcommerceCustomersResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\UpdateEcommerceCustomerResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
@@ -47,6 +47,7 @@ final class ActiveCampaignEcommerceCustomerClientStub implements ActiveCampaignR
                 $ecommerceCustomers[] = $activeCampaignResource['ecommerceCustomer'];
             }
         }
+
         return new ListEcommerceCustomersResponse($ecommerceCustomers);
     }
 
