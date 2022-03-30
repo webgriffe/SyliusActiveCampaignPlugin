@@ -121,6 +121,7 @@ final class EcommerceCustomerEnqueuerSpec extends ObjectBehavior
         $channelCustomer->setActiveCampaignId(999);
         $channelCustomer->setChannel($channel);
         $channelCustomer->setCustomer($customer);
+        $customer->addChannelCustomer($channelCustomer)->shouldBeCalledOnce();
         $entityManager->persist($channelCustomer)->shouldBeCalledOnce();
         $entityManager->flush()->shouldBeCalledOnce();
         $messageBus
