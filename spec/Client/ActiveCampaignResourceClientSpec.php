@@ -42,6 +42,7 @@ final class ActiveCampaignResourceClientSpec extends ObjectBehavior
             $httpClient,
             $serializer,
             'contact',
+            'Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ContactResponse',
             'Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\CreateContactResponse',
             'Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ListContactsResponse',
             'Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\UpdateContactResponse'
@@ -127,7 +128,7 @@ final class ActiveCampaignResourceClientSpec extends ObjectBehavior
             'json',
             [
                 'resource' => 'contact',
-                'responseType' => ContactResponse::class,
+                'responseType' => 'Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ContactResponse',
                 'type' => ListResourcesResponseInterface::class,
             ]
         )->shouldBeCalledOnce()->willReturn($listResourcesResponse);
