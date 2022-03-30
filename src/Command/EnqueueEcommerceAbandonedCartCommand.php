@@ -11,9 +11,8 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\EcommerceOrderEnqueuerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignOrderRepositoryInterface;
 use Webmozart\Assert\Assert;
@@ -29,7 +28,7 @@ final class EnqueueEcommerceAbandonedCartCommand extends Command
 
     public function __construct(
         private ActiveCampaignOrderRepositoryInterface $orderRepository,
-        private MessageBusInterface $messageBus,
+        private EcommerceOrderEnqueuerInterface $ecommerceOrderEnqueuer,
         private string $cartBecomesAbandonedPeriod,
         private ?string $name = null
     ) {
@@ -65,26 +64,17 @@ final class EnqueueEcommerceAbandonedCartCommand extends Command
             return Command::SUCCESS;
         }
 
-        $progressBar = new ProgressBar($output, count($abandonedCarts));
-        $progressBar->setFormat(
-            "<fg=white;bg=black> %status:-45s%</>\n%current%/%max% [%bar%] %percent:3s%%\n🏁  %estimated:-21s% %memory:21s%"
-        );
-        $progressBar->setBarCharacter('<fg=red>⚬</>');
-        $progressBar->setEmptyBarCharacter('<fg=blue>⚬</>');
-        $progressBar->setProgressCharacter('🚀');
-        $progressBar->setRedrawFrequency(10);
-        $progressBar->setMessage(sprintf('Starting the enqueue for %s abandoned carts...', count($abandonedCarts)), 'status');
-        $progressBar->start();
+        $progressBar = $this->getProgressBar($output, $abandonedCarts);
 
         foreach ($abandonedCarts as $abandonedCart) {
-            Assert::isInstanceOf($abandonedCart, ActiveCampaignAwareInterface::class, sprintf('The Order entity should implement the "%s" class', ActiveCampaignAwareInterface::class));
+            if (!$abandonedCart instanceof ActiveCampaignAwareInterface) {
+                continue;
+            }
             Assert::null($abandonedCart->getActiveCampaignId());
 
-            /** @var string|int|null $cartId */
-            $cartId = $abandonedCart->getId();
-            Assert::notNull($cartId);
-            $this->messageBus->dispatch(new EcommerceOrderCreate($cartId, true));
-            $progressBar->setMessage(sprintf('Abandoned cart "%s" enqueued!', (string) $cartId), 'status');
+            $this->ecommerceOrderEnqueuer->enqueue($abandonedCart, true);
+
+            $progressBar->setMessage(sprintf('Abandoned cart "%s" enqueued!', (string) $abandonedCart->getId()), 'status');
             $progressBar->advance();
         }
         $progressBar->setMessage(sprintf('Finished to enqueue the %s abandoned carts 🎉', count($abandonedCarts)), 'status');
@@ -106,5 +96,21 @@ final class EnqueueEcommerceAbandonedCartCommand extends Command
 
               <info>php %command.full_name%</info>
             HELP;
+    }
+
+    protected function getProgressBar(OutputInterface $output, array $abandonedCarts): ProgressBar
+    {
+        $progressBar = new ProgressBar($output, count($abandonedCarts));
+        $progressBar->setFormat(
+            "<fg=white;bg=black> %status:-45s%</>\n%current%/%max% [%bar%] %percent:3s%%\n🏁  %estimated:-21s% %memory:21s%"
+        );
+        $progressBar->setBarCharacter('<fg=red>⚬</>');
+        $progressBar->setEmptyBarCharacter('<fg=blue>⚬</>');
+        $progressBar->setProgressCharacter('🚀');
+        $progressBar->setRedrawFrequency(10);
+        $progressBar->setMessage(sprintf('Starting the enqueue for %s abandoned carts...', count($abandonedCarts)), 'status');
+        $progressBar->start();
+
+        return $progressBar;
     }
 }

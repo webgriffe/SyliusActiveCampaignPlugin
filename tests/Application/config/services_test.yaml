@@ -19,6 +19,9 @@ services:
     webgriffe.sylius_active_campaign_plugin.client_stub.active_campaign.ecommerce_customer:
         class: Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\ActiveCampaignEcommerceCustomerClientStub
 
+    webgriffe.sylius_active_campaign_plugin.client_stub.active_campaign.ecommerce_order:
+        class: Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\ActiveCampaignEcommerceOrderClientStub
+
     webgriffe.sylius_active_campaign_plugin.enqueuer.contact:
         class: Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\ContactEnqueuer
         arguments:
@@ -40,3 +43,10 @@ services:
             - '@webgriffe.sylius_active_campaign_plugin.client_stub.active_campaign.ecommerce_customer'
             - '@doctrine.orm.entity_manager'
             - '@webgriffe_sylius_active_campaign.factory.channel_customer'
+
+    webgriffe.sylius_active_campaign_plugin.enqueuer.ecommerce_order:
+        class: Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\EcommerceOrderEnqueuer
+        arguments:
+            - '@messenger.default_bus'
+            - '@doctrine.orm.entity_manager'
+            - '@webgriffe.sylius_active_campaign_plugin.client_stub.active_campaign.ecommerce_order'

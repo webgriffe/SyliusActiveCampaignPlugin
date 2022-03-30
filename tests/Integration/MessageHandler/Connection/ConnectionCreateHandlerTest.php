@@ -8,7 +8,6 @@ use App\Entity\Channel\ChannelInterface;
 use Fidry\AliceDataFixtures\Persistence\PurgeMode;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\ActiveCampaignConnectionClientStub;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Connection\ConnectionCreateHandler;
 
@@ -32,7 +31,7 @@ final class ConnectionCreateHandlerTest extends KernelTestCase
 
         $this->connectionCreateHandler = new ConnectionCreateHandler(
             self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.mapper.connection'),
-            new ActiveCampaignConnectionClientStub(),
+            self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.client_stub.active_campaign.connection'),
             $this->channelRepository
         );
     }

@@ -8,7 +8,6 @@ use App\Entity\Order\OrderInterface;
 use Fidry\AliceDataFixtures\Persistence\PurgeMode;
 use Sylius\Component\Core\Repository\OrderRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\ActiveCampaignEcommerceOrderClientStub;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceOrder\EcommerceOrderCreateHandler;
 
@@ -34,7 +33,7 @@ final class EcommerceOrderCreateHandlerTest extends KernelTestCase
 
         $this->ecommerceOrderCreateHandler = new EcommerceOrderCreateHandler(
             self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.mapper.ecommerce_order'),
-            new ActiveCampaignEcommerceOrderClientStub(),
+            self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.client_stub.active_campaign.ecommerce_order'),
             $this->orderRepository
         );
     }
