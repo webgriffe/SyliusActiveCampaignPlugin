@@ -59,6 +59,7 @@ final class EcommerceCustomerEnqueuer implements EcommerceCustomerEnqueuerInterf
             $channelCustomer->setChannel($channel);
             $channelCustomer->setCustomer($customer);
             $this->entityManager->persist($channelCustomer);
+            $customer->addChannelCustomer($channelCustomer);
             $this->entityManager->flush();
 
             $this->messageBus->dispatch(new EcommerceCustomerUpdate($customerId, $activeCampaignEcommerceCustomerId, $channelId));
