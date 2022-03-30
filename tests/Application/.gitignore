@@ -8,6 +8,10 @@
 
 /node_modules
 
+/docker
+/docker-compose.override.yaml
+/docker-compose.override.yml
+
 ###> symfony/framework-bundle ###
 /.env.*.local
 /.env.local
