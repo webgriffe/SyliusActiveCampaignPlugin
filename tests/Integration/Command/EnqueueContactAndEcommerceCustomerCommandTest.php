@@ -59,9 +59,11 @@ final class EnqueueContactAndEcommerceCustomerCommandTest extends AbstractComman
         $fashionShopChannel = $this->channelRepository->findOneBy(['code' => 'fashion_shop']);
         $digitalShopChannel = $this->channelRepository->findOneBy(['code' => 'digital_shop']);
         self::assertNotNull($customer->getId());
+
         $commandTester = $this->executeCommand([
             'customer-id' => $customer->getId(),
         ], []);
+
         self::assertEquals(0, $commandTester->getStatusCode());
 
         $transport = self::getContainer()->get('messenger.transport.main');
@@ -87,11 +89,12 @@ final class EnqueueContactAndEcommerceCustomerCommandTest extends AbstractComman
         $fashionShopChannel = $this->channelRepository->findOneBy(['code' => 'fashion_shop']);
         $digitalShopChannel = $this->channelRepository->findOneBy(['code' => 'digital_shop']);
         self::assertNotNull($customer->getId());
+
         $commandTester = $this->executeCommand([], [
             $customer->getId(),
         ]);
-        self::assertEquals(0, $commandTester->getStatusCode());
 
+        self::assertEquals(0, $commandTester->getStatusCode());
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
@@ -114,6 +117,7 @@ final class EnqueueContactAndEcommerceCustomerCommandTest extends AbstractComman
         $commandTester = $this->executeCommand([
             '--all' => true,
         ]);
+
         self::assertEquals(0, $commandTester->getStatusCode());
 
         $customerJim = $this->customerRepository->findOneBy(['email' => 'jim@email.com']);
