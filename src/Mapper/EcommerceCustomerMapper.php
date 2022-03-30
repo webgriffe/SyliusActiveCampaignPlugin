@@ -37,7 +37,7 @@ final class EcommerceCustomerMapper implements EcommerceCustomerMapperInterface
             ));
         }
         $ecommerceCustomer = $this->ecommerceCustomerFactory->createNew($customerEmail, (string) $connectionId, (string) $customerId);
-        $ecommerceCustomer->setAcceptsMarketing($customer->isSubscribedToNewsletter() ? EcommerceCustomerInterface::MARKETING_OPTED_IN : EcommerceCustomerInterface::MARKETING_NOT_OPTED_IN);
+        $ecommerceCustomer->setAcceptsMarketing(EcommerceCustomerInterface::MARKETING_OPTED_IN);
 
         return $ecommerceCustomer;
     }
