@@ -11,6 +11,8 @@ use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderCr
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderRemove;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderUpdate;
 
+// TODO: This test should be improved with testing an already existing order in ActiveCampaign, but there is the need to found a way to "force"
+// id on alice data fixture.
 final class EnqueueEcommerceOrderCommandTest extends AbstractCommandTest
 {
     private const FIXTURE_BASE_DIR = __DIR__ . '/../../DataFixtures/ORM/resources/Command/EnqueueEcommerceOrderCommandTest';
