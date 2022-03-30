@@ -15,6 +15,8 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderDisc
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderProduct;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\CreateEcommerceOrderResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\EcommerceOrderResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\ListEcommerceOrdersResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\UpdateEcommerceOrderResponse;
 
 final class ActiveCampaignEcommerceOrderClientTest extends KernelTestCase
@@ -99,6 +101,30 @@ final class ActiveCampaignEcommerceOrderClientTest extends KernelTestCase
         self::assertNotNull($createdEcommerceOrder);
         self::assertInstanceOf(CreateEcommerceOrderResponse::class, $createdEcommerceOrder);
         self::assertEquals(1, $createdEcommerceOrder->getResourceResponse()->getId());
+    }
+
+    public function test_it_lists_connections_on_active_campaign(): void
+    {
+        HttpClientStub::$responseStatusCode = 200;
+        HttpClientStub::$responseBodyContent = '{"ecomOrders":[{"externalid":"3246315234","source":"1","email":"alice@example.com","currency":"USD","connectionid":"1","customerid":"1","orderUrl":"https://example.com/orders/3246315233","shippingMethod":"UPSGround","totalPrice":9111,"shippingAmount":200,"taxAmount":500,"discountAmount":100,"externalCreatedDate":"2016-09-13T16:41:39-05:00","totalProducts":2,"createdDate":"2019-09-05T12:16:18-05:00","updatedDate":"2019-09-05T12:16:18-05:00","state":1,"connection":"1","orderProducts":["1","2"],"customer":"1","orderDate":"2016-09-13T16:41:39-05:00","tstamp":"2019-09-05T12:16:18-05:00","links":{"connection":"https://exampleaccount.api-us1.com/api/3/ecomOrders/1/connection","customer":"https://exampleaccount.api-us1.com/api/3/ecomOrders/1/customer","orderProducts":"https://exampleaccount.api-us1.com/api/3/ecomOrders/1/orderProducts","orderDiscounts":"https://exampleaccount.api-us1.com/api/3/ecomOrders/1/orderDiscounts","orderActivities":"https://exampleaccount.api-us1.com/api/3/ecomOrders/1/orderActivities"},"id":"1"},{"externalid":"47856739866","source":"1","email":"example@example.com","currency":"USD","connectionid":"1","customerid":"2","orderUrl":"https://example.com/orders/47856739866","shippingMethod":"UPSGround","totalPrice":3450,"shippingAmount":100,"taxAmount":0,"discountAmount":0,"externalCreatedDate":"2019-09-06T2:10:00-05:00","totalProducts":2,"createdDate":"2019-09-06T2:10:00-05:00","updatedDate":"2019-09-06T2:10:00-05:00","state":1,"connection":"1","orderProducts":["3"],"customer":"2","orderDate":"2019-09-06T2:10:00-05:00","tstamp":"2019-09-06T2:10:00-05:00","links":{"connection":"https://exampleaccount.api-us1.com/api/3/ecomOrders/2/connection","customer":"https://exampleaccount.api-us1.com/api/3/ecomOrders/2/customer","orderProducts":"https://exampleaccount.api-us1.com/api/3/ecomOrders/2/orderProducts","orderDiscounts":"https://exampleaccount.api-us1.com/api/3/ecomOrders/2/orderDiscounts","orderActivities":"https://exampleaccount.api-us1.com/api/3/ecomOrders/2/orderActivities"},"id":"2"}],"meta":{"total":"2"}}';
+
+        $listEcommerceOrdersResponse = $this->client->list([
+            'filters[email]' => 'test@email.com',
+            'filters[connectionid]' => '4',
+        ]);
+
+        self::assertCount(1, HttpClientStub::$sentRequests);
+        $sentRequest = reset(HttpClientStub::$sentRequests);
+        self::assertInstanceOf(RequestInterface::class, $sentRequest);
+        self::assertEquals('/api/3/ecomOrders', $sentRequest->getUri()->getPath());
+        self::assertEquals('filters%5Bemail%5D=test%40email.com&filters%5Bconnectionid%5D=4', $sentRequest->getUri()->getQuery());
+        self::assertEquals('GET', $sentRequest->getMethod());
+
+        self::assertNotNull($listEcommerceOrdersResponse);
+        self::assertInstanceOf(ListEcommerceOrdersResponse::class, $listEcommerceOrdersResponse);
+        self::assertCount(2, $listEcommerceOrdersResponse->getResourceResponseLists());
+        self::assertInstanceOf(EcommerceOrderResponse::class, $listEcommerceOrdersResponse->getResourceResponseLists()[0]);
+        self::assertEquals('1', $listEcommerceOrdersResponse->getResourceResponseLists()[0]->getId());
     }
 
     public function test_it_updates_ecommerce_order_on_active_campaign(): void
