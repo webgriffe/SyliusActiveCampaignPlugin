@@ -6,11 +6,11 @@ namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Enqueuer;
 
 use App\Entity\Order\OrderInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\EcommerceOrderEnqueuer;
-use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\EcommerceOrderEnqueuerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderRemove;

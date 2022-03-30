@@ -17,8 +17,7 @@ class ChannelHostnameUrlGeneratorSpec extends ObjectBehavior
     public function let(
         UrlGeneratorInterface $router,
         ChannelInterface $channel
-    ): void
-    {
+    ): void {
         $channel->getHostname()->willReturn('domain.com');
 
         $router->generate('route', [], UrlGeneratorInterface::ABSOLUTE_URL)->willReturn('/route');

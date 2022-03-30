@@ -6,13 +6,13 @@ namespace spec\Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceOrde
 
 use App\Entity\Order\OrderInterface;
 use InvalidArgumentException;
+use PhpSpec\ObjectBehavior;
 use Sylius\Component\Core\Model\OrderInterface as SyliusOrderInterface;
 use Sylius\Component\Core\Repository\OrderRepositoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceOrder\EcommerceOrderCreateHandler;
-use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
@@ -47,7 +47,8 @@ class EcommerceOrderCreateHandlerSpec extends ObjectBehavior
         $orderRepository->find(54)->shouldBeCalledOnce()->willReturn(null);
 
         $this->shouldThrow(new InvalidArgumentException('Order with id "54" does not exists'))->during(
-            '__invoke', [new EcommerceOrderCreate(54, true)]
+            '__invoke',
+            [new EcommerceOrderCreate(54, true)]
         );
     }
 
@@ -58,7 +59,8 @@ class EcommerceOrderCreateHandlerSpec extends ObjectBehavior
         $orderRepository->find(54)->shouldBeCalledOnce()->willReturn($syliusOrder);
 
         $this->shouldThrow(new InvalidArgumentException('The Order entity should implement the "Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface" class'))->during(
-            '__invoke', [new EcommerceOrderCreate(54, true)]
+            '__invoke',
+            [new EcommerceOrderCreate(54, true)]
         );
     }
 
@@ -68,7 +70,8 @@ class EcommerceOrderCreateHandlerSpec extends ObjectBehavior
         $order->getActiveCampaignId()->willReturn(65);
 
         $this->shouldThrow(new InvalidArgumentException('The Order with id "54" has been already created on ActiveCampaign on the ecommerce order with id "65"'))->during(
-            '__invoke', [new EcommerceOrderCreate(54, true)]
+            '__invoke',
+            [new EcommerceOrderCreate(54, true)]
         );
     }
 

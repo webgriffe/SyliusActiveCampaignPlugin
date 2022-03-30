@@ -46,7 +46,8 @@ class ContactUpdateHandlerSpec extends ObjectBehavior
         $customerRepository->find(12)->shouldBeCalledOnce()->willReturn(null);
 
         $this->shouldThrow(new InvalidArgumentException('Customer with id "12" does not exists.'))->during(
-            '__invoke', [new ContactUpdate(12, 1234)]
+            '__invoke',
+            [new ContactUpdate(12, 1234)]
         );
     }
 
@@ -57,7 +58,8 @@ class ContactUpdateHandlerSpec extends ObjectBehavior
         $customerRepository->find(12)->shouldBeCalledOnce()->willReturn($syliusCustomer);
 
         $this->shouldThrow(new InvalidArgumentException('The Customer entity should implement the "Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface" class.'))->during(
-            '__invoke', [new ContactUpdate(12, 1234)]
+            '__invoke',
+            [new ContactUpdate(12, 1234)]
         );
     }
 
@@ -67,7 +69,8 @@ class ContactUpdateHandlerSpec extends ObjectBehavior
         $customer->getActiveCampaignId()->willReturn(null);
 
         $this->shouldThrow(new InvalidArgumentException('The Customer with id "12" has an ActiveCampaign id that does not match. Expected "1234", given "".'))->during(
-            '__invoke', [new ContactUpdate(12, 1234)]
+            '__invoke',
+            [new ContactUpdate(12, 1234)]
         );
     }
 
@@ -77,7 +80,8 @@ class ContactUpdateHandlerSpec extends ObjectBehavior
         $customer->getActiveCampaignId()->willReturn('321');
 
         $this->shouldThrow(new InvalidArgumentException('The Customer with id "12" has an ActiveCampaign id that does not match. Expected "1234", given "321".'))->during(
-            '__invoke', [new ContactUpdate(12, 1234)]
+            '__invoke',
+            [new ContactUpdate(12, 1234)]
         );
     }
 

@@ -46,7 +46,8 @@ class ConnectionUpdateHandlerSpec extends ObjectBehavior
         $channelRepository->find(1)->shouldBeCalledOnce()->willReturn(null);
 
         $this->shouldThrow(new InvalidArgumentException('Channel with id "1" does not exists.'))->during(
-            '__invoke', [new ConnectionUpdate(1, 1)]
+            '__invoke',
+            [new ConnectionUpdate(1, 1)]
         );
     }
 
@@ -57,7 +58,8 @@ class ConnectionUpdateHandlerSpec extends ObjectBehavior
         $channelRepository->find(1)->shouldBeCalledOnce()->willReturn($syliusChannel);
 
         $this->shouldThrow(new InvalidArgumentException('The Channel entity should implement the "Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface" class.'))->during(
-            '__invoke', [new ConnectionUpdate(1, 1)]
+            '__invoke',
+            [new ConnectionUpdate(1, 1)]
         );
     }
 
@@ -67,7 +69,8 @@ class ConnectionUpdateHandlerSpec extends ObjectBehavior
         $channel->getActiveCampaignId()->willReturn(null);
 
         $this->shouldThrow(new InvalidArgumentException('The Channel with id "1" has an ActiveCampaign id that does not match. Expected "1", given "".'))->during(
-            '__invoke', [new ConnectionUpdate(1, 1)]
+            '__invoke',
+            [new ConnectionUpdate(1, 1)]
         );
     }
 
@@ -77,7 +80,8 @@ class ConnectionUpdateHandlerSpec extends ObjectBehavior
         $channel->getActiveCampaignId()->willReturn(312);
 
         $this->shouldThrow(new InvalidArgumentException('The Channel with id "1" has an ActiveCampaign id that does not match. Expected "1", given "312".'))->during(
-            '__invoke', [new ConnectionUpdate(1, 1)]
+            '__invoke',
+            [new ConnectionUpdate(1, 1)]
         );
     }
 

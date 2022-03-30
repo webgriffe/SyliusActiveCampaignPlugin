@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Mapper;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use PhpSpec\ObjectBehavior;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\ImageInterface;
 use Sylius\Component\Core\Model\OrderInterface;
@@ -15,7 +16,6 @@ use Sylius\Component\Locale\Model\LocaleInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderProductFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Generator\ChannelHostnameUrlGeneratorInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderProductMapper;
-use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderProductMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderProductInterface;
 use Webmozart\Assert\InvalidArgumentException;
@@ -232,7 +232,7 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
     ): void {
         $order->getLocaleCode()->willReturn(null);
         $frenchLocale->getCode()->willReturn(null);
-        $channelHostnameUrlGenerator->generate($channel,'sylius_shop_product_show', ['_locale' => 'en_US', 'slug' => 'wine-bottle'])->shouldBeCalledOnce()->willReturn('https://localhost/products/wine-bottle');
+        $channelHostnameUrlGenerator->generate($channel, 'sylius_shop_product_show', ['_locale' => 'en_US', 'slug' => 'wine-bottle'])->shouldBeCalledOnce()->willReturn('https://localhost/products/wine-bottle');
 
         $this->mapFromOrderItem($orderItem)->shouldReturn($ecommerceOrderProduct);
     }

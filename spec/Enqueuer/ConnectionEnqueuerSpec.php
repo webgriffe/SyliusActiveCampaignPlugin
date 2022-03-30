@@ -6,13 +6,13 @@ namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Enqueuer;
 
 use App\Entity\Channel\ChannelInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\ConnectionEnqueuer;
 use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\ConnectionEnqueuerInterface;
-use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\ConnectionResponse;
@@ -83,7 +83,7 @@ class ConnectionEnqueuerSpec extends ObjectBehavior
         EntityManagerInterface $entityManager
     ): void {
         $listResourcesResponse->getResourceResponseLists()->willReturn([
-            new ConnectionResponse(14)
+            new ConnectionResponse(14),
         ]);
         $channel->setActiveCampaignId(14)->shouldBeCalledOnce();
         $entityManager->flush()->shouldBeCalledOnce();

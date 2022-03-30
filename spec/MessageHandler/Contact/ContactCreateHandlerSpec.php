@@ -47,7 +47,8 @@ class ContactCreateHandlerSpec extends ObjectBehavior
         $customerRepository->find(12)->shouldBeCalledOnce()->willReturn(null);
 
         $this->shouldThrow(InvalidArgumentException::class)->during(
-            '__invoke', [new ContactCreate(12)]
+            '__invoke',
+            [new ContactCreate(12)]
         );
     }
 
@@ -58,7 +59,8 @@ class ContactCreateHandlerSpec extends ObjectBehavior
         $customerRepository->find(12)->shouldBeCalledOnce()->willReturn($syliusCustomer);
 
         $this->shouldThrow(InvalidArgumentException::class)->during(
-            '__invoke', [new ContactCreate(12)]
+            '__invoke',
+            [new ContactCreate(12)]
         );
     }
 
@@ -68,7 +70,8 @@ class ContactCreateHandlerSpec extends ObjectBehavior
         $customer->getActiveCampaignId()->willReturn('321');
 
         $this->shouldThrow(InvalidArgumentException::class)->during(
-            '__invoke', [new ContactCreate(12)]
+            '__invoke',
+            [new ContactCreate(12)]
         );
     }
 

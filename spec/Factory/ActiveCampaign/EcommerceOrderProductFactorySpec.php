@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign;
 
-use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderProductFactory;
 use PhpSpec\ObjectBehavior;
+use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderProductFactory;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderProductFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderProduct;
 

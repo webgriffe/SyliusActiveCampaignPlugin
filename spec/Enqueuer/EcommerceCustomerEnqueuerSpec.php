@@ -142,5 +142,4 @@ final class EcommerceCustomerEnqueuerSpec extends ObjectBehavior
             ->willReturn(new Envelope(new EcommerceCustomerCreate(1, 111)));
         $this->enqueue($customer, $channel);
     }
-
 }

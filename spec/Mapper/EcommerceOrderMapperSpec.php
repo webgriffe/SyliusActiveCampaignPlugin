@@ -9,6 +9,7 @@ use App\Entity\Customer\CustomerInterface;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Sylius\Component\Core\Model\ChannelInterface as SyliusChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface as SyliusCustomerInterface;
@@ -23,7 +24,6 @@ use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderFa
 use Webgriffe\SyliusActiveCampaignPlugin\Generator\ChannelHostnameUrlGeneratorInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderDiscountMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderMapper;
-use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderProductMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderDiscountInterface;

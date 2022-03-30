@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Mapper;
 
+use PhpSpec\ObjectBehavior;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ConnectionMapper;
-use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ConnectionMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\Connection;
 use Webmozart\Assert\InvalidArgumentException;

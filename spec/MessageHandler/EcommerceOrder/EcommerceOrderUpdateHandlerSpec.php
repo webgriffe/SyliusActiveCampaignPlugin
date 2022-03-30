@@ -6,13 +6,13 @@ namespace spec\Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceOrde
 
 use App\Entity\Order\OrderInterface;
 use InvalidArgumentException;
+use PhpSpec\ObjectBehavior;
 use Sylius\Component\Core\Model\OrderInterface as SyliusOrderInterface;
 use Sylius\Component\Core\Repository\OrderRepositoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceOrder\EcommerceOrderUpdateHandler;
-use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
@@ -46,7 +46,8 @@ class EcommerceOrderUpdateHandlerSpec extends ObjectBehavior
         $orderRepository->find(54)->shouldBeCalledOnce()->willReturn(null);
 
         $this->shouldThrow(new InvalidArgumentException('Order with id "54" does not exists.'))->during(
-            '__invoke', [new EcommerceOrderUpdate(54, 364, true)]
+            '__invoke',
+            [new EcommerceOrderUpdate(54, 364, true)]
         );
     }
 
@@ -57,7 +58,8 @@ class EcommerceOrderUpdateHandlerSpec extends ObjectBehavior
         $orderRepository->find(54)->shouldBeCalledOnce()->willReturn($syliusOrder);
 
         $this->shouldThrow(new InvalidArgumentException('The Order entity should implement the "Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface" class.'))->during(
-            '__invoke', [new EcommerceOrderUpdate(54, 364, true)]
+            '__invoke',
+            [new EcommerceOrderUpdate(54, 364, true)]
         );
     }
 
@@ -67,7 +69,8 @@ class EcommerceOrderUpdateHandlerSpec extends ObjectBehavior
         $order->getActiveCampaignId()->willReturn(null);
 
         $this->shouldThrow(new InvalidArgumentException('The Order with id "54" has an ActiveCampaign id that does not match. Expected "364", given "".'))->during(
-            '__invoke', [new EcommerceOrderUpdate(54, 364, true)]
+            '__invoke',
+            [new EcommerceOrderUpdate(54, 364, true)]
         );
     }
 
@@ -77,7 +80,8 @@ class EcommerceOrderUpdateHandlerSpec extends ObjectBehavior
         $order->getActiveCampaignId()->willReturn(312);
 
         $this->shouldThrow(new InvalidArgumentException('The Order with id "54" has an ActiveCampaign id that does not match. Expected "364", given "312".'))->during(
-            '__invoke', [new EcommerceOrderUpdate(54, 364, true)]
+            '__invoke',
+            [new EcommerceOrderUpdate(54, 364, true)]
         );
     }
 

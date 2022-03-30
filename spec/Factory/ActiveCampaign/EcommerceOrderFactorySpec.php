@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign;
 
 use DateTime;
+use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Exception\EcommerceOrderAbandonedDateRequiredException;
 use Webgriffe\SyliusActiveCampaignPlugin\Exception\EcommerceOrderExternalIdNotValidException;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderFactory;
-use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderInterface;
 
@@ -42,7 +42,7 @@ class EcommerceOrderFactorySpec extends ObjectBehavior
             new DateTime('2022-03-18 10:52'),
             null,
             null,
-            null
+            null,
         ]);
     }
 
@@ -59,7 +59,7 @@ class EcommerceOrderFactorySpec extends ObjectBehavior
             new DateTime('2022-03-18 10:52'),
             null,
             '321',
-            null
+            null,
         ]);
     }
 

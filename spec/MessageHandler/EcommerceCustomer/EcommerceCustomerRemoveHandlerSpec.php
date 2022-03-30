@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace spec\Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceCustomer;
 
+use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerRemove;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceCustomer\EcommerceCustomerRemoveHandler;
-use PhpSpec\ObjectBehavior;
 
 class EcommerceCustomerRemoveHandlerSpec extends ObjectBehavior
 {

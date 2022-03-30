@@ -6,12 +6,12 @@ namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Enqueuer;
 
 use App\Entity\Customer\CustomerInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\ContactEnqueuer;
-use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\ContactEnqueuerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactUpdate;
@@ -80,7 +80,7 @@ class ContactEnqueuerSpec extends ObjectBehavior
         EntityManagerInterface $entityManager
     ): void {
         $listResourcesResponse->getResourceResponseLists()->willReturn([
-            new ContactResponse(14)
+            new ContactResponse(14),
         ]);
         $customer->setActiveCampaignId(14)->shouldBeCalledOnce();
         $entityManager->flush()->shouldBeCalledOnce();

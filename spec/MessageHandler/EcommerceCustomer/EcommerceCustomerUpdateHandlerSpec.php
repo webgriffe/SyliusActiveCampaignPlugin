@@ -9,8 +9,8 @@ use App\Entity\Customer\CustomerInterface;
 use InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
-use Sylius\Component\Core\Model\CustomerInterface as SyliusCustomerInterface;
 use Sylius\Component\Core\Model\ChannelInterface as SyliusChannelInterface;
+use Sylius\Component\Core\Model\CustomerInterface as SyliusCustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceCustomerMapperInterface;
@@ -60,7 +60,8 @@ final class EcommerceCustomerUpdateHandlerSpec extends ObjectBehavior
         $channelRepository->find(1)->shouldBeCalledOnce()->willReturn(null);
 
         $this->shouldThrow(new InvalidArgumentException('Channel with id "1" does not exists'))->during(
-            '__invoke', [new EcommerceCustomerUpdate(12, 3423, 1)]
+            '__invoke',
+            [new EcommerceCustomerUpdate(12, 3423, 1)]
         );
     }
 
@@ -71,7 +72,8 @@ final class EcommerceCustomerUpdateHandlerSpec extends ObjectBehavior
         $channelRepository->find(1)->shouldBeCalledOnce()->willReturn($syliusChannel);
 
         $this->shouldThrow(new InvalidArgumentException('The Channel entity should implement the "Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface" class'))->during(
-            '__invoke', [new EcommerceCustomerUpdate(12, 3423, 1)]
+            '__invoke',
+            [new EcommerceCustomerUpdate(12, 3423, 1)]
         );
     }
 
@@ -81,7 +83,8 @@ final class EcommerceCustomerUpdateHandlerSpec extends ObjectBehavior
         $customerRepository->find(12)->shouldBeCalledOnce()->willReturn(null);
 
         $this->shouldThrow(new InvalidArgumentException('Customer with id "12" does not exists'))->during(
-            '__invoke', [new EcommerceCustomerUpdate(12, 3423, 1)]
+            '__invoke',
+            [new EcommerceCustomerUpdate(12, 3423, 1)]
         );
     }
 
@@ -92,7 +95,8 @@ final class EcommerceCustomerUpdateHandlerSpec extends ObjectBehavior
         $customerRepository->find(12)->shouldBeCalledOnce()->willReturn($syliusCustomer);
 
         $this->shouldThrow(new InvalidArgumentException('The Customer entity should implement the "Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface" class'))->during(
-            '__invoke', [new EcommerceCustomerUpdate(12, 3423, 1)]
+            '__invoke',
+            [new EcommerceCustomerUpdate(12, 3423, 1)]
         );
     }
 
@@ -103,7 +107,8 @@ final class EcommerceCustomerUpdateHandlerSpec extends ObjectBehavior
         $customer->getChannelCustomerByChannel($channel)->willReturn(null);
 
         $this->shouldThrow(new InvalidArgumentException('The Customer with id "12" does not have an ActiveCampaign Ecommerce customer for the channel "ecommerce".'))->during(
-            '__invoke', [new EcommerceCustomerUpdate(12, 3423, 1)]
+            '__invoke',
+            [new EcommerceCustomerUpdate(12, 3423, 1)]
         );
     }
 
@@ -116,7 +121,8 @@ final class EcommerceCustomerUpdateHandlerSpec extends ObjectBehavior
         $channelCustomer->getActiveCampaignId()->willReturn(432);
 
         $this->shouldThrow(new InvalidArgumentException('The Customer with id "12" has an ActiveCampaign id that does not match. Expected "3423", given "432".'))->during(
-            '__invoke', [new EcommerceCustomerUpdate(12, 3423, 1)]
+            '__invoke',
+            [new EcommerceCustomerUpdate(12, 3423, 1)]
         );
     }
 

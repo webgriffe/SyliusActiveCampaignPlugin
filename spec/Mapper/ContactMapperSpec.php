@@ -45,7 +45,8 @@ class ContactMapperSpec extends ObjectBehavior
         $customer->getEmail()->willReturn(null);
 
         $this->shouldThrow(CustomerDoesNotHaveEmailException::class)->during(
-            'mapFromCustomer', [$customer]
+            'mapFromCustomer',
+            [$customer]
         );
     }
 
