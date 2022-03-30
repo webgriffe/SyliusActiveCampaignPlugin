@@ -51,7 +51,7 @@ final class CustomerSubscriber implements EventSubscriberInterface
         if (!$customer instanceof CustomerInterface || !$customer instanceof CustomerActiveCampaignAwareInterface) {
             return;
         }
-        foreach ($this->channelRepository->findAllEnabledForActiveCampaign() as $channel) {
+        foreach ($this->channelRepository->findAllForCustomer($customer) as $channel) {
             if (!$channel instanceof ActiveCampaignAwareInterface) {
                 return;
             }

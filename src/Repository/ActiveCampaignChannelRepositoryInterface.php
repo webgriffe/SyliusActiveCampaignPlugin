@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Webgriffe\SyliusActiveCampaignPlugin\Repository;
 
 use Sylius\Component\Core\Model\ChannelInterface;
+use Sylius\Component\Core\Model\CustomerInterface;
 
 /**
  * @extends ActiveCampaignResourceRepositoryInterface<ChannelInterface>
@@ -12,5 +13,5 @@ use Sylius\Component\Core\Model\ChannelInterface;
 interface ActiveCampaignChannelRepositoryInterface extends ActiveCampaignResourceRepositoryInterface
 {
     /** @return ChannelInterface[] */
-    public function findAllEnabledForActiveCampaign(): array;
+    public function findAllForCustomer(CustomerInterface $customer): array;
 }

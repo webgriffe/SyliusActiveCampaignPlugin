@@ -119,7 +119,6 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
 
             return Command::SUCCESS;
         }
-        $channels = $this->channelRepository->findAllEnabledForActiveCampaign();
         $progressBar = $this->getProgressBar($output, $customersToExport);
 
         foreach ($customersToExport as $customer) {
@@ -128,6 +127,7 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
             }
             $this->contactEnqueuer->enqueue($customer);
 
+            $channels = $this->channelRepository->findAllForCustomer($customer);
             foreach ($channels as $channel) {
                 if (!$channel instanceof ActiveCampaignAwareInterface) {
                     continue;
