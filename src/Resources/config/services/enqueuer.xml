@@ -28,6 +28,7 @@
                  class="Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\EcommerceOrderEnqueuer">
             <argument type="service" id="messenger.default_bus"/>
             <argument type="service" id="doctrine.orm.entity_manager"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.ecommerce_order"/>
         </service>
     </services>
 </container>
