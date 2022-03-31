@@ -1,5 +1,0 @@
-webgriffe_sylius_active_campaign:
-    resources:
-        channel_customer:
-            classes:
-                model: App\Entity\Customer\ChannelCustomer

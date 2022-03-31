@@ -8,3 +8,7 @@ webgriffe_sylius_active_campaign:
     mapper:
         ecommerce_order_product:
             image_type: 'main'
+    resources:
+        channel_customer:
+            classes:
+                model: App\Entity\Customer\ChannelCustomer
