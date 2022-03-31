@@ -1,6 +1,6 @@
 # Opening Sylius in the plugin
 
-[Return to Contributing](03-Contributing.md)
+[Return to Contributing](04-Contributing.md)
 
 - Using `test` environment:
 
@@ -15,3 +15,5 @@
     (cd tests/Application && APP_ENV=dev bin/console sylius:fixtures:load)
     (cd tests/Application && APP_ENV=dev bin/console server:run -d public)
     ```
+
+[Return to Contributing](04-Contributing.md)

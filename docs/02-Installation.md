@@ -128,7 +128,8 @@
                     model: App\Entity\Customer\ChannelCustomer
     ```
 
-7. If you use `Doctrine` and you have used the traits of the plugin you should run a diff of your Doctrine's schema and then run the migration generated:
+7. If you use `Doctrine` and you have used the traits of the plugin you should run a diff of your Doctrine's schema and
+   then run the migration generated:
    ```shell
    bin/console doctrine:migrations:diff
    bin/console doctrine:migrations:migrate
@@ -145,6 +146,6 @@
    the interface if you use Doctrine ORM and extends the Sylius Channel Repository.
 
 10. Your `OrderRepository` class must implement
-   the `Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignOrderRepositoryInterface`. You can use
-   the `Webgriffe\SyliusActiveCampaignPlugin\Doctrine\ORM\ActiveCampaignOrderRepositoryTrait` as implementation for
-   the interface if you use Doctrine ORM and extends the Sylius Order Repository.
+    the `Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignOrderRepositoryInterface`. You can use
+    the `Webgriffe\SyliusActiveCampaignPlugin\Doctrine\ORM\ActiveCampaignOrderRepositoryTrait` as implementation for the
+    interface if you use Doctrine ORM and extends the Sylius Order Repository.
