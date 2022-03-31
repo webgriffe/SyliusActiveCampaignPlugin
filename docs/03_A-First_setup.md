@@ -99,9 +99,22 @@ it.
 But what if you need to export to ActiveCampaign only some Sylius Orders? Simply, just override the logic inside the
 `findAllToEnqueue` `OrderRepository`'s method. So, you can, for example, exports only orders by some customers.
 
-Also, remember that this command acts like a "create/update ecommerce order on ActiveCampaign" so, if you added an order,
-not from the shop checkout you could launch it without any fear, and it will enqueue the new ecommerce order creation. The
-command offers also a way to specify which order/cart enqueue by adding the order-id parameter to it:
+The EcommerceOrderProductMapper service set the product image url needed to show it in the ActiveCampaign admin
+dashboard but also for the email template. By default, the service will take the first image for the product, but you can
+specify a Sylius image type to use for this purpose (for example you could have a `main` type used to specify the first
+image of the product). Set this parameter in the `webgriffe_sylius_active_campaign_plugin.yaml` file:
+
+```yaml
+webgriffe_sylius_active_campaign:
+    ...
+    mapper:
+        ecommerce_order_product:
+            image_type: 'main'
+```
+
+Also, remember that this command acts like a "create/update ecommerce order on ActiveCampaign" so, if you added an
+order, not from the shop checkout you could launch it without any fear, and it will enqueue the new ecommerce order
+creation. The command offers also a way to specify which order/cart enqueue by adding the order-id parameter to it:
 
 ```shell
 php bin/console webgriffe:active-campaign:enqueue-ecommerce-order 65
