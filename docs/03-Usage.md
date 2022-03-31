@@ -70,6 +70,11 @@ Before creating the resource on ActiveCampaign, the EcommerceOrderEnqueuer queri
 with the same `email` and `externalid` (the order's id)/`externalcheckoutid` (the cart's id) based on the state of the
 order (cart or different).
 
+Here are some points/actions to do or to take inspiration from to start using the plugin:
+
+- [First setup](03_A-First_setup.md)
+- [Automation examples](03_B-Automation_example.md)
+
 
 [symfony_messenger]: https://symfony.com/doc/current/messenger.html
 

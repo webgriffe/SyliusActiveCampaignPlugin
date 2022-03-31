@@ -148,9 +148,3 @@
    the `Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignOrderRepositoryInterface`. You can use
    the `Webgriffe\SyliusActiveCampaignPlugin\Doctrine\ORM\ActiveCampaignOrderRepositoryTrait` as implementation for
    the interface if you use Doctrine ORM and extends the Sylius Order Repository.
-
-    1. _Optional (usually only on production or pre-production environments)_.
-    To make abandoned cart automations feature works automatically the following is the suggested crontab:
-	```
-	0   *   *  *  *  /path/to/sylius/bin/console -e prod -q webgriffe:active-campaign:enqueue-ecommerce-abandoned-cart
-	```
