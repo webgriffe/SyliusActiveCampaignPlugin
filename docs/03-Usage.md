@@ -56,7 +56,8 @@ There is no ActiveCampaign's Ecommerce Customer equivalent on Sylius Standard. S
 a new Sylius resource `ChannelCustomer` which is a simple Channel-Customer association. The ActiveCampaign Ecommerce
 Customer's id is persisted on this entity. By default, the Ecommerce Customer is created by a Customer and associated
 with all the Channels. But, especially if you use Sylius Plus, you may not want to do this. In this case, you just need
-to decorate the `TODO` service and implement it with your custom logic.
+to decorate the `Webgriffe\SyliusActiveCampaignPlugin\Resolver\CustomerChannelsResolverInterface` service and implement
+it with your custom logic.
 
 Before creating the resource on ActiveCampaign, the EcommerceCustomerEnqueuer queries for a corresponding ecommerce
 customer with the same `email` and `connectionid` (the channel's code).
