@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\EventSubscriber;
 
+use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Throwable;
 use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\ContactEnqueuerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\EcommerceCustomerEnqueuerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactRemove;
@@ -22,7 +24,8 @@ final class CustomerSubscriber implements EventSubscriberInterface
         private MessageBusInterface $messageBus,
         private CustomerChannelsResolverInterface $customerChannelsResolver,
         private ContactEnqueuerInterface $contactEnqueuer,
-        private EcommerceCustomerEnqueuerInterface $ecommerceCustomerEnqueuer
+        private EcommerceCustomerEnqueuerInterface $ecommerceCustomerEnqueuer,
+        private LoggerInterface $logger
     ) {
     }
 
@@ -42,7 +45,12 @@ final class CustomerSubscriber implements EventSubscriberInterface
         if (!$customer instanceof CustomerInterface || !$customer instanceof CustomerActiveCampaignAwareInterface) {
             return;
         }
-        $this->contactEnqueuer->enqueue($customer);
+
+        try {
+            $this->contactEnqueuer->enqueue($customer);
+        } catch (Throwable $throwable) {
+            $this->logger->error($throwable->getMessage(), $throwable->getTrace());
+        }
     }
 
     public function enqueueEcommerceCustomer(GenericEvent $event): void
@@ -55,7 +63,12 @@ final class CustomerSubscriber implements EventSubscriberInterface
             if (!$channel instanceof ActiveCampaignAwareInterface) {
                 return;
             }
-            $this->ecommerceCustomerEnqueuer->enqueue($customer, $channel);
+
+            try {
+                $this->ecommerceCustomerEnqueuer->enqueue($customer, $channel);
+            } catch (Throwable $throwable) {
+                $this->logger->error($throwable->getMessage(), $throwable->getTrace());
+            }
         }
     }
 

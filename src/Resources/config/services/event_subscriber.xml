@@ -8,6 +8,7 @@
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.resolver.all_enabled_channels"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.enqueuer.contact"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.enqueuer.ecommerce_customer"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.logger"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 
@@ -15,6 +16,7 @@
                  class="Webgriffe\SyliusActiveCampaignPlugin\EventSubscriber\ChannelSubscriber">
             <argument type="service" id="messenger.default_bus"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.enqueuer.connection"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.logger"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 
@@ -22,12 +24,7 @@
                  class="Webgriffe\SyliusActiveCampaignPlugin\EventSubscriber\OrderSubscriber">
             <argument type="service" id="messenger.default_bus"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.enqueuer.ecommerce_order"/>
-            <tag name="kernel.event_subscriber"/>
-        </service>
-
-        <service id="webgriffe.sylius_active_campaign_plugin.event_subscriber.checkout"
-                 class="Webgriffe\SyliusActiveCampaignPlugin\EventSubscriber\CheckoutSubscriber">
-            <argument type="service" id="messenger.default_bus"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.logger"/>
             <tag name="kernel.event_subscriber"/>
         </service>
     </services>

@@ -76,4 +76,34 @@ final class OrderSubscriberTest extends AbstractEventDispatcherTest
         $this->assertInstanceOf(EcommerceOrderRemove::class, $message->getMessage());
         $this->assertEquals($order->getActiveCampaignId(), $message->getMessage()->getActiveCampaignId());
     }
+
+    public function test_that_it_creates_ecommerce_order_on_active_campaign_after_checkout_complete(): void
+    {
+        $newOrder = $this->orderRepository->findOneBy(['number' => '0001']);
+        $this->eventDispatcher->dispatch(new ResourceControllerEvent($newOrder), 'sylius.order.post_complete');
+        /** @var InMemoryTransport $transport */
+        $transport = self::getContainer()->get('messenger.transport.main');
+        /** @var Envelope[] $messages */
+        $messages = $transport->get();
+        $this->assertCount(1, $messages);
+        $message = $messages[0];
+        $this->assertInstanceOf(EcommerceOrderCreate::class, $message->getMessage());
+        $this->assertEquals($newOrder->getId(), $message->getMessage()->getOrderId());
+        $this->assertTrue($message->getMessage()->isInRealTime());
+    }
+
+    public function test_that_it_updates_ecommerce_order_on_active_campaign_after_checkout_complete(): void
+    {
+        $oldOrder = $this->orderRepository->findOneBy(['number' => '0002']);
+        $this->eventDispatcher->dispatch(new ResourceControllerEvent($oldOrder), 'sylius.order.post_complete');
+        /** @var InMemoryTransport $transport */
+        $transport = self::getContainer()->get('messenger.transport.main');
+        /** @var Envelope[] $messages */
+        $messages = $transport->get();
+        $this->assertCount(1, $messages);
+        $message = $messages[0];
+        $this->assertInstanceOf(EcommerceOrderUpdate::class, $message->getMessage());
+        $this->assertEquals($oldOrder->getId(), $message->getMessage()->getOrderId());
+        $this->assertTrue($message->getMessage()->isInRealTime());
+    }
 }
