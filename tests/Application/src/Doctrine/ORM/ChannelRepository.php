@@ -6,9 +6,9 @@ namespace App\Doctrine\ORM;
 
 use Sylius\Bundle\ChannelBundle\Doctrine\ORM\ChannelRepository as BaseChannelRepository;
 use Webgriffe\SyliusActiveCampaignPlugin\Doctrine\ORM\ActiveCampaignChannelRepositoryTrait;
-use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignChannelRepositoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface;
 
-class ChannelRepository extends BaseChannelRepository implements ActiveCampaignChannelRepositoryInterface
+class ChannelRepository extends BaseChannelRepository implements ActiveCampaignResourceRepositoryInterface
 {
     use ActiveCampaignChannelRepositoryTrait;
 }
