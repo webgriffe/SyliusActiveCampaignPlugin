@@ -39,7 +39,7 @@ Always populate the "orderUrl" field with Admin related URLs.
 * Good, because the Admin always have a link that points to the Order page on Sylius' admin.
 * Bad, because while the Order is still a Cart, the Admin cannot use that URL (it points to a page that is meaningful only for the User).
 * Bad, because it's not possible to add a button with the link to recover the Cart in abandonde cart emails.
-* Bad, because it's not possible to create mails that will be sent to the User that contain the URL of the Order.
+* Bad, because it's not possible to create emails that will be sent to the User that contain the URL of the Order.
 
 ### [option 3]
 
@@ -47,14 +47,16 @@ Populate the "orderUrl" field with a User related URL while the Order is still a
 
 * Good, because the abandoned cart can have a button that allows the customer to revover its Cart.
 * Good, because the Admin will have a link that points to the Order page on Sylius' admin.
-* Bad, because it's not possible to create mails that will be sent to the User that contain the URL of the Order.
+* Bad, because it's not possible to create emails that will be sent to the User that contain the URL of the Order.
 * Bad, because the field changes the target of the information that it stores. Initially it's useful for the User but in the end it will become useful for the Admin. This could create some confusion.
 
 ## Decision Outcome
 
-TODO
+Chosen option: **[option 1]**, because it's the most consistent as the target of the "orderUrl" is always the end User, and hasn't any strong cons for the Admin as he can find the Order on Sylius by the Order number.
 
-Chosen option: "[option 1]", because [justification. e.g., only option, which meets k.o. criterion decision driver | which resolves force force | … | comes out best (see below)].
+Option 2 is inacceptable as it impose a strong limitation on abandonded carts emails all for having the direct URL to the Admin, that is not so valuable.
+
+Option 3 is a good compromise but has the cons of changing the target of the field.
 
 ## References
 
