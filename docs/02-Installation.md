@@ -141,7 +141,7 @@
    the interface if you use Doctrine ORM and extends the Sylius Customer Repository.
 
 9. Your `ChannelRepository` class must implement
-   the `Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignChannelRepositoryInterface`. You can use
+   the `Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface`. You can use
    the `Webgriffe\SyliusActiveCampaignPlugin\Doctrine\ORM\ActiveCampaignChannelRepositoryTrait` as implementation for
    the interface if you use Doctrine ORM and extends the Sylius Channel Repository.
 
