@@ -14,13 +14,13 @@ use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactRemove;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerRemove;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignChannelRepositoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Resolver\CustomerChannelsResolverInterface;
 
 final class CustomerSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private MessageBusInterface $messageBus,
-        private ActiveCampaignChannelRepositoryInterface $channelRepository,
+        private CustomerChannelsResolverInterface $customerChannelsResolver,
         private ContactEnqueuerInterface $contactEnqueuer,
         private EcommerceCustomerEnqueuerInterface $ecommerceCustomerEnqueuer
     ) {
@@ -51,7 +51,7 @@ final class CustomerSubscriber implements EventSubscriberInterface
         if (!$customer instanceof CustomerInterface || !$customer instanceof CustomerActiveCampaignAwareInterface) {
             return;
         }
-        foreach ($this->channelRepository->findAllForCustomer($customer) as $channel) {
+        foreach ($this->customerChannelsResolver->resolve($customer) as $channel) {
             if (!$channel instanceof ActiveCampaignAwareInterface) {
                 return;
             }

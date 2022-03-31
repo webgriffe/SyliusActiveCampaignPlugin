@@ -19,8 +19,8 @@ use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\ContactEnqueuerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\EcommerceCustomerEnqueuerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignChannelRepositoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Resolver\CustomerChannelsResolverInterface;
 
 final class EnqueueContactAndEcommerceCustomerCommand extends Command
 {
@@ -38,7 +38,7 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
     /** @param ActiveCampaignResourceRepositoryInterface<CustomerInterface> $customerRepository */
     public function __construct(
         private ActiveCampaignResourceRepositoryInterface $customerRepository,
-        private ActiveCampaignChannelRepositoryInterface $channelRepository,
+        private CustomerChannelsResolverInterface $customerChannelsResolver,
         private ContactEnqueuerInterface $contactEnqueuer,
         private EcommerceCustomerEnqueuerInterface $ecommerceCustomerEnqueuer,
         private ?string $name = null
@@ -127,7 +127,7 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
             }
             $this->contactEnqueuer->enqueue($customer);
 
-            $channels = $this->channelRepository->findAllForCustomer($customer);
+            $channels = $this->customerChannelsResolver->resolve($customer);
             foreach ($channels as $channel) {
                 if (!$channel instanceof ActiveCampaignAwareInterface) {
                     continue;

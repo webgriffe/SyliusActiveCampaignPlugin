@@ -6,7 +6,6 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Doctrine\ORM;
 
 use Doctrine\ORM\EntityRepository;
 use Sylius\Component\Core\Model\ChannelInterface;
-use Sylius\Component\Core\Model\CustomerInterface;
 
 trait ActiveCampaignChannelRepositoryTrait
 {
@@ -18,18 +17,6 @@ trait ActiveCampaignChannelRepositoryTrait
         return $this->findOneBy([
             'id' => $id,
         ]);
-    }
-
-    /** @return ChannelInterface[] */
-    public function findAllForCustomer(CustomerInterface $customer): array
-    {
-        assert($this instanceof EntityRepository);
-
-        return $this->createQueryBuilder('c')
-            ->where('c.enabled = TRUE')
-            ->getQuery()
-            ->getResult()
-        ;
     }
 
     /** @return ChannelInterface[] */
