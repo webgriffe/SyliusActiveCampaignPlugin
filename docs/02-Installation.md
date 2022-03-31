@@ -15,8 +15,8 @@
 
     webgriffe_sylius_active_campaign:
         api_client:
-            base_url: '%env(WEBGRIFFE_SYLIUS_ACTIVE_CAMPAIGN_PLUGIN_BASE_URL)%'
-            key: '%env(WEBGRIFFE_SYLIUS_ACTIVE_CAMPAIGN_PLUGIN_KEY)%'
+            base_url: 'https://www.activecampaign.com/'
+            key: 'SECRET'
     ```
    Pay attention that among these parameters there are some sensitive configuration that you probably don't want to
    commit in your VCS. There are different solutions to this problem, like env configurations and secrets. Refer
