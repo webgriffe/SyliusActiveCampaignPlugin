@@ -64,7 +64,8 @@ The Ecommerce customer on ActiveCampaign is a representation of the association 
 In the same way, the plugin provides an association between Sylius's Channels and Customers. In Sylius Standard there is
 no way to associate a customer to a Channel by default so the plugin creates an Ecommerce Customer for every Channel
 given a Customer. But if you have personalized this logic or, if you are using Sylius Plus which provides a way to do
-it, you probably need to customize this logic. To do it you could decorate the `TODO` service and implements the logic
+it, you probably need to customize this logic. To do it you could decorate the
+`Webgriffe\SyliusActiveCampaignPlugin\Resolver\CustomerChannelsResolverInterface` service and implements the logic
 to return if the Channel-Customer association should be created or not.
 
 Also, remember that this command acts like a "create/update contacts/ecommerce customer on ActiveCampaign" so, if you
