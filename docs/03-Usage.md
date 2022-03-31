@@ -37,7 +37,11 @@ The 4 managed ActiveCampaign resources are the following:
 
 The ActiveCampaign's Contact is the equivalent for the Sylius Customer. It is the more "customizable" resource thanks to
 the FieldValues properties. You don't need to decorate all the ContactMapper to add a custom field collected in your
-store forms. You could simply listen for the `TODO` event.
+store forms. You could simply listen for
+the `webgriffe.sylius_active_campaign_plugin.mapper.customer.pre_add_field_values` event. This event will dispatch
+a `Symfony\Component\EventDispatcher\GenericEvent` containing the Customer as subject and an array of `fieldValues` as
+argument. Populate this argument with your custom field values. Remember that every item of this array should be an
+instance of the `Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\FieldValueInterface`.
 
 Before creating the resource on ActiveCampaign, the ContactEnqueuer queries for a corresponding contact with the
 same `email`.
@@ -76,7 +80,6 @@ Here are some points/actions to do or to take inspiration from to start using th
 - [First setup](03_A-First_setup.md)
 - [Events](03_B-Events.md)
 - [Automation examples](03_C-Automation_example.md)
-
 
 [symfony_messenger]: https://symfony.com/doc/current/messenger.html
 
