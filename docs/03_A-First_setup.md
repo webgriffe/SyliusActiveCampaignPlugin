@@ -5,7 +5,7 @@
 Right after installing the plugin, you need to export all the resources to ActiveCampaign if you start from scratch,
 persist the ActiveCampaign resource's id on Sylius resource if you already have ActiveCampaign populated, and/or of
 course, create and associate at the same time if you start from a mixed case. To do this the plugin offers three
-commands to do this:
+commands to do this.
 
 ### The Enqueue Connection Command
 

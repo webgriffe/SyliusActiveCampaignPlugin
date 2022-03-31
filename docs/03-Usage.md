@@ -73,7 +73,8 @@ order (cart or different).
 Here are some points/actions to do or to take inspiration from to start using the plugin:
 
 - [First setup](03_A-First_setup.md)
-- [Automation examples](03_B-Automation_example.md)
+- [Events](03_B-Events.md)
+- [Automation examples](03_C-Automation_example.md)
 
 
 [symfony_messenger]: https://symfony.com/doc/current/messenger.html
