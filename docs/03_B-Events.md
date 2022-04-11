@@ -33,9 +33,10 @@ The plugin listen for these order events:
 
 - `sylius.order.post_create`
 - `sylius.order.post_update`
+- `sylius.order.post_complete`
 - `sylius.order.post_delete`
 
-The first two will lead to a Ecommerce Order/Abandoned Cart Create/Update. The last one will lead to a Ecommerce
+The first three will lead to a Ecommerce Order/Abandoned Cart Create/Update. The last one will lead to a Ecommerce
 Order/Abandoned Cart Remove. The EcommerceOrderEnqueuer will automatically check for order status. If the order is a
 cart or a order in state new or fulfilled it will create an EcommerceOrder Create or Update message. Otherwise, if the
 order state is canceled, it will create a EcommerceOrderRemove message and then remove the ActiveCampaign Ecommerce
