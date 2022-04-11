@@ -17,8 +17,6 @@ final class AllEnabledChannelsResolver implements CustomerChannelsResolverInterf
 
     public function resolve(CustomerInterface $customer): array
     {
-        $channels = $this->channelRepository->findAllToEnqueue();
-
-        return $channels;
+        return $this->channelRepository->findAllToEnqueue();
     }
 }
