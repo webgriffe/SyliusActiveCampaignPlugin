@@ -7,10 +7,10 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Resolver;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface;
-use Webmozart\Assert\Assert;
 
 final class AllEnabledChannelsResolver implements CustomerChannelsResolverInterface
 {
+    /** @param ActiveCampaignResourceRepositoryInterface<ChannelInterface> $channelRepository */
     public function __construct(private ActiveCampaignResourceRepositoryInterface $channelRepository)
     {
     }
@@ -18,7 +18,6 @@ final class AllEnabledChannelsResolver implements CustomerChannelsResolverInterf
     public function resolve(CustomerInterface $customer): array
     {
         $channels = $this->channelRepository->findAllToEnqueue();
-        Assert::allIsInstanceOf($channels, ChannelInterface::class);
 
         return $channels;
     }
