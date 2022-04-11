@@ -1,0 +1,18 @@
+framework:
+    messenger:
+        routing:
+            'Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate': main
+            'Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactUpdate': main
+            'Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactRemove': main
+
+            'Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionCreate': main
+            'Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionUpdate': main
+            'Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionRemove': main
+
+            'Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate': main
+            'Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerUpdate': main
+            'Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerRemove': main
+
+            'Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderCreate': main
+            'Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderUpdate': main
+            'Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderRemove': main
