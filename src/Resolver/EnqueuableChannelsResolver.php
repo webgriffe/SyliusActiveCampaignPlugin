@@ -8,7 +8,7 @@ use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface;
 
-final class AllEnabledChannelsResolver implements CustomerChannelsResolverInterface
+final class EnqueuableChannelsResolver implements CustomerChannelsResolverInterface
 {
     /** @param ActiveCampaignResourceRepositoryInterface<ChannelInterface> $channelRepository */
     public function __construct(private ActiveCampaignResourceRepositoryInterface $channelRepository)
