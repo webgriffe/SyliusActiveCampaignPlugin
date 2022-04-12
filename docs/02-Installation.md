@@ -9,7 +9,7 @@
 
 2. Add `Webgriffe\SyliusActiveCampaignPlugin\WebgriffeSyliusActiveCampaignPlugin::class => ['all' => true]` to your `config/bundles.php`.
 
-3. Configure your ActiveCampaign API connection parameters by creating the `config/packages/webgriffe_sylius_active_campaign_plugin.yaml` file by adding the following content:
+3. Configure your ActiveCampaign API connection parameters by creating the `config/packages/webgriffe_sylius_active_campaign_plugin.yaml` file with the following content:
     ```yaml
     imports:
         - { resource: "@WebgriffeSyliusActiveCampaignPlugin/Resources/config/app/config.yaml" }
