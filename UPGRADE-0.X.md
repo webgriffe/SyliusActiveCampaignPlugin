@@ -5,9 +5,9 @@
 ### Use findAllToEnqueue method on ChannelsResolver to use the same method of connection exporters (#36)
 
 #### TL;DR
-Replaced the argument type of the ChannelsResolver from the `Sylius\Component\Channel\Repository\ChannelRepositoryInterface` to `Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface`. This should be the same instance anyway.
+The service `webgriffe.sylius_active_campaign_plugin.resolver.all_enabled_channels` has been replaced with the new service `webgriffe.sylius_active_campaign_plugin.resolver.enqueuable_channels`.
 
 #### BC Breaks
 
 ##### Changed
-- [BC] The parameter $channelRepository of Webgriffe\SyliusActiveCampaignPlugin\Resolver\AllEnabledChannelsResolver#__construct() changed from Sylius\Component\Channel\Repository\ChannelRepositoryInterface to a non-contravariant Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface
+- [BC] Class Webgriffe\SyliusActiveCampaignPlugin\Resolver\AllEnabledChannelsResolver has been deleted
