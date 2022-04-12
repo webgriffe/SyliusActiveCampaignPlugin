@@ -8,10 +8,10 @@ use PhpSpec\ObjectBehavior;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Resolver\AllEnabledChannelsResolver;
+use Webgriffe\SyliusActiveCampaignPlugin\Resolver\EnqueuableChannelsResolver;
 use Webgriffe\SyliusActiveCampaignPlugin\Resolver\CustomerChannelsResolverInterface;
 
-final class AllEnabledChannelsResolverSpec extends ObjectBehavior
+final class EnqueuableChannelsResolverSpec extends ObjectBehavior
 {
     public function let(
         ActiveCampaignResourceRepositoryInterface $channelRepository,
@@ -21,7 +21,7 @@ final class AllEnabledChannelsResolverSpec extends ObjectBehavior
 
     public function it_is_initializable(): void
     {
-        $this->shouldBeAnInstanceOf(AllEnabledChannelsResolver::class);
+        $this->shouldBeAnInstanceOf(EnqueuableChannelsResolver::class);
     }
 
     public function it_implements_customer_channels_resolver_interface(): void
@@ -29,7 +29,7 @@ final class AllEnabledChannelsResolverSpec extends ObjectBehavior
         $this->shouldImplement(CustomerChannelsResolverInterface::class);
     }
 
-    public function it_resolves_channels_from_customer(
+    public function it_resolves_enqueuable_channels(
         ActiveCampaignResourceRepositoryInterface $channelRepository,
         CustomerInterface $customer,
         ChannelInterface $channel1,
