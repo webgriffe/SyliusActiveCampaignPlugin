@@ -46,6 +46,20 @@ instance of the `Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\Field
 Before creating the resource on ActiveCampaign, the ContactEnqueuer queries for a corresponding contact with the
 same `email`.
 
+By creating or updating a contact you will probably have to add some tags to this contact. If this is your case there is
+nothing to more simple than add this tags to your contact 😀. After the creating or the update of a contact a new
+Message `ContactTagsAdder`
+will be dispatched to the messenger bus. The ContactTagsAdderHandler will use
+the `webgriffe.sylius_active_campaign_plugin.resolver.contact_tags`
+service to resolve a list of tags to add to the contact. By default this service will return an empty list, but you can
+customize it by overriding this service and by making it implements
+the `Webgriffe\SyliusActiveCampaignPlugin\Resolver\ContactTagsResolverInterface`. The more beautiful thing is that you
+don't have to worry about retrieve the ActiveCampaign tag's id, the plugin will do it for you 🎉. You just have to
+return an array of tags as string. The value of each item is the tag that will be added to the contact; then the plugin
+will check if the tag exists or not, if not it will create it. Then it will try to add to the contact.
+
+> **NB** The plugin does not "update" the tags of the contact, it will simply add the tags returned from the `ContactTagsResolverInterface`.
+
 ### Connection
 
 The ActiveCampaign's Connection is the equivalent of the Sylius Channel. We have opted for this way instead of making
