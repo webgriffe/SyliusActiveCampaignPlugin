@@ -31,6 +31,7 @@
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.tag"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.contact_tag"/>
             <argument type="service" id="sylius.repository.customer"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.resolver.contact_tags"/>
             <tag name="messenger.message_handler"/>
         </service>
 

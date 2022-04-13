@@ -13,6 +13,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactTagsAdder;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactTagsAdderHandler;
 use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Resolver\ContactTagsResolverInterface;
 
 class ContactTagsAdderHandlerSpec extends ObjectBehavior
 {
@@ -20,12 +21,13 @@ class ContactTagsAdderHandlerSpec extends ObjectBehavior
         ActiveCampaignResourceClientInterface $activeCampaignTagClient,
         ActiveCampaignResourceClientInterface $activeCampaignContactTagClient,
         CustomerRepositoryInterface $customerRepository,
+        ContactTagsResolverInterface $contactTagsResolver,
         CustomerInterface $customer
     ): void
     {
         $customerRepository->find(12)->willReturn($customer);
 
-        $this->beConstructedWith($activeCampaignTagClient, $activeCampaignContactTagClient, $customerRepository);
+        $this->beConstructedWith($activeCampaignTagClient, $activeCampaignContactTagClient, $customerRepository, $contactTagsResolver);
     }
 
     public function it_is_initializable(): void
