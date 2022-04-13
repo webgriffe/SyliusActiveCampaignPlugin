@@ -17,3 +17,9 @@ framework:
             'Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderCreate': main
             'Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderUpdate': main
             'Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderRemove': main
+
+sylius_ui:
+    events:
+        sylius.admin.channel.update.form:
+            blocks:
+                active_campaign_form: '@WebgriffeSyliusActiveCampaignPlugin/Admin/Channel/_form.html.twig'
