@@ -50,8 +50,10 @@
     }
     ```
 
-5. Your `Channel` entity must implement the `Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface`.
-   You can use the `Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareTrait` as implementation for the
+5. Your `Channel` entity must implement
+   the `Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelActiveCampaignAwareInterface`. You can use
+   the `Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareTrait` and
+   the `Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelActiveCampaignAwareTrait` as implementation for the
    interface. The Channel entity should look like this:
    ```php
    <?php
@@ -60,16 +62,18 @@
 
    use Doctrine\ORM\Mapping as ORM;
    use Sylius\Component\Core\Model\Channel as BaseChannel;
-   use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
    use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareTrait;
+   use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelActiveCampaignAwareInterface;
+   use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelActiveCampaignAwareTrait;
 
    /**
     * @ORM\Entity
     * @ORM\Table(name="sylius_channel")
     */
-   class Channel extends BaseChannel implements ActiveCampaignAwareInterface
+   class Channel extends BaseChannel implements ChannelActiveCampaignAwareInterface
    {
        use ActiveCampaignAwareTrait;
+       use ChannelActiveCampaignAwareTrait;
    }
    ```
 
