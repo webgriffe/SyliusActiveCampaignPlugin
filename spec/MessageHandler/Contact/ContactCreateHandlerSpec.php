@@ -7,11 +7,15 @@ namespace spec\Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact;
 use App\Entity\Customer\CustomerInterface;
 use InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
 use Sylius\Component\Core\Model\CustomerInterface as SyliusCustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
+use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactTagsAdder;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactCreateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
@@ -25,7 +29,8 @@ class ContactCreateHandlerSpec extends ObjectBehavior
         ContactInterface $contact,
         CustomerInterface $customer,
         ActiveCampaignResourceClientInterface $activeCampaignContactClient,
-        CustomerRepositoryInterface $customerRepository
+        CustomerRepositoryInterface $customerRepository,
+        MessageBusInterface $messageBus
     ): void {
         $contactMapper->mapFromCustomer($customer)->willReturn($contact);
 
@@ -33,7 +38,7 @@ class ContactCreateHandlerSpec extends ObjectBehavior
 
         $customerRepository->find(12)->willReturn($customer);
 
-        $this->beConstructedWith($contactMapper, $activeCampaignContactClient, $customerRepository);
+        $this->beConstructedWith($contactMapper, $activeCampaignContactClient, $customerRepository, $messageBus);
     }
 
     public function it_is_initializable(): void
@@ -81,13 +86,15 @@ class ContactCreateHandlerSpec extends ObjectBehavior
         CustomerInterface $customer,
         CustomerRepositoryInterface $customerRepository,
         CreateResourceResponseInterface $createContactResponse,
-        ResourceResponseInterface $contactResponse
+        ResourceResponseInterface $contactResponse,
+        MessageBusInterface $messageBus
     ): void {
         $contactResponse->getId()->willReturn(3423);
         $createContactResponse->getResourceResponse()->willReturn($contactResponse);
         $activeCampaignContactClient->create($contact)->shouldBeCalledOnce()->willReturn($createContactResponse);
         $customer->setActiveCampaignId(3423)->shouldBeCalledOnce();
         $customerRepository->add($customer)->shouldBeCalledOnce();
+        $messageBus->dispatch(Argument::type(ContactTagsAdder::class))->shouldBeCalledOnce()->willReturn(new Envelope(new ContactTagsAdder(12)));
 
         $this->__invoke(new ContactCreate(12));
     }

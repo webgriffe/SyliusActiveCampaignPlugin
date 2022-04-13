@@ -7,6 +7,7 @@
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.mapper.contact"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.contact"/>
             <argument type="service" id="sylius.repository.customer"/>
+            <argument type="service" id="messenger.default_bus"/>
             <tag name="messenger.message_handler"/>
         </service>
 
@@ -15,6 +16,7 @@
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.mapper.contact"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.contact"/>
             <argument type="service" id="sylius.repository.customer"/>
+            <argument type="service" id="messenger.default_bus"/>
             <tag name="messenger.message_handler"/>
         </service>
 
