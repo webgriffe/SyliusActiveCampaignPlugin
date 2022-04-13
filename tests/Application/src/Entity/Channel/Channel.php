@@ -7,6 +7,7 @@ namespace App\Entity\Channel;
 use Doctrine\ORM\Mapping as ORM;
 use Sylius\Component\Core\Model\Channel as BaseChannel;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareTrait;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelActiveCampaignAwareTrait;
 
 /**
  * @ORM\Entity
@@ -15,4 +16,5 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareTrait;
 class Channel extends BaseChannel implements ChannelInterface
 {
     use ActiveCampaignAwareTrait;
+    use ChannelActiveCampaignAwareTrait;
 }
