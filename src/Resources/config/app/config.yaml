@@ -4,6 +4,7 @@ framework:
             'Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate': main
             'Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactUpdate': main
             'Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactRemove': main
+            'Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactTagsAdder': main
 
             'Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionCreate': main
             'Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionUpdate': main

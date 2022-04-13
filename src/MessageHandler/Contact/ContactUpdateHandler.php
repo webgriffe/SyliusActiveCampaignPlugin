@@ -7,8 +7,10 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact;
 use InvalidArgumentException;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapperInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactTagsAdder;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 
@@ -17,7 +19,8 @@ final class ContactUpdateHandler
     public function __construct(
         private ContactMapperInterface $contactMapper,
         private ActiveCampaignResourceClientInterface $activeCampaignContactClient,
-        private CustomerRepositoryInterface $customerRepository
+        private CustomerRepositoryInterface $customerRepository,
+        private MessageBusInterface $messageBus
     ) {
     }
 
@@ -38,5 +41,7 @@ final class ContactUpdateHandler
             throw new InvalidArgumentException(sprintf('The Customer with id "%s" has an ActiveCampaign id that does not match. Expected "%s", given "%s".', $customerId, $message->getActiveCampaignId(), (string) $activeCampaignId));
         }
         $this->activeCampaignContactClient->update($message->getActiveCampaignId(), $this->contactMapper->mapFromCustomer($customer));
+
+        $this->messageBus->dispatch(new ContactTagsAdder($customerId));
     }
 }
