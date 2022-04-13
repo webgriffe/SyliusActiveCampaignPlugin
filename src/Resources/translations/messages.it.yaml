@@ -1,0 +1,4 @@
+webgriffe_sylius_active_campaign:
+    ui:
+        active_campaign: 'Active Campaign'
+        list_id: 'ID lista'
