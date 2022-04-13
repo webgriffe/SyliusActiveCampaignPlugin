@@ -16,5 +16,8 @@
 
         <service id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.ecommerce_order_discount"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderDiscountFactory"/>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.tag"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\TagFactory"/>
     </services>
 </container>
