@@ -56,5 +56,16 @@
             <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Tag\ListTagsResponse</argument>
             <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Tag\UpdateTagResponse</argument>
         </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.contact_tag"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient">
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
+            <argument type="string">contactTag</argument>
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactTag\ContactTagResponse</argument>
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactTag\CreateContactTagResponse</argument>
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactTag\ListContactTagsResponse</argument>
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactTag\UpdateContactTagResponse</argument>
+        </service>
     </services>
 </container>
