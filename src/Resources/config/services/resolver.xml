@@ -6,5 +6,8 @@
                  class="Webgriffe\SyliusActiveCampaignPlugin\Resolver\EnqueuableChannelsResolver">
             <argument type="service" id="sylius.repository.channel"/>
         </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.resolver.contact_tags"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Resolver\ContactTagsResolver"/>
     </services>
 </container>

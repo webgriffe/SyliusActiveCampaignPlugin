@@ -10,13 +10,15 @@ use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactTagsAdder;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Resolver\ContactTagsResolverInterface;
 
 final class ContactTagsAdderHandler
 {
     public function __construct(
         private ActiveCampaignResourceClientInterface $activeCampaignTagClient,
         private ActiveCampaignResourceClientInterface $activeCampaignContactTagClient,
-        private CustomerRepositoryInterface $customerRepository
+        private CustomerRepositoryInterface $customerRepository,
+        private ContactTagsResolverInterface $contactTagsResolver
     ) {
     }
 
