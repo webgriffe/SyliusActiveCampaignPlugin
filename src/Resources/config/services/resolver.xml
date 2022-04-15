@@ -9,5 +9,8 @@
 
         <service id="webgriffe.sylius_active_campaign_plugin.resolver.contact_tags"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Resolver\ContactTagsResolver"/>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.resolver.list_subscription_status"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Resolver\ListSubscriptionStatusResolver"/>
     </services>
 </container>
