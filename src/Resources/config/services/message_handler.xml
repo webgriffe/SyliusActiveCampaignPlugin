@@ -38,6 +38,12 @@
             <tag name="messenger.message_handler"/>
         </service>
 
+        <service id="webgriffe.sylius_active_campaign_plugin.message_handler.contact.lists_subscriber"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactListsSubscriberHandler">
+            <argument type="service" id="sylius.repository.customer"/>
+            <tag name="messenger.message_handler"/>
+        </service>
+
         <service id="webgriffe.sylius_active_campaign_plugin.message_handler.connection.create"
                  class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Connection\ConnectionCreateHandler">
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.mapper.connection"/>
