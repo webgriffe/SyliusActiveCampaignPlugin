@@ -11,6 +11,14 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterf
 
 interface ListSubscriptionStatusResolverInterface
 {
+    public const UNCONFIRMED_STATUS_CODE = 0;
+
+    public const SUBSCRIBED_STATUS_CODE = 1;
+
+    public const UNSUBSCRIBED_STATUS_CODE = 2;
+
+    public const BOUNCED_STATUS_CODE = 3;
+
     /**
      * @param CustomerInterface&CustomerActiveCampaignAwareInterface $customer
      * @param ChannelInterface&ChannelActiveCampaignAwareInterface $channel
