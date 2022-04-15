@@ -10,7 +10,10 @@
         <service id="webgriffe.sylius_active_campaign_plugin.resolver.contact_tags"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Resolver\ContactTagsResolver"/>
 
-        <service id="webgriffe.sylius_active_campaign_plugin.resolver.list_subscription_status"
-                 class="Webgriffe\SyliusActiveCampaignPlugin\Resolver\ListSubscriptionStatusResolver"/>
+        <service id="webgriffe.sylius_active_campaign_plugin.resolver.channel_customer_based_list_subscription_status"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Resolver\ChannelCustomerBasedListSubscriptionStatusResolver"/>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.resolver.customer_based_list_subscription_status"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Resolver\CustomerBasedListSubscriptionStatusResolver"/>
     </services>
 </container>

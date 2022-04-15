@@ -8,7 +8,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Exception\ChannelCustomerDoesNotExistEx
 use Webgriffe\SyliusActiveCampaignPlugin\Exception\ChannelListIdDoesNotExistException;
 use Webgriffe\SyliusActiveCampaignPlugin\Exception\CustomerListSubscriptionStatusNotDefinedException;
 
-final class ListSubscriptionStatusResolver implements ListSubscriptionStatusResolverInterface
+final class ChannelCustomerBasedListSubscriptionStatusResolver implements ListSubscriptionStatusResolverInterface
 {
     public function resolve($customer, $channel): int
     {
