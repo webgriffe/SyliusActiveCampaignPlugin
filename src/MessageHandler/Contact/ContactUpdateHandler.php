@@ -10,6 +10,7 @@ use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapperInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactListsSubscriber;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactTagsAdder;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
@@ -43,5 +44,6 @@ final class ContactUpdateHandler
         $this->activeCampaignContactClient->update($message->getActiveCampaignId(), $this->contactMapper->mapFromCustomer($customer));
 
         $this->messageBus->dispatch(new ContactTagsAdder($customerId));
+        $this->messageBus->dispatch(new ContactListsSubscriber($customerId));
     }
 }

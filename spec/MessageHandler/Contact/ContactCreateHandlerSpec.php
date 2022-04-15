@@ -15,6 +15,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactListsSubscriber;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactTagsAdder;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactCreateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
@@ -95,6 +96,7 @@ class ContactCreateHandlerSpec extends ObjectBehavior
         $customer->setActiveCampaignId(3423)->shouldBeCalledOnce();
         $customerRepository->add($customer)->shouldBeCalledOnce();
         $messageBus->dispatch(Argument::type(ContactTagsAdder::class))->shouldBeCalledOnce()->willReturn(new Envelope(new ContactTagsAdder(12)));
+        $messageBus->dispatch(Argument::type(ContactListsSubscriber::class))->shouldBeCalledOnce()->willReturn(new Envelope(new ContactListsSubscriber(12)));
 
         $this->__invoke(new ContactCreate(12));
     }
