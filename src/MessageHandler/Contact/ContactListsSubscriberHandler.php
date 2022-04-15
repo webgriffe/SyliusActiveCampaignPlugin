@@ -5,10 +5,15 @@ declare(strict_types=1);
 namespace Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact;
 
 use InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactListMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactListsSubscriber;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelActiveCampaignAwareInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Resolver\CustomerChannelsResolverInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Resolver\ListSubscriptionStatusResolverInterface;
@@ -18,7 +23,10 @@ final class ContactListsSubscriberHandler
     public function __construct(
         private CustomerRepositoryInterface $customerRepository,
         private CustomerChannelsResolverInterface $customerChannelsResolver,
-        private ListSubscriptionStatusResolverInterface $listSubscriptionStatusResolver
+        private ListSubscriptionStatusResolverInterface $listSubscriptionStatusResolver,
+        private ActiveCampaignResourceClientInterface $activeCampaignContactListClient,
+        private ContactListMapperInterface $contactListMapper,
+        private LoggerInterface $logger
     ) {
     }
 
@@ -43,7 +51,26 @@ final class ContactListsSubscriberHandler
             if (!$channel instanceof ChannelActiveCampaignAwareInterface) {
                 continue;
             }
-            $this->listSubscriptionStatusResolver->resolve($customer, $channel);
+            $activeCampaignListId = $channel->getActiveCampaignListId();
+            if ($activeCampaignListId === null) {
+                continue;
+            }
+            $listSubscriptionStatus = $this->listSubscriptionStatusResolver->resolve($customer, $channel);
+
+            try {
+                $this->activeCampaignContactListClient->create($this->contactListMapper->mapFromListContactStatusAndSourceId(
+                    $activeCampaignListId,
+                    $activeCampaignContactId,
+                    $listSubscriptionStatus ? ChannelCustomerInterface::SUBSCRIBED_TO_CONTACT_LIST : ChannelCustomerInterface::UNSUBSCRIBED_FROM_CONTACT_LIST
+                ));
+            } catch (HttpException $httpException) {
+                if ($httpException->getStatusCode() !== 200) {
+                    throw $httpException;
+                }
+                $this->logger->info(sprintf('The association with the list with id "%s" already exists for the contact with id "%s".', $activeCampaignListId, $activeCampaignContactId));
+
+                continue;
+            }
         }
     }
 }
