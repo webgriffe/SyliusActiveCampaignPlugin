@@ -19,6 +19,8 @@ class ChannelCustomer implements ChannelCustomerInterface
 
     protected int $activeCampaignId;
 
+    protected ?int $listSubscriptionStatus = null;
+
     /** @return mixed */
     public function getId()
     {
@@ -53,5 +55,15 @@ class ChannelCustomer implements ChannelCustomerInterface
     public function setActiveCampaignId(int $activeCampaignId): void
     {
         $this->activeCampaignId = $activeCampaignId;
+    }
+
+    public function getListSubscriptionStatus(): ?int
+    {
+        return $this->listSubscriptionStatus;
+    }
+
+    public function setListSubscriptionStatus(?int $listSubscriptionStatus): void
+    {
+        $this->listSubscriptionStatus = $listSubscriptionStatus;
     }
 }

@@ -24,5 +24,7 @@
         </many-to-one>
 
         <field name="activeCampaignId" column="active_campaign_id" type="integer" nullable="false"/>
+
+        <field name="listSubscriptionStatus" column="list_subscription_status" type="integer" nullable="true"/>
     </mapped-superclass>
 </doctrine-mapping>
