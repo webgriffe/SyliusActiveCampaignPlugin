@@ -42,7 +42,7 @@
                  class="Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactListsSubscriberHandler">
             <argument type="service" id="sylius.repository.customer"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.resolver.enqueuable_channels"/>
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.resolver.list_subscription_status"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.resolver.channel_customer_based_list_subscription_status"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.contact_list"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.mapper.contact_list"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.logger"/>

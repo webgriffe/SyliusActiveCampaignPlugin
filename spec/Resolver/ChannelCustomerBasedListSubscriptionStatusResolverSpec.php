@@ -10,11 +10,11 @@ use Webgriffe\SyliusActiveCampaignPlugin\Exception\ChannelCustomerDoesNotExistEx
 use Webgriffe\SyliusActiveCampaignPlugin\Exception\ChannelListIdDoesNotExistException;
 use Webgriffe\SyliusActiveCampaignPlugin\Exception\CustomerListSubscriptionStatusNotDefinedException;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Resolver\ListSubscriptionStatusResolver;
+use Webgriffe\SyliusActiveCampaignPlugin\Resolver\ChannelCustomerBasedListSubscriptionStatusResolver;
 use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Resolver\ListSubscriptionStatusResolverInterface;
 
-class ListSubscriptionStatusResolverSpec extends ObjectBehavior
+class ChannelCustomerBasedListSubscriptionStatusResolverSpec extends ObjectBehavior
 {
     public function let(
         CustomerInterface $customer,
@@ -32,7 +32,7 @@ class ListSubscriptionStatusResolverSpec extends ObjectBehavior
 
     public function it_is_initializable(): void
     {
-        $this->shouldBeAnInstanceOf(ListSubscriptionStatusResolver::class);
+        $this->shouldBeAnInstanceOf(ChannelCustomerBasedListSubscriptionStatusResolver::class);
     }
 
     public function it_implements_list_subscription_status_resolver_interface(): void
@@ -73,7 +73,7 @@ class ListSubscriptionStatusResolverSpec extends ObjectBehavior
         );
     }
 
-    public function it_returns__list_subscription_status(
+    public function it_returns_list_subscription_status(
         CustomerInterface $customer,
         ChannelInterface $channel,
         ChannelCustomerInterface $channelCustomer
