@@ -78,8 +78,8 @@ class ListSubscriptionStatusResolverSpec extends ObjectBehavior
         ChannelInterface $channel,
         ChannelCustomerInterface $channelCustomer
     ): void {
-        $channelCustomer->getListSubscriptionStatus()->willReturn(ChannelCustomerInterface::SUBSCRIBED_TO_CONTACT_LIST);
+        $channelCustomer->getListSubscriptionStatus()->willReturn(ListSubscriptionStatusResolverInterface::SUBSCRIBED_STATUS_CODE);
 
-        $this->resolve($customer, $channel)->shouldReturn(ChannelCustomerInterface::SUBSCRIBED_TO_CONTACT_LIST);
+        $this->resolve($customer, $channel)->shouldReturn(ListSubscriptionStatusResolverInterface::SUBSCRIBED_STATUS_CODE);
     }
 }

@@ -10,10 +10,6 @@ use Sylius\Component\Resource\Model\ResourceInterface;
 
 interface ChannelCustomerInterface extends ResourceInterface
 {
-    public const SUBSCRIBED_TO_CONTACT_LIST = 1;
-
-    public const UNSUBSCRIBED_FROM_CONTACT_LIST = 2;
-
     public function getCustomer(): CustomerInterface;
 
     public function setCustomer(CustomerInterface $customer): void;
