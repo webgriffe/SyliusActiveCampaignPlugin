@@ -42,5 +42,10 @@
         <service id="webgriffe.sylius_active_campaign_plugin.mapper.tag" class="Webgriffe\SyliusActiveCampaignPlugin\Mapper\TagMapper">
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.tag"/>
         </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.mapper.contact_list"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactListMapper">
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.contact_list"/>
+        </service>
     </services>
 </container>
