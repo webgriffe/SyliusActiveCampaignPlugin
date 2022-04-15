@@ -6,6 +6,6 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Exception;
 
 use InvalidArgumentException;
 
-final class CustomerListSubscriptionStatusNotDefinedException extends InvalidArgumentException
+final class CustomerListSubscriptionStatusNotDefinedException extends InvalidArgumentException implements ListSubscriptionStatusResolverExceptionInterface
 {
 }

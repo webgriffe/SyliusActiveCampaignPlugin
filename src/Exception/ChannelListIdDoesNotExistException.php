@@ -6,6 +6,6 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Exception;
 
 use InvalidArgumentException;
 
-final class ChannelListIdDoesNotExistException extends InvalidArgumentException
+final class ChannelListIdDoesNotExistException extends InvalidArgumentException implements ListSubscriptionStatusResolverExceptionInterface
 {
 }
