@@ -14,6 +14,7 @@ use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapperInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactListsSubscriber;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactTagsAdder;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactUpdateHandler;
@@ -98,6 +99,7 @@ class ContactUpdateHandlerSpec extends ObjectBehavior
     ): void {
         $activeCampaignContactClient->update(1234, $contact)->shouldBeCalledOnce()->willReturn($updateContactResponse);
         $messageBus->dispatch(Argument::type(ContactTagsAdder::class))->shouldBeCalledOnce()->willReturn(new Envelope(new ContactTagsAdder(12)));
+        $messageBus->dispatch(Argument::type(ContactListsSubscriber::class))->shouldBeCalledOnce()->willReturn(new Envelope(new ContactListsSubscriber(12)));
 
         $this->__invoke(new ContactUpdate(12, 1234));
     }
