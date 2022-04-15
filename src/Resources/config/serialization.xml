@@ -18,6 +18,12 @@
         <attribute name="tagId" serialized-name="tag"/>
     </class>
 
+    <class name="Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactList">
+        <attribute name="listId" serialized-name="list"/>
+        <attribute name="contactId" serialized-name="contact"/>
+        <attribute name="sourceId" serialized-name="sourceid"/>
+    </class>
+
     <class name="Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\CreateEcommerceCustomerResponse">
         <attribute name="ecommerceCustomer" serialized-name="ecomCustomer"/>
     </class>
