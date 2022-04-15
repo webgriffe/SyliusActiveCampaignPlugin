@@ -15,5 +15,5 @@ interface ListSubscriptionStatusResolverInterface
      * @param CustomerInterface&CustomerActiveCampaignAwareInterface $customer
      * @param ChannelInterface&ChannelActiveCampaignAwareInterface $channel
      */
-    public function resolve($customer, $channel): bool;
+    public function resolve($customer, $channel): int;
 }

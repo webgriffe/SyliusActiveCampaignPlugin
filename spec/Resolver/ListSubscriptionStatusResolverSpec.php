@@ -6,6 +6,9 @@ namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Resolver;
 
 use App\Entity\Channel\ChannelInterface;
 use App\Entity\Customer\CustomerInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Exception\ChannelCustomerDoesNotExistException;
+use Webgriffe\SyliusActiveCampaignPlugin\Exception\ChannelListIdDoesNotExistException;
+use Webgriffe\SyliusActiveCampaignPlugin\Exception\CustomerListSubscriptionStatusNotDefinedException;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Resolver\ListSubscriptionStatusResolver;
 use PhpSpec\ObjectBehavior;
@@ -18,8 +21,10 @@ class ListSubscriptionStatusResolverSpec extends ObjectBehavior
         ChannelInterface $channel,
         ChannelCustomerInterface $channelCustomer
     ): void {
+        $channel->getCode()->willReturn('ecommerce');
         $channel->getActiveCampaignListId()->willReturn(15);
 
+        $customer->getEmail()->willReturn('info@email.com');
         $customer->getChannelCustomerByChannel($channel)->willReturn($channelCustomer);
 
         $this->beConstructedWith();
@@ -35,47 +40,46 @@ class ListSubscriptionStatusResolverSpec extends ObjectBehavior
         $this->shouldImplement(ListSubscriptionStatusResolverInterface::class);
     }
 
-    public function it_returns_false_if_channel_active_campaign_list_id_is_null(CustomerInterface $customer, ChannelInterface $channel): void
+    public function it_throws_if_channel_active_campaign_list_id_is_null(CustomerInterface $customer, ChannelInterface $channel): void
     {
         $channel->getActiveCampaignListId()->willReturn(null);
 
-        $this->resolve($customer, $channel)->shouldReturn(false);
+        $this->shouldThrow(new ChannelListIdDoesNotExistException('The channel "ecommerce" does not have a list id.'))->during(
+            'resolve',
+            [$customer, $channel]
+        );
     }
 
-    public function it_returns_false_if_channel_customer_association_does_not_exist(CustomerInterface $customer, ChannelInterface $channel): void
+    public function it_throws_if_channel_customer_association_does_not_exist(CustomerInterface $customer, ChannelInterface $channel): void
     {
         $customer->getChannelCustomerByChannel($channel)->willReturn(null);
 
-        $this->resolve($customer, $channel)->shouldReturn(false);
+        $this->shouldThrow(new ChannelCustomerDoesNotExistException('The customer "info@email.com" is not related with the channel "ecommerce".'))->during(
+            'resolve',
+            [$customer, $channel]
+        );
     }
 
-    public function it_returns_false_if_list_subscription_status_on_channel_customer_association_is_null(
+    public function it_throws_if_list_subscription_status_on_channel_customer_association_is_null(
         CustomerInterface $customer,
         ChannelInterface $channel,
         ChannelCustomerInterface $channelCustomer
     ): void {
         $channelCustomer->getListSubscriptionStatus()->willReturn(null);
 
-        $this->resolve($customer, $channel)->shouldReturn(false);
+        $this->shouldThrow(new CustomerListSubscriptionStatusNotDefinedException('The list subscription status for list of channel "ecommerce" of the customer "info@email.com" is not defined.'))->during(
+            'resolve',
+            [$customer, $channel]
+        );
     }
 
-    public function it_returns_false_if_list_subscription_status_on_channel_customer_association_is_unsubscribed(
-        CustomerInterface $customer,
-        ChannelInterface $channel,
-        ChannelCustomerInterface $channelCustomer
-    ): void {
-        $channelCustomer->getListSubscriptionStatus()->willReturn(ChannelCustomerInterface::UNSUBSCRIBED_FROM_CONTACT_LIST);
-
-        $this->resolve($customer, $channel)->shouldReturn(false);
-    }
-
-    public function it_returns_true_if_list_subscription_status_on_channel_customer_association_is_subscribed(
+    public function it_returns__list_subscription_status(
         CustomerInterface $customer,
         ChannelInterface $channel,
         ChannelCustomerInterface $channelCustomer
     ): void {
         $channelCustomer->getListSubscriptionStatus()->willReturn(ChannelCustomerInterface::SUBSCRIBED_TO_CONTACT_LIST);
 
-        $this->resolve($customer, $channel)->shouldReturn(true);
+        $this->resolve($customer, $channel)->shouldReturn(ChannelCustomerInterface::SUBSCRIBED_TO_CONTACT_LIST);
     }
 }
