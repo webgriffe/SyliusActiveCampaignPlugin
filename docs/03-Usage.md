@@ -2,7 +2,8 @@
 
 [Return to Summary main page](README.md)
 
-> This plugin makes use of the two components of _Symfony_ [Messenger][symfony_messenger] and [Serializer][symfony_serializer].
+> This plugin makes use of the two components of _Symfony_ [Messenger][symfony_messenger]
+> and [Serializer][symfony_serializer].
 > It is highly recommended to have a minimum knowledge of these two components to understand how this integration works.
 
 This plugin is, basically, a simple resource exporter from _Sylius_ to _ActiveCampaign_. The behavior of the plugin for
@@ -31,8 +32,6 @@ The 4 managed ActiveCampaign resources are the following:
 - Ecommerce Customer
 - Ecommerce Order/Abandoned Cart
 
-### GDPR
-
 ### Contact
 
 The ActiveCampaign's Contact is the equivalent for the Sylius Customer. It is the more "customizable" resource thanks to
@@ -46,10 +45,11 @@ instance of the `Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\Field
 Before creating the resource on ActiveCampaign, the ContactEnqueuer queries for a corresponding contact with the
 same `email`.
 
+#### Contact tags
+
 By creating or updating a contact you will probably have to add some tags to this contact. If this is your case there is
 nothing to more simple than add this tags to your contact 😀. After the creating or the update of a contact a new
-Message `ContactTagsAdder`
-will be dispatched to the messenger bus. The ContactTagsAdderHandler will use
+Message `ContactTagsAdder` will be dispatched to the messenger bus. The `ContactTagsAdderHandler` will use
 the `webgriffe.sylius_active_campaign_plugin.resolver.contact_tags`
 service to resolve a list of tags to add to the contact. By default this service will return an empty list, but you can
 customize it by overriding this service and by making it implements
@@ -58,7 +58,63 @@ don't have to worry about retrieve the ActiveCampaign tag's id, the plugin will 
 return an array of tags as string. The value of each item is the tag that will be added to the contact; then the plugin
 will check if the tag exists or not, if not it will create it. Then it will try to add to the contact.
 
-> **NB** The plugin does not "update" the tags of the contact, it will simply add the tags returned from the `ContactTagsResolverInterface`.
+> **NB** The plugin does not "update" the tags of the contact, it will simply add the tags returned from
+> the `ContactTagsResolverInterface`.
+
+#### Contact list subscription
+
+It is probably that, with your customer, you are using also one or more contact lists, and that you want to synchronize
+the contact's status subscription to that list by your Sylius store. Well, that's also our case 😎!
+Unfortunately, every use of the lists on your ActiveCampaign could be different from others, so can not be one solution
+for everyone, but with this in mind, we thought about a solution that could be easily customized and that will be as
+simple as we could, just like Sylius self is 😀.
+
+So, we have thought that a usual starting point could be having a contact list for every channel and that this list
+could be different by each channel you have, or that you could also not have at all a list for a given channel. To do
+so, we have added a property to your Channel entity, the ActiveCampaign list id. This field can be customized by your
+admin channel page and should contain the id of the list for that channel, or you can leave it empty for not add the
+contact to a list.
+
+![Channel list ID form](images/edit_channel_list_id_form.png "Channel list ID form")
+
+With the create/update contact handler a new `ContactListsSubscriber` message is dispatched.
+The `ContactListsSubscriberHandler` will then use the `CustomerChannelsResolver` to determine the channels for which a
+contact list subscription should be created or updated. Then each channel will check if a list id is provided, if not it
+will skip that channel. Then the `ListSubscriptionStatusResolverInterface` service is called. This service is
+responsible
+for retrieving, given a customer and a channel, the ActiveCampaign's list subscription status. If this fails the
+procedure will continue with the next channel, otherwise it will create or update the contact list subscription with the
+resolved status. As you will have understood, the core of this procedure is the implementation of
+the `ListSubscriptionStatusResolverInterface`,
+for this reason we have prepared two implementations of this interface. The default one, installed by default with the
+plugin there is the `ChannelCustomerBasedListSubscriptionStatusResolver`,
+but you can use also the `CustomerBasedListSubscriptionStatusResolver`. Remember that
+the `ContactListsSubscriberHandler` will "try" to resolve the list subscription status, so if
+something is wrong, or you don't want that, in certain conditions, the list subscription status will be changed or
+created, then you can throw any exception that implements the
+`Webgriffe\SyliusActiveCampaignPlugin\Exception\ListSubscriptionStatusResolverExceptionInterface` interface. This
+exception will be caught by the handler and the list subscription will not be created or updated.
+
+- `ChannelCustomerBasedListSubscriptionStatusResolver`. This
+  service (`webgriffe.sylius_active_campaign_plugin.resolver.channel_customer_based_list_subscription_status`) uses the
+  ChannelCustomer association created for the Ecommerce Customer (you will have a look at this association in a few in
+  the Ecommerce Customer's chapter, for the moment just take the concept of this relationship between a Customer and a
+  Channel). This service will then use the `listSubscriptionStatus` property on the ChannelCustomer entity. By default,
+  if this field is null it will avoid creating or updating that association, otherwise, it will use the int of that
+  field that should be one of the defined in
+  the `Webgriffe\SyliusActiveCampaignPlugin\Resolver\ListSubscriptionStatusResolverInterface`. Obviously, you can
+  customize this and for example, create a list subscription for the contact with the unconfirmed status if the field is
+  empty, and you want that all contacts are associated with the given list.
+- `CustomerBasedListSubscriptionStatusResolver`. This
+  service (`webgriffe.sylius_active_campaign_plugin.resolver.customer_based_list_subscription_status`) uses the
+  Customer's property `isSubscribedToNewsletter`. Obviously, this field is applied to the customer by Sylius, so his
+  value is used for all the channel's lists. If it is true the contact will be subscribed to all the lists and
+  vice-versa. This service could be exactly what you need if you only have a channel or a list, but it's the less
+  customizable and for this reason, it is not the default method used by the handler. To use this service you just have
+  to override the `webgriffe.sylius_active_campaign_plugin.message_handler.contact.lists_subscriber` service
+  definition's arguments by replacing
+  the `webgriffe.sylius_active_campaign_plugin.resolver.channel_customer_based_list_subscription_status`
+  with `webgriffe.sylius_active_campaign_plugin.resolver.customer_based_list_subscription_status`.
 
 ### Connection
 
