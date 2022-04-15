@@ -15,6 +15,16 @@ The `messenger.default_bus` is now passed to both `webgriffe.sylius_active_campa
 - [BC] The number of required arguments for Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactUpdateHandler#__construct() increased from 3 to 4
 - [BC] The number of required arguments for Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactCreateHandler#__construct() increased from 3 to 4
 
+#### Add Contact List Subscription Message and Handler (#41)
+
+##### TL;DR
+The `listSubscriptionStatus` property has been added to the `ChannelCustomer` entity, so two new methods (get and set) of that property, have been added to the `ChannelCustomerInterface`.
+
+##### BC Breaks
+
+###### Added
+- [BC] Method getListSubscriptionStatus() was added to interface Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface
+- [BC] Method setListSubscriptionStatus() was added to interface Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface
 
 ## UPGRADE FROM `v0.1.0` TO `v0.2.0`
 
