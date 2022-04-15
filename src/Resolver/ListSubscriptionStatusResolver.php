@@ -4,23 +4,26 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Resolver;
 
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Exception\ChannelCustomerDoesNotExistException;
+use Webgriffe\SyliusActiveCampaignPlugin\Exception\ChannelListIdDoesNotExistException;
+use Webgriffe\SyliusActiveCampaignPlugin\Exception\CustomerListSubscriptionStatusNotDefinedException;
 
 final class ListSubscriptionStatusResolver implements ListSubscriptionStatusResolverInterface
 {
-    public function resolve($customer, $channel): bool
+    public function resolve($customer, $channel): int
     {
         $listId = $channel->getActiveCampaignListId();
         if ($listId === null) {
-            return false;
+            throw new ChannelListIdDoesNotExistException(sprintf('The channel "%s" does not have a list id.', (string) $channel->getCode()));
         }
         if (null === ($channelCustomer = $customer->getChannelCustomerByChannel($channel))) {
-            return false;
+            throw new ChannelCustomerDoesNotExistException(sprintf('The customer "%s" is not related with the channel "%s".', (string) $customer->getEmail(), (string) $channel->getCode()));
         }
-        if ($channelCustomer->getListSubscriptionStatus() !== ChannelCustomerInterface::SUBSCRIBED_TO_CONTACT_LIST) {
-            return false;
+        $listSubscriptionStatus = $channelCustomer->getListSubscriptionStatus();
+        if ($listSubscriptionStatus === null) {
+            throw new CustomerListSubscriptionStatusNotDefinedException(sprintf('The list subscription status for list of channel "%s" of the customer "%s" is not defined.', (string) $channel->getCode(), (string) $customer->getEmail()));
         }
 
-        return true;
+        return $listSubscriptionStatus;
     }
 }

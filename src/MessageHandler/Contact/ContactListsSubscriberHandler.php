@@ -10,10 +10,10 @@ use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Exception\ListSubscriptionStatusResolverExceptionInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactListMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactListsSubscriber;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelActiveCampaignAwareInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Resolver\CustomerChannelsResolverInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Resolver\ListSubscriptionStatusResolverInterface;
@@ -55,13 +55,20 @@ final class ContactListsSubscriberHandler
             if ($activeCampaignListId === null) {
                 continue;
             }
-            $listSubscriptionStatus = $this->listSubscriptionStatusResolver->resolve($customer, $channel);
+
+            try {
+                $listSubscriptionStatus = $this->listSubscriptionStatusResolver->resolve($customer, $channel);
+            } catch (ListSubscriptionStatusResolverExceptionInterface $exception) {
+                $this->logger->info(sprintf('Unable to resolve for the customer "%s" the subscription status for the list "%s" of channel "%s".', (string) $customer->getEmail(), $activeCampaignListId, (string) $channel->getCode()));
+
+                continue;
+            }
 
             try {
                 $this->activeCampaignContactListClient->create($this->contactListMapper->mapFromListContactStatusAndSourceId(
                     $activeCampaignListId,
                     $activeCampaignContactId,
-                    $listSubscriptionStatus ? ChannelCustomerInterface::SUBSCRIBED_TO_CONTACT_LIST : ChannelCustomerInterface::UNSUBSCRIBED_FROM_CONTACT_LIST
+                    $listSubscriptionStatus
                 ));
             } catch (HttpException $httpException) {
                 if ($httpException->getStatusCode() !== 200) {

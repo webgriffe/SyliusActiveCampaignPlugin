@@ -13,6 +13,7 @@ use Sylius\Component\Core\Model\CustomerInterface as SyliusCustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Exception\ChannelCustomerDoesNotExistException;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactListMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactListsSubscriber;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactListsSubscriberHandler;
@@ -42,13 +43,15 @@ class ContactListsSubscriberHandlerSpec extends ObjectBehavior
         ContactListInterface $fourthContactList,
         CreateResourceResponseInterface $createResourceResponse
     ): void {
+        $customer->getEmail()->willReturn('info@email.com');
         $customer->getActiveCampaignId()->willReturn(134);
         $customerRepository->find(12)->willReturn($customer);
         $customerChannelsResolver->resolve($customer)->willReturn([$firstChannel, $secondChannel, $thirdChannel, $fourthChannel]);
 
-        $listSubscriptionStatusResolver->resolve($customer, $firstChannel)->willReturn(true);
-        $listSubscriptionStatusResolver->resolve($customer, $fourthChannel)->willReturn(false);
+        $listSubscriptionStatusResolver->resolve($customer, $firstChannel)->willReturn(ChannelCustomerInterface::SUBSCRIBED_TO_CONTACT_LIST);
+        $listSubscriptionStatusResolver->resolve($customer, $fourthChannel)->willReturn(ChannelCustomerInterface::UNSUBSCRIBED_FROM_CONTACT_LIST);
 
+        $firstChannel->getCode()->willReturn('ecommerce');
         $firstChannel->getActiveCampaignListId()->willReturn(23);
         $thirdChannel->getActiveCampaignListId()->willReturn(null);
         $fourthChannel->getActiveCampaignListId()->willReturn(18);
@@ -116,6 +119,19 @@ class ContactListsSubscriberHandlerSpec extends ObjectBehavior
     public function it_handles_customer_list_subscriptions(
         LoggerInterface $logger
     ): void {
+        $logger->info('The association with the list with id "18" already exists for the contact with id "134".')->shouldBeCalledOnce();
+
+        $this->__invoke(new ContactListsSubscriber(12));
+    }
+
+    public function it_does_not_throw_if_contact_list_subscription_could_be_resolved(
+        LoggerInterface $logger,
+        ListSubscriptionStatusResolverInterface $listSubscriptionStatusResolver,
+        CustomerInterface $customer,
+        ChannelInterface $firstChannel
+    ): void {
+        $listSubscriptionStatusResolver->resolve($customer, $firstChannel)->willThrow(new ChannelCustomerDoesNotExistException('test'));
+        $logger->info('Unable to resolve for the customer "info@email.com" the subscription status for the list "23" of channel "ecommerce".')->shouldBeCalledOnce();
         $logger->info('The association with the list with id "18" already exists for the contact with id "134".')->shouldBeCalledOnce();
 
         $this->__invoke(new ContactListsSubscriber(12));
