@@ -30,5 +30,12 @@
             <argument type="service" id="doctrine.orm.entity_manager"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.ecommerce_order"/>
         </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.enqueuer.webhook"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\WebhookEnqueuer">
+            <argument type="service" id="messenger.default_bus"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.webhook"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.generator.channel_hostname_url"/>
+        </service>
     </services>
 </container>
