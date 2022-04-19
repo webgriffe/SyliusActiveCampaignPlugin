@@ -3,3 +3,8 @@ App\Entity\Customer\Customer:
         email: 'jim@email.com'
         first_name: 'James'
         last_name: 'Rodriguez'
+        activeCampaignId: 178
+    customer_02:
+        email: 'sam@email.com'
+        first_name: 'Samuel'
+        last_name: 'Pitt'

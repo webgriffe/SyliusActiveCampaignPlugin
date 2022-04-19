@@ -20,4 +20,9 @@ App\Entity\Order\Order:
         customer: '@customer_01'
         activeCampaignId: 6
         state: 'cancelled'
-
+    order_4:
+        channel: '@fashion_shop'
+        number: '0004'
+        currency_code: 'EUR'
+        locale_code: 'en_US'
+        customer: '@customer_02'

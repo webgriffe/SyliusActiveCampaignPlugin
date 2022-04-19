@@ -3,11 +3,19 @@ App\Entity\Customer\Customer:
         email: 'jim@email.com'
         first_name: 'James'
         last_name: 'Rodriguez'
+        activeCampaignId: 4
     customer_bob:
         email: 'bob@email.com'
         first_name: 'Bob'
         last_name: 'Marquez'
+        activeCampaignId: 5
     customer_sam:
         email: 'sam@email.com'
         first_name: 'Samuel'
         last_name: 'Storm'
+        activeCampaignId: 6
+    customer_clark:
+        email: 'clark@email.com'
+        first_name: 'Clark'
+        last_name: 'Kent'
+        activeCampaignId: null
