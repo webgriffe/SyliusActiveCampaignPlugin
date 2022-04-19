@@ -1,0 +1,38 @@
+App\Entity\Channel\Channel:
+    fashion_shop:
+        code: "fashion_shop"
+        name: "Fashion shop"
+        taxCalculationStrategy: "order_items_based"
+        defaultLocale: "@en_US"
+        baseCurrency: "@EUR"
+        activeCampaignId: 4
+        hostname: 'fashion.com'
+        activeCampaignListId: 43
+    digital_shop:
+        code: "digital_shop"
+        name: "Digital shop"
+        taxCalculationStrategy: "order_items_based"
+        defaultLocale: "@en_US"
+        baseCurrency: "@EUR"
+        activeCampaignId: 12
+        hostname: 'digital.com'
+        activeCampaignListId: 43
+    other_shop:
+        code: "other_shop"
+        name: "Other shop"
+        taxCalculationStrategy: "order_items_based"
+        defaultLocale: "@en_US"
+        baseCurrency: "@EUR"
+        activeCampaignId: 16
+        hostname: 'other.com'
+        activeCampaignListId: 43
+
+Sylius\Component\Locale\Model\Locale:
+    en_US:
+        code: "en_US"
+    it_IT:
+        code: "it_IT"
+
+Sylius\Component\Currency\Model\Currency:
+    EUR:
+        code: "EUR"
