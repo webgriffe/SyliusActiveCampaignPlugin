@@ -78,5 +78,16 @@
             <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactList\ListContactListsResponse</argument>
             <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactList\UpdateContactListResponse</argument>
         </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.webhook"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient">
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
+            <argument type="string">webhook</argument>
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Webhook\WebhookResponse</argument>
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Webhook\CreateWebhookResponse</argument>
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Webhook\ListWebhooksResponse</argument>
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Webhook\UpdateWebhookResponse</argument>
+        </service>
     </services>
 </container>

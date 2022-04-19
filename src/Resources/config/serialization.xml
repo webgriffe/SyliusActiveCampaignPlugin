@@ -24,6 +24,10 @@
         <attribute name="sourceId" serialized-name="sourceid"/>
     </class>
 
+    <class name="Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\Webhook">
+        <attribute name="listId" serialized-name="listid"/>
+    </class>
+
     <class name="Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\CreateEcommerceCustomerResponse">
         <attribute name="ecommerceCustomer" serialized-name="ecomCustomer"/>
     </class>
