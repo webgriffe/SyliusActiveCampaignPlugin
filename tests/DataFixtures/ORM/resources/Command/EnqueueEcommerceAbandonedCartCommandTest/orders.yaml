@@ -23,4 +23,12 @@ App\Entity\Order\Order:
         customer: '@customer_sam'
         updatedAt: '<(new DateTime("now"))>'
         activeCampaignId: null
+    cart_new_for_not_exported_customer:
+        channel: '@fashion_shop'
+        state: 'cart'
+        currency_code: 'EUR'
+        locale_code: 'en_US'
+        customer: '@customer_clark'
+        updatedAt: '<(new DateTime("now"))>'
+        activeCampaignId: null
 
