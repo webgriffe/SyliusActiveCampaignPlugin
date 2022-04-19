@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign;
 
-interface WebhookInterface
+interface WebhookInterface extends ResourceInterface
 {
     public function getName(): string;
 
