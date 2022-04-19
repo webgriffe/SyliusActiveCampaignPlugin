@@ -18,6 +18,8 @@ framework:
             'Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderUpdate': main
             'Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderRemove': main
 
+            'Webgriffe\SyliusActiveCampaignPlugin\Message\Webhook\WebhookCreate': main
+
 sylius_ui:
     events:
         sylius.admin.channel.update.form:

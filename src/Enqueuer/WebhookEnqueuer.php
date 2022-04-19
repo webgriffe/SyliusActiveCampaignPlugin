@@ -27,7 +27,7 @@ final class WebhookEnqueuer implements WebhookEnqueuerInterface
         $activeCampaignListId = $channel->getActiveCampaignListId();
         Assert::notNull($activeCampaignListId, 'The channel ActiveCampaign list id should not be null.');
         $searchWebhooks = $this->activeCampaignWebhookClient->list([
-            'filters[url]' => $this->channelHostnameUrlGenerator->generate($channel, 'TODO'),
+            'filters[url]' => $this->channelHostnameUrlGenerator->generate($channel, 'sylius_shop_homepage', ['_locale' => $channel->getDefaultLocale()]),
             'filters[listid]' => (string) $activeCampaignListId,
         ])->getResourceResponseLists();
         if (count($searchWebhooks) > 0) {
