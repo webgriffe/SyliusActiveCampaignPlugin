@@ -6,20 +6,25 @@ namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Mapper;
 
 use PhpSpec\ObjectBehavior;
 use Sylius\Component\Core\Model\ChannelInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ConnectionFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ConnectionMapper;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ConnectionMapperInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\Connection;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ConnectionInterface;
 use Webmozart\Assert\InvalidArgumentException;
 
 class ConnectionMapperSpec extends ObjectBehavior
 {
     public function let(
-        ChannelInterface $channel
+        ChannelInterface $channel,
+        ConnectionInterface $connection,
+        ConnectionFactoryInterface $connectionFactory
     ): void {
         $channel->getCode()->willReturn('ecommerce');
         $channel->getName()->willReturn('E-Commerce');
 
-        $this->beConstructedWith();
+        $connectionFactory->createNew('sylius', 'ecommerce', 'E-Commerce')->willReturn($connection);
+
+        $this->beConstructedWith($connectionFactory);
     }
 
     public function it_is_initializable(): void
@@ -32,9 +37,9 @@ class ConnectionMapperSpec extends ObjectBehavior
         $this->shouldImplement(ConnectionMapperInterface::class);
     }
 
-    public function it_should_returns_an_active_campaign_connection_instance(ChannelInterface $channel): void
+    public function it_should_returns_an_active_campaign_connection_instance(ChannelInterface $channel, ConnectionInterface $connection): void
     {
-        $this->mapFromChannel($channel)->shouldReturnAnInstanceOf(Connection::class);
+        $this->mapFromChannel($channel)->shouldReturn($connection);
     }
 
     public function it_throws_if_channel_has_no_code(ChannelInterface $channel): void
@@ -43,18 +48,13 @@ class ConnectionMapperSpec extends ObjectBehavior
         $this->shouldThrow(new InvalidArgumentException('The channel does not have a code.'))->during('mapFromChannel', [$channel]);
     }
 
-    public function it_should_returns_an_active_connection_with_external_id_and_name(ChannelInterface $channel): void
-    {
-        $connection = $this->mapFromChannel($channel);
-        $connection->getExternalId()->shouldReturn('ecommerce');
-        $connection->getName()->shouldReturn('E-Commerce');
-    }
-
-    public function it_should_returns_an_active_connection_without_channel_name(ChannelInterface $channel): void
-    {
+    public function it_should_returns_an_active_connection_without_channel_name(
+        ChannelInterface $channel,
+        ConnectionInterface $connection,
+        ConnectionFactoryInterface $connectionFactory
+    ): void {
         $channel->getName()->willReturn(null);
-        $connection = $this->mapFromChannel($channel);
-        $connection->getExternalId()->shouldReturn('ecommerce');
-        $connection->getName()->shouldReturn('Sylius eCommerce');
+        $connectionFactory->createNew('sylius', 'ecommerce', 'Sylius eCommerce')->shouldBeCalledOnce()->willReturn($connection);
+        $this->mapFromChannel($channel)->shouldReturn($connection);
     }
 }

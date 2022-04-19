@@ -9,7 +9,9 @@
         </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.mapper.connection"
-                 class="Webgriffe\SyliusActiveCampaignPlugin\Mapper\ConnectionMapper"/>
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Mapper\ConnectionMapper">
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.connection"/>
+        </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.mapper.ecommerce_customer"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceCustomerMapper">
