@@ -116,8 +116,14 @@ class ContactListsSubscriberHandlerSpec extends ObjectBehavior
     }
 
     public function it_handles_customer_list_subscriptions(
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        ActiveCampaignResourceClientInterface $activeCampaignContactListClient,
+        ContactListInterface $firstContactList,
+        ContactListInterface $fourthContactList
     ): void {
+        $activeCampaignContactListClient->create($firstContactList)->shouldBeCalledOnce();
+        $activeCampaignContactListClient->create($fourthContactList)->shouldBeCalledOnce();
+
         $logger->info('The association with the list with id "18" already exists for the contact with id "134".')->shouldBeCalledOnce();
 
         $this->__invoke(new ContactListsSubscriber(12));
