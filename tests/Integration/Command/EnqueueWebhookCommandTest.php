@@ -24,7 +24,7 @@ final class EnqueueWebhookCommandTest extends AbstractCommandTest
         HttpClientStub::$responseStatusCode = 201;
         ActiveCampaignWebhookClientStub::$activeCampaignResources = [
             [
-                'url' => 'https://other.com/English%20%28United%20States%29/',
+                'url' => 'https://other.com/webhook/activecampaign/list-status',
                 'listid' => '43',
                 'webhook' => new WebhookResponse(45),
             ],

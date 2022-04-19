@@ -1,0 +1,2 @@
+webgriffe_sylius_active_campaign_shop:
+    resource: "@WebgriffeSyliusActiveCampaignPlugin/Resources/config/app_routing.yml"

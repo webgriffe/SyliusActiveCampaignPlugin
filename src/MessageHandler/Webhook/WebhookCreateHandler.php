@@ -40,7 +40,7 @@ final class WebhookCreateHandler
         }
         $this->activeCampaignWebhookClient->create($this->webhookMapper->map(
             sprintf('Update Sylius newsletter subscription to list "%s"', $activeCampaignListId),
-            $this->channelHostnameUrlGenerator->generate($channel, 'TODO'),
+            $this->channelHostnameUrlGenerator->generate($channel, 'webgriffe_sylius_active_campaign_list_status_webhook'),
             ['subscribe', 'unsubscribe'],
             ['public', 'admin', 'system'],
             $activeCampaignListId
