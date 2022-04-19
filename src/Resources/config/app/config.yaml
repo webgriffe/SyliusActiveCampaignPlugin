@@ -23,3 +23,6 @@ sylius_ui:
         sylius.admin.channel.update.form:
             blocks:
                 active_campaign_form: '@WebgriffeSyliusActiveCampaignPlugin/Admin/Channel/_form.html.twig'
+        sylius.admin.channel.create.form:
+            blocks:
+                active_campaign_form: '@WebgriffeSyliusActiveCampaignPlugin/Admin/Channel/_form.html.twig'
