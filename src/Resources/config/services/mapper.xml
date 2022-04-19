@@ -49,5 +49,9 @@
                  class="Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactListMapper">
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.contact_list"/>
         </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.mapper.webhook" class="Webgriffe\SyliusActiveCampaignPlugin\Mapper\WebhookMapper">
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.webhook"/>
+        </service>
     </services>
 </container>
