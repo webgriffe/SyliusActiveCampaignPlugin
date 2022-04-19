@@ -28,5 +28,8 @@
 
         <service id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.contact_list"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ContactListFactory"/>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.webhook"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\WebhookFactory"/>
     </services>
 </container>
