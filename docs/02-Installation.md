@@ -23,7 +23,14 @@
    commit in your VCS. There are different solutions to this problem, like env configurations and secrets. Refer
    to [Symfony best practices doc](https://symfony.com/doc/current/best_practices.html#configuration) for more info.
 
-4. Your `Customer` entity must implement
+4. Import the routes needed for updating the list status of contact (you can omit this if you don't need to update the list status, or you don't use the list subscription feature). Add the following to your `config/routes.yaml` file:
+   ```yaml
+   webgriffe_sylius_active_campaign_shop:
+       resource: "@WebgriffeSyliusActiveCampaignPlugin/Resources/config/app_routing.yml"
+    ```
+   Note that these routes shouldn't be inside your "shop routes", the locale parameter is not needed.
+
+5. Your `Customer` entity must implement
    the `Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface`. You can use
    the `Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareTrait` and
    the `Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareTrait` as implementations for the
@@ -50,7 +57,7 @@
     }
     ```
 
-5. Your `Channel` entity must implement
+6. Your `Channel` entity must implement
    the `Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelActiveCampaignAwareInterface`. You can use
    the `Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareTrait` and
    the `Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelActiveCampaignAwareTrait` as implementation for the
@@ -77,7 +84,7 @@
    }
    ```
 
-6. Your `Order` entity must implement the `Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface`. You
+7. Your `Order` entity must implement the `Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface`. You
    can use the `Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareTrait` as implementation for the
    interface. The Order entity should look like this:
    ```php
@@ -100,7 +107,7 @@
    }
    ```
 
-7. The `SyliusActiveCampaignPlugin` needs to store the `ActiveCampaign Ecommerce Customer's id` on a Channel-Customer
+8. The `SyliusActiveCampaignPlugin` needs to store the `ActiveCampaign Ecommerce Customer's id` on a Channel-Customer
    association that should implement the `Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface`. If you
    don't already have an association like this in you project you could use the plugin's ChannelCustomer resource by
    adding a `ChannelCustomer` entity and make it extending
@@ -133,22 +140,22 @@
                     model: App\Entity\Customer\ChannelCustomer
     ```
 
-8. Your `CustomerRepository` class must implement
-   the `Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface`. You can use
-   the `Webgriffe\SyliusActiveCampaignPlugin\Doctrine\ORM\ActiveCampaignCustomerRepositoryTrait` as implementation for
-   the interface if you use Doctrine ORM and extends the Sylius Customer Repository. Remember [to add the repository in your sylius_resource configuration](https://docs.sylius.com/en/latest/customization/repository.html).
-
-9. Your `ChannelRepository` class must implement
+9. Your `CustomerRepository` class must implement
     the `Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface`. You can use
-    the `Webgriffe\SyliusActiveCampaignPlugin\Doctrine\ORM\ActiveCampaignChannelRepositoryTrait` as implementation for
-    the interface if you use Doctrine ORM and extends the Sylius Channel Repository. Remember [to add the repository in your sylius_resource configuration](https://docs.sylius.com/en/latest/customization/repository.html).
+    the `Webgriffe\SyliusActiveCampaignPlugin\Doctrine\ORM\ActiveCampaignCustomerRepositoryTrait` as implementation for
+    the interface if you use Doctrine ORM and extends the Sylius Customer Repository. Remember [to add the repository in your sylius_resource configuration](https://docs.sylius.com/en/latest/customization/repository.html).
 
-10. Your `OrderRepository` class must implement
+10. Your `ChannelRepository` class must implement
+     the `Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface`. You can use
+     the `Webgriffe\SyliusActiveCampaignPlugin\Doctrine\ORM\ActiveCampaignChannelRepositoryTrait` as implementation for
+     the interface if you use Doctrine ORM and extends the Sylius Channel Repository. Remember [to add the repository in your sylius_resource configuration](https://docs.sylius.com/en/latest/customization/repository.html).
+
+11. Your `OrderRepository` class must implement
     the `Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignOrderRepositoryInterface`. You can use
     the `Webgriffe\SyliusActiveCampaignPlugin\Doctrine\ORM\ActiveCampaignOrderRepositoryTrait` as implementation for the
     interface if you use Doctrine ORM and extends the Sylius Order Repository. Remember [to add the repository in your sylius_resource configuration](https://docs.sylius.com/en/latest/customization/repository.html).
 
-11. If you use `Doctrine` and you have used the traits of the plugin you should run a diff of your Doctrine's schema and
+12. If you use `Doctrine` and you have used the traits of the plugin you should run a diff of your Doctrine's schema and
    then run the migration generated:
    ```shell
    bin/console doctrine:migrations:diff
