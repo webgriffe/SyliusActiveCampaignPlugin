@@ -4,6 +4,8 @@
     <services>
         <service id="webgriffe.sylius_active_campaign_plugin.controller.webhook"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Controller\WebhookController" autowire="true" autoconfigure="true" public="true">
+            <argument type="service" id="sylius.repository.customer"/>
+            <argument type="service" id="messenger.default_bus"/>
         </service>
     </services>
 </container>

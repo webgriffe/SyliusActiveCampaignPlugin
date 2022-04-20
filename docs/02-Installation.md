@@ -141,7 +141,7 @@
     ```
 
 9. Your `CustomerRepository` class must implement
-    the `Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface`. You can use
+    the `Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignCustomerRepositoryInterface`. You can use
     the `Webgriffe\SyliusActiveCampaignPlugin\Doctrine\ORM\ActiveCampaignCustomerRepositoryTrait` as implementation for
     the interface if you use Doctrine ORM and extends the Sylius Customer Repository. Remember [to add the repository in your sylius_resource configuration](https://docs.sylius.com/en/latest/customization/repository.html).
 
