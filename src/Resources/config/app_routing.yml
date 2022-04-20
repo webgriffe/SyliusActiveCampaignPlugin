@@ -1,5 +1,6 @@
 webgriffe_sylius_active_campaign_list_status_webhook:
     path: webhook/activecampaign/list-status
+    methods: POST
     defaults:
         _controller: webgriffe.sylius_active_campaign_plugin.controller.webhook::updateListStatusAction
         name: ~

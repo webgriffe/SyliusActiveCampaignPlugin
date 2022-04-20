@@ -26,4 +26,13 @@ trait ActiveCampaignCustomerRepositoryTrait
 
         return $this->findAll();
     }
+
+    public function findByContactId(int $contactId): ?CustomerInterface
+    {
+        assert($this instanceof EntityRepository);
+
+        return $this->findOneBy([
+            'activeCampaignId' => $contactId,
+        ]);
+    }
 }
