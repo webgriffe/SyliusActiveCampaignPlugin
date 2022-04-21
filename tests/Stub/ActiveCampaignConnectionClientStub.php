@@ -12,6 +12,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\CreateC
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\ListConnectionsResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\RetrieveResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 
 final class ActiveCampaignConnectionClientStub implements ActiveCampaignResourceClientInterface
@@ -56,6 +57,11 @@ final class ActiveCampaignConnectionClientStub implements ActiveCampaignResource
     }
 
     public function remove(int $activeCampaignResourceId): void
+    {
+        throw new RuntimeException('Not implemented');
+    }
+
+    public function get(int $resourceId): RetrieveResourceResponseInterface
     {
         throw new RuntimeException('Not implemented');
     }
