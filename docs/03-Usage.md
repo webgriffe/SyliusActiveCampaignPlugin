@@ -116,6 +116,45 @@ exception will be caught by the handler and the list subscription will not be cr
   the `webgriffe.sylius_active_campaign_plugin.resolver.channel_customer_based_list_subscription_status`
   with `webgriffe.sylius_active_campaign_plugin.resolver.customer_based_list_subscription_status`.
 
+#### Update the contact list subscription
+
+If you have enabled the contact list subscription feature it could be probably that you need also to have a return from
+ActiveCampaign if this state change on this system. Let's make an example: The customer have subscribed to the
+newsletter, so it has been subscribed to a contact's list. But, after a while, the customer chooses to unsubscribe from
+this list thanks to the email link. When the customer make some update to his data or when a new contact update is
+dispatched the contact will be subscribed again in the list if the subscription status is not touched. This will cause a
+problem for you contact and your image. In order to prevent this we have thought to use the ActiveCampaign's webhook
+functionality to receive the new list status subscription.
+First of all, if you have skipped the app_routes step in the installation you should add this route to your application.
+Then, you should add the webhook on ActiveCampaign. Of course, you could add the webhook manually from the app
+dashboard, but we have prepared a command to add it directly from your Sylius store.
+
+```shell
+php bin/console webgriffe:active-campaign:enqueue-webhook --all
+```
+
+This command will create the webhook for all the channels that have an ActiveCampaign list id not nullable. You can also
+launch the previous command with argument the id of the channel for which create a list status update webhook.
+When the webhook comes from ActiveCampaign a new ContactListsUpdater message is dispatched to the bus.
+Then the ContactListsUpdaterHandler will catch this message and make an HTTP get request to retrieve the updated contact
+from ActiveCampaign. Now, as for the subscriber, there are two possibilities to update the status of the list
+subscription that both implement the
+`Webgriffe\SyliusActiveCampaignPlugin\Updater\ListSubscriptionStatusUpdaterInterface`.
+
+- `ChannelCustomerBasedListSubscriptionStatusUpdater`. This
+  service (`webgriffe.sylius_active_campaign_plugin.updater.channel_customer_based_list_subscription_status`) is the
+  default used by the handler. It will try to retrieve the Channel Customer association and update the status of the
+  subscription on that entity.
+- `CustomerBasedListSubscriptionStatusUpdater`. This
+  service (`webgriffe.sylius_active_campaign_plugin.updater.customer_based_list_subscription_status`) uses the
+  isSubscribedToNewsletter Customer's property, so it will update this entity. To use this service you just have
+  to override the `webgriffe.sylius_active_campaign_plugin.message_handler.contact.lists_updater` service
+  definition's arguments by replacing
+  the `webgriffe.sylius_active_campaign_plugin.updater.channel_customer_based_list_subscription_status`
+  with `webgriffe.sylius_active_campaign_plugin.updater.customer_based_list_subscription_status`.
+
+**NOTE!** If you use the customer's isSubscribedToNewsletter property and you have more than one list you probably have to customize the StatusUpdater service to update the status only if the status comes from a certain list or by others logic.
+
 ### Connection
 
 The ActiveCampaign's Connection is the equivalent of the Sylius Channel. We have opted for this way instead of making
