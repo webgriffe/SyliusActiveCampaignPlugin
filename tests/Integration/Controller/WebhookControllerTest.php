@@ -49,7 +49,7 @@ final class WebhookControllerTest extends KernelTestCase
                 'first_name' => 'test',
                 'last_name' => 'test',
                 'ip' => '127.0.0.1',
-            ]
+            ],
         ]));
 
         /** @var InMemoryTransport $transport */
@@ -76,7 +76,7 @@ final class WebhookControllerTest extends KernelTestCase
                 'first_name' => 'test',
                 'last_name' => 'test',
                 'ip' => '127.0.0.1',
-            ]
+            ],
         ]));
 
         /** @var InMemoryTransport $transport */
