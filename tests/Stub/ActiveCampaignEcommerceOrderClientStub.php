@@ -12,6 +12,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\Cre
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\EcommerceOrderResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\ListEcommerceOrdersResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\RetrieveResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 
 final class ActiveCampaignEcommerceOrderClientStub implements ActiveCampaignResourceClientInterface
@@ -56,6 +57,11 @@ final class ActiveCampaignEcommerceOrderClientStub implements ActiveCampaignReso
     }
 
     public function remove(int $activeCampaignResourceId): void
+    {
+        throw new RuntimeException('Not implemented');
+    }
+
+    public function get(int $resourceId): RetrieveResourceResponseInterface
     {
         throw new RuntimeException('Not implemented');
     }

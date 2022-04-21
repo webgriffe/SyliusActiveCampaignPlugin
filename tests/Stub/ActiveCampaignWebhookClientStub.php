@@ -9,6 +9,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInte
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ResourceInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\RetrieveResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Webhook\CreateWebhookResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Webhook\ListWebhooksResponse;
@@ -56,6 +57,11 @@ final class ActiveCampaignWebhookClientStub implements ActiveCampaignResourceCli
     }
 
     public function remove(int $activeCampaignResourceId): void
+    {
+        throw new RuntimeException('Not implemented');
+    }
+
+    public function get(int $resourceId): RetrieveResourceResponseInterface
     {
         throw new RuntimeException('Not implemented');
     }
