@@ -4,91 +4,98 @@
     <services>
         <service id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.contact"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient">
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
-            <argument type="string">contact</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ContactResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\CreateContactResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\RetrieveContactResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ListContactsResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\UpdateContactResponse</argument>
+            <argument key="$httpClient" type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
+            <argument key="$serializer" type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
+            <argument key="$resourceName" type="string">contact</argument>
+            <argument key="$resourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ContactResponse</argument>
+            <argument key="$createResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\CreateContactResponse</argument>
+            <argument key="$retrieveResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\RetrieveContactResponse</argument>
+            <argument key="$listResourcesResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ListContactsResponse</argument>
+            <argument key="$updateResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\UpdateContactResponse</argument>
         </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.connection"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient">
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
-            <argument type="string">connection</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\ConnectionResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\CreateConnectionResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\ListConnectionsResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\UpdateConnectionResponse</argument>
+            <argument key="$httpClient" type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
+            <argument key="$serializer" type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
+            <argument key="$resourceName" type="string">connection</argument>
+            <argument key="$resourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\ConnectionResponse</argument>
+            <argument key="$createResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\CreateConnectionResponse</argument>
+            <argument key="$retrieveResourceResponseType">null</argument>
+            <argument key="$listResourcesResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\ListConnectionsResponse</argument>
+            <argument key="$updateResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\UpdateConnectionResponse</argument>
         </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.ecommerce_customer"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient">
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
-            <argument type="string">ecomCustomer</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\EcommerceCustomerResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\CreateEcommerceCustomerResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\ListEcommerceCustomersResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\UpdateEcommerceCustomerResponse</argument>
+            <argument key="$httpClient" type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
+            <argument key="$serializer" type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
+            <argument key="$resourceName" type="string">ecomCustomer</argument>
+            <argument key="$resourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\EcommerceCustomerResponse</argument>
+            <argument key="$createResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\CreateEcommerceCustomerResponse</argument>
+            <argument key="$retrieveResourceResponseType">null</argument>
+            <argument key="$listResourcesResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\ListEcommerceCustomersResponse</argument>
+            <argument key="$updateResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\UpdateEcommerceCustomerResponse</argument>
         </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.ecommerce_order"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient">
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
-            <argument type="string">ecomOrder</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\EcommerceOrderResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\CreateEcommerceOrderResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\ListEcommerceOrdersResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\UpdateEcommerceOrderResponse</argument>
+            <argument key="$httpClient" type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
+            <argument key="$serializer" type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
+            <argument key="$resourceName" type="string">ecomOrder</argument>
+            <argument key="$resourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\EcommerceOrderResponse</argument>
+            <argument key="$createResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\CreateEcommerceOrderResponse</argument>
+            <argument key="$retrieveResourceResponseType">null</argument>
+            <argument key="$listResourcesResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\ListEcommerceOrdersResponse</argument>
+            <argument key="$updateResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\UpdateEcommerceOrderResponse</argument>
         </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.tag"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient">
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
-            <argument type="string">tag</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Tag\TagResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Tag\CreateTagResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Tag\ListTagsResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Tag\UpdateTagResponse</argument>
+            <argument key="$httpClient" type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
+            <argument key="$serializer" type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
+            <argument key="$resourceName" type="string">tag</argument>
+            <argument key="$resourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Tag\TagResponse</argument>
+            <argument key="$createResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Tag\CreateTagResponse</argument>
+            <argument key="$retrieveResourceResponseType">null</argument>
+            <argument key="$listResourcesResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Tag\ListTagsResponse</argument>
+            <argument key="$updateResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Tag\UpdateTagResponse</argument>
         </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.contact_tag"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient">
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
-            <argument type="string">contactTag</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactTag\ContactTagResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactTag\CreateContactTagResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactTag\ListContactTagsResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactTag\UpdateContactTagResponse</argument>
+            <argument key="$httpClient" type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
+            <argument key="$serializer" type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
+            <argument key="$resourceName" type="string">contactTag</argument>
+            <argument key="$resourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactTag\ContactTagResponse</argument>
+            <argument key="$createResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactTag\CreateContactTagResponse</argument>
+            <argument key="$retrieveResourceResponseType">null</argument>
+            <argument key="$listResourcesResponseType">null</argument>
+            <argument key="$updateResourceResponseType">null</argument>
         </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.contact_list"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient">
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
-            <argument type="string">contactList</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactList\ContactListResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactList\CreateContactListResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactList\ListContactListsResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactList\UpdateContactListResponse</argument>
+            <argument key="$httpClient" type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
+            <argument key="$serializer" type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
+            <argument key="$resourceName" type="string">contactList</argument>
+            <argument key="$resourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactList\ContactListResponse</argument>
+            <argument key="$createResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactList\CreateContactListResponse</argument>
+            <argument key="$retrieveResourceResponseType">null</argument>
+            <argument key="$listResourcesResponseType">null</argument>
+            <argument key="$updateResourceResponseType">null</argument>
         </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.webhook"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient">
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
-            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
-            <argument type="string">webhook</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Webhook\WebhookResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Webhook\CreateWebhookResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Webhook\ListWebhooksResponse</argument>
-            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Webhook\UpdateWebhookResponse</argument>
+            <argument key="$httpClient" type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
+            <argument key="$serializer" type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
+            <argument key="$resourceName" type="string">webhook</argument>
+            <argument key="$resourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Webhook\WebhookResponse</argument>
+            <argument key="$createResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Webhook\CreateWebhookResponse</argument>
+            <argument key="$retrieveResourceResponseType">null</argument>
+            <argument key="$listResourcesResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Webhook\ListWebhooksResponse</argument>
+            <argument key="$updateResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Webhook\UpdateWebhookResponse</argument>
         </service>
     </services>
 </container>

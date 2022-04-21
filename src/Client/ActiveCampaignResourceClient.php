@@ -6,6 +6,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Client;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
+use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -25,16 +26,19 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
         private ClientInterface $httpClient,
         private SerializerInterface $serializer,
         private string $resourceName,
-        private string $resourceResponseType,
-        private string $createResourceResponseType,
-        private string $retrieveResourceResponseType,
-        private string $listResourcesResponseType,
-        private string $updateResourceResponseType
+        private ?string $resourceResponseType = null,
+        private ?string $createResourceResponseType = null,
+        private ?string $retrieveResourceResponseType = null,
+        private ?string $listResourcesResponseType = null,
+        private ?string $updateResourceResponseType = null
     ) {
     }
 
     public function create(ResourceInterface $resource): CreateResourceResponseInterface
     {
+        if ($this->createResourceResponseType === null) {
+            throw new InvalidArgumentException('You should pass the CreateResourceResponse argument to the resource client');
+        }
         $serializedResource = $this->serializer->serialize(
             [$this->resourceName => $resource],
             'json'
@@ -77,6 +81,9 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
 
     public function get(int $resourceId): RetrieveResourceResponseInterface
     {
+        if ($this->retrieveResourceResponseType === null) {
+            throw new InvalidArgumentException('You should pass the RetrieveResourceResponse argument to the resource client');
+        }
         $response = $this->httpClient->send(new Request(
             'GET',
             self::API_ENDPOINT_VERSIONED . '/' . $this->resourceName . 's' . '/' . $resourceId
@@ -105,6 +112,9 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
 
     public function list(array $queryParams = []): ListResourcesResponseInterface
     {
+        if ($this->listResourcesResponseType === null) {
+            throw new InvalidArgumentException('You should pass the ListResourceResponse argument to the resource client');
+        }
         $httpBuildQuery = http_build_query($queryParams);
         $response = $this->httpClient->send(new Request(
             'GET',
@@ -135,6 +145,9 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
 
     public function update(int $activeCampaignResourceId, ResourceInterface $resource): UpdateResourceResponseInterface
     {
+        if ($this->updateResourceResponseType === null) {
+            throw new InvalidArgumentException('You should pass the UpdateResourceResponse argument to the resource client');
+        }
         $serializedResource = $this->serializer->serialize(
             [$this->resourceName => $resource],
             'json'
