@@ -8,9 +8,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesRespo
 
 final class ListContactsResponse implements ListResourcesResponseInterface
 {
-    /**
-     * @param ContactResponse[] $contacts
-     */
+    /** @param ContactResponse[] $contacts */
     public function __construct(
         private array $contacts
     ) {

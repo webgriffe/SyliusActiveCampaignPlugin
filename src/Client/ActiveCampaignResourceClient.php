@@ -14,6 +14,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ResourceInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\RetrieveResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 
 final class ActiveCampaignResourceClient implements ActiveCampaignResourceClientInterface
@@ -26,6 +27,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
         private string $resourceName,
         private string $resourceResponseType,
         private string $createResourceResponseType,
+        private string $retrieveResourceResponseType,
         private string $listResourcesResponseType,
         private string $updateResourceResponseType
     ) {
@@ -71,6 +73,34 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
         );
 
         return $createResourceResponse;
+    }
+
+    public function get(int $resourceId): RetrieveResourceResponseInterface
+    {
+        $response = $this->httpClient->send(new Request(
+            'GET',
+            self::API_ENDPOINT_VERSIONED . '/' . $this->resourceName . 's' . '/' . $resourceId
+        ));
+        if (($statusCode = $response->getStatusCode()) !== 200) {
+            if ($statusCode === 404) {
+                /** @var array{message: string} $errorResponse */
+                $errorResponse = json_decode($response->getBody()->getContents(), true, 512, \JSON_THROW_ON_ERROR);
+
+                throw new NotFoundHttpException($errorResponse['message']);
+            }
+
+            throw new HttpException($statusCode, $response->getReasonPhrase(), null, $response->getHeaders());
+        }
+
+        /** @var RetrieveResourceResponseInterface $retrieveResourceResponse */
+        $retrieveResourceResponse = $this->serializer->deserialize(
+            $response->getBody()->getContents(),
+            $this->retrieveResourceResponseType,
+            'json',
+            ['resource' => $this->resourceName]
+        );
+
+        return $retrieveResourceResponse;
     }
 
     public function list(array $queryParams = []): ListResourcesResponseInterface

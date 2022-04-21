@@ -9,6 +9,7 @@
             <argument type="string">contact</argument>
             <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ContactResponse</argument>
             <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\CreateContactResponse</argument>
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\RetrieveContactResponse</argument>
             <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ListContactsResponse</argument>
             <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\UpdateContactResponse</argument>
         </service>
