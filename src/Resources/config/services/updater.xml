@@ -4,7 +4,7 @@
     <services>
         <service id="webgriffe.sylius_active_campaign_plugin.updater.channel_customer_based_list_subscription_status"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Updater\ChannelCustomerBasedListSubscriptionStatusUpdater">
-            <argument type="service" id="sylius.repository.channel_customer"/>
+            <argument type="service" id="webgriffe_sylius_active_campaign.repository.channel_customer"/>
         </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.updater.customer_based_list_subscription_status"
