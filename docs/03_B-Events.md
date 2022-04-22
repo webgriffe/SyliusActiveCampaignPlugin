@@ -24,8 +24,8 @@ The plugin listen for these customer events:
 - `sylius.customer.post_update`
 - `sylius.customer.post_delete`
 
-The first three will lead to a Contact/Ecommerce Customer Create/Update. The last one will lead to a
-Contact/EcommerceCustomer Remove.
+The first three will lead to a Contact/Ecommerce Customer Create/Update, a ContactTagsAdder and a
+ContactListsSubscriber. The last one will lead to a Contact/EcommerceCustomer Remove.
 
 ### Ecommerce Order events
 

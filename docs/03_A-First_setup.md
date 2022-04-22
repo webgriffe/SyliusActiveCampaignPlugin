@@ -4,8 +4,8 @@
 
 Right after installing the plugin, you need to export all the resources to ActiveCampaign if you start from scratch,
 persist the ActiveCampaign resource's id on Sylius resource if you already have ActiveCampaign populated, and/or of
-course, create and associate at the same time if you start from a mixed case. To do this the plugin offers three
-commands to do this.
+course, create and associate at the same time if you start from a mixed case. To do this the plugin offers different
+commands to reach this scope.
 
 ### The Enqueue Connection Command
 
@@ -33,6 +33,20 @@ You can also launch the command without any arguments, it will ask you automatic
 ```shell
 php bin/console webgriffe:active-campaign:enqueue-connection
 ```
+
+### The Enqueue Webhook Command
+
+If you want to maintain updated the list subscriptions status of you customers on Sylius you should enable a webhook for the updates of these subscriptions on ActiveCampaign.
+You could obviously create the webhook manually from the AC's dashboard, but you can also use our command:
+
+```shell
+php bin/console webgriffe:active-campaign:enqueue-webhook --all
+```
+
+This command will create the webhook for all the channels that have an ActiveCampaign list id not nullable. You can also
+launch the previous command with argument the id of the channel for which create a list status update webhook.
+
+> **NOTE!** Be sure to add the `webgriffe_sylius_active_campaign_list_status_webhook` route to your app before launch this command, otherwise the route to call from the webhook could not be resolved.
 
 ### The Enqueue Contact and Ecommerce Customer Command
 
@@ -83,6 +97,42 @@ You can also launch the command without any arguments, it will ask you automatic
 php bin/console webgriffe:active-campaign:enqueue-contact-and-ecommerce-customer
 ```
 
+### The Enqueue Contact Tags Adder Command
+
+If you start from scratch with ActiveCampaign it is probably that you need to add some tags to all of your customers/contacts.
+You can use the Enqueue Contact Tags Adder Command to reach this scope:
+
+```shell
+php bin/console webgriffe:active-campaign:enqueue-contact-tags-adder --all
+```
+
+This command will enqueue to add tags to all the ActiveCampaign's enabled customers of you app. You can also
+launch the previous command with argument the id of the customer for which add the tags.
+
+### The Enqueue Contact Lists Subscription Command
+
+If you start from scratch with ActiveCampaign it is probably that you want to subscribe massively all your customers/contacts to the properly Channel's lists.
+You can use the Enqueue Contact Lists Subscription Command to reach this scope:
+
+```shell
+php bin/console webgriffe:active-campaign:enqueue-contact-lists-subscription --all
+```
+
+This command will enqueue all contact lists subscription for all the customers enabled to export them on ActiveCampaign. You can also
+launch the previous command with argument the id of the customer for which subscribe to lists.
+
+### The Update Contact Lists Subscription Command
+
+Alternatively to the previous command, if you start from an already populated status on ActiveCampaign, it is probably that you want to update massively all your customers/contacts subscription to Channel's lists on you Sylius store.
+This will avoid subscribe to a list when not explicitly requested. You can use the Update Contact Lists Subscription Command to reach this scope:
+
+```shell
+php bin/console webgriffe:active-campaign:update-contact-lists-subscription --all
+```
+
+This command will update all contact lists subscription for all the customers enabled to export them on ActiveCampaign. You can also
+launch the previous command with argument the id of the customer for which update subscription to lists.
+
 ### The Enqueue Ecommerce Order Command
 
 The Enqueue Ecommerce Order Command creates/updates the Sylius Orders/Carts as Ecommerce Order/Abandoned Cart on
@@ -96,22 +146,6 @@ This command allows you to create the history of orders and abandoned carts for 
 creates the orders and carts without the "source" flag enabled. This means that all the automations about carts and
 orders wouldn't start. This is probably what is right for you since it is a historian of orders, but you can customize
 it.
-
-But what if you need to export to ActiveCampaign only some Sylius Orders? Simply, just override the logic inside the
-`findAllToEnqueue` `OrderRepository`'s method. So, you can, for example, exports only orders by some customers.
-
-The EcommerceOrderProductMapper service set the product image url needed to show it in the ActiveCampaign admin
-dashboard but also for the email template. By default, the service will take the first image for the product, but you can
-specify a Sylius image type to use for this purpose (for example you could have a `main` type used to specify the first
-image of the product). Set this parameter in the `webgriffe_sylius_active_campaign_plugin.yaml` file:
-
-```yaml
-webgriffe_sylius_active_campaign:
-    ...
-    mapper:
-        ecommerce_order_product:
-            image_type: 'main'
-```
 
 Also, remember that this command acts like a "create/update ecommerce order on ActiveCampaign" so, if you added an
 order, not from the shop checkout you could launch it without any fear, and it will enqueue the new ecommerce order
