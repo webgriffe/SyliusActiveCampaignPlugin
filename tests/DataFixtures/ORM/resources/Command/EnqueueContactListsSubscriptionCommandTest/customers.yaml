@@ -1,0 +1,14 @@
+App\Entity\Customer\Customer:
+    customer_jim:
+        email: 'jim@email.com'
+        first_name: 'James'
+        last_name: 'Rodriguez'
+    customer_bob:
+        email: 'bob@email.com'
+        first_name: 'Bob'
+        last_name: 'Rodriguez'
+        activeCampaignId: 32
+    customer_sam:
+        email: 'sam@email.com'
+        first_name: 'Samuel'
+        last_name: 'Freud'
