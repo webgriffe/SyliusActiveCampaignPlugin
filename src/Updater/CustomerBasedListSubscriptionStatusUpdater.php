@@ -7,7 +7,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Updater;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Resolver\ListSubscriptionStatusResolverInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactListInterface;
 
 final class CustomerBasedListSubscriptionStatusUpdater implements ListSubscriptionStatusUpdaterInterface
 {
@@ -18,7 +18,7 @@ final class CustomerBasedListSubscriptionStatusUpdater implements ListSubscripti
 
     public function update(CustomerInterface $customer, ChannelInterface $channel, int $listSubscriptionStatus): void
     {
-        $customer->setSubscribedToNewsletter($listSubscriptionStatus === ListSubscriptionStatusResolverInterface::SUBSCRIBED_STATUS_CODE);
+        $customer->setSubscribedToNewsletter($listSubscriptionStatus === ContactListInterface::SUBSCRIBED_STATUS_CODE);
         $this->customerRepository->add($customer);
     }
 }

@@ -7,6 +7,7 @@ namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Resolver;
 use App\Entity\Channel\ChannelInterface;
 use App\Entity\Customer\CustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Exception\ChannelListIdDoesNotExistException;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactListInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Resolver\CustomerBasedListSubscriptionStatusResolver;
 use PhpSpec\ObjectBehavior;
@@ -51,6 +52,6 @@ class CustomerBasedListSubscriptionStatusResolverSpec extends ObjectBehavior
         CustomerInterface $customer,
         ChannelInterface $channel
     ): void {
-        $this->resolve($customer, $channel)->shouldReturn(ListSubscriptionStatusResolverInterface::SUBSCRIBED_STATUS_CODE);
+        $this->resolve($customer, $channel)->shouldReturn(ContactListInterface::SUBSCRIBED_STATUS_CODE);
     }
 }

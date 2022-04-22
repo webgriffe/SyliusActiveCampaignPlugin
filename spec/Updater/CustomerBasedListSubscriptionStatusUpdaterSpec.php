@@ -7,6 +7,7 @@ namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Updater;
 use App\Entity\Customer\CustomerInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactListInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Resolver\ListSubscriptionStatusResolverInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Updater\CustomerBasedListSubscriptionStatusUpdater;
 use PhpSpec\ObjectBehavior;
@@ -38,7 +39,7 @@ class CustomerBasedListSubscriptionStatusUpdaterSpec extends ObjectBehavior
         $customer->setSubscribedToNewsletter(true)->shouldBeCalledOnce();
         $customerRepository->add($customer)->shouldBeCalledOnce();
 
-        $this->update($customer, $channel, ListSubscriptionStatusResolverInterface::SUBSCRIBED_STATUS_CODE);
+        $this->update($customer, $channel, ContactListInterface::SUBSCRIBED_STATUS_CODE);
     }
 
     public function it_updates_unsubscribed_to_newsletter_status(
@@ -49,6 +50,6 @@ class CustomerBasedListSubscriptionStatusUpdaterSpec extends ObjectBehavior
         $customer->setSubscribedToNewsletter(false)->shouldBeCalledOnce();
         $customerRepository->add($customer)->shouldBeCalledOnce();
 
-        $this->update($customer, $channel, ListSubscriptionStatusResolverInterface::UNSUBSCRIBED_STATUS_CODE);
+        $this->update($customer, $channel, ContactListInterface::UNSUBSCRIBED_STATUS_CODE);
     }
 }

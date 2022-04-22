@@ -9,6 +9,7 @@ use App\Entity\Customer\CustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Exception\ChannelCustomerDoesNotExistException;
 use Webgriffe\SyliusActiveCampaignPlugin\Exception\ChannelListIdDoesNotExistException;
 use Webgriffe\SyliusActiveCampaignPlugin\Exception\CustomerListSubscriptionStatusNotDefinedException;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactListInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Resolver\ChannelCustomerBasedListSubscriptionStatusResolver;
 use PhpSpec\ObjectBehavior;
@@ -78,8 +79,8 @@ class ChannelCustomerBasedListSubscriptionStatusResolverSpec extends ObjectBehav
         ChannelInterface $channel,
         ChannelCustomerInterface $channelCustomer
     ): void {
-        $channelCustomer->getListSubscriptionStatus()->willReturn(ListSubscriptionStatusResolverInterface::SUBSCRIBED_STATUS_CODE);
+        $channelCustomer->getListSubscriptionStatus()->willReturn(ContactListInterface::SUBSCRIBED_STATUS_CODE);
 
-        $this->resolve($customer, $channel)->shouldReturn(ListSubscriptionStatusResolverInterface::SUBSCRIBED_STATUS_CODE);
+        $this->resolve($customer, $channel)->shouldReturn(ContactListInterface::SUBSCRIBED_STATUS_CODE);
     }
 }

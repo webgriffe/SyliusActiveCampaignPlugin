@@ -47,16 +47,16 @@ class ContactListsSubscriberHandlerSpec extends ObjectBehavior
         $customerRepository->find(12)->willReturn($customer);
         $customerChannelsResolver->resolve($customer)->willReturn([$firstChannel, $secondChannel, $thirdChannel, $fourthChannel]);
 
-        $listSubscriptionStatusResolver->resolve($customer, $firstChannel)->willReturn(ListSubscriptionStatusResolverInterface::SUBSCRIBED_STATUS_CODE);
-        $listSubscriptionStatusResolver->resolve($customer, $fourthChannel)->willReturn(ListSubscriptionStatusResolverInterface::UNSUBSCRIBED_STATUS_CODE);
+        $listSubscriptionStatusResolver->resolve($customer, $firstChannel)->willReturn(ContactListInterface::SUBSCRIBED_STATUS_CODE);
+        $listSubscriptionStatusResolver->resolve($customer, $fourthChannel)->willReturn(ContactListInterface::UNSUBSCRIBED_STATUS_CODE);
 
         $firstChannel->getCode()->willReturn('ecommerce');
         $firstChannel->getActiveCampaignListId()->willReturn(23);
         $thirdChannel->getActiveCampaignListId()->willReturn(null);
         $fourthChannel->getActiveCampaignListId()->willReturn(18);
 
-        $contactListMapper->mapFromListContactStatusAndSourceId(23, 134, ListSubscriptionStatusResolverInterface::SUBSCRIBED_STATUS_CODE)->willReturn($firstContactList);
-        $contactListMapper->mapFromListContactStatusAndSourceId(18, 134, ListSubscriptionStatusResolverInterface::UNSUBSCRIBED_STATUS_CODE)->willReturn($fourthContactList);
+        $contactListMapper->mapFromListContactStatusAndSourceId(23, 134, ContactListInterface::SUBSCRIBED_STATUS_CODE)->willReturn($firstContactList);
+        $contactListMapper->mapFromListContactStatusAndSourceId(18, 134, ContactListInterface::UNSUBSCRIBED_STATUS_CODE)->willReturn($fourthContactList);
 
         $activeCampaignContactListClient->create($firstContactList)->willReturn($createResourceResponse);
         $activeCampaignContactListClient->create($fourthContactList)->willThrow(new HttpException(200));

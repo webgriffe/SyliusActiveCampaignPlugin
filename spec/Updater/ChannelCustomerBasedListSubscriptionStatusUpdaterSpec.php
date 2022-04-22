@@ -9,6 +9,7 @@ use InvalidArgumentException;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface as SyliusCustomerInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactListInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Resolver\ListSubscriptionStatusResolverInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Updater\ChannelCustomerBasedListSubscriptionStatusUpdater;
@@ -44,7 +45,7 @@ class ChannelCustomerBasedListSubscriptionStatusUpdaterSpec extends ObjectBehavi
     {
         $this->shouldThrow(new InvalidArgumentException('The customer should implements the "Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface" interface.'))->during(
             'update',
-            [$syliusCustomer, $channel, ListSubscriptionStatusResolverInterface::SUBSCRIBED_STATUS_CODE]
+            [$syliusCustomer, $channel, ContactListInterface::SUBSCRIBED_STATUS_CODE]
         );
     }
 
@@ -54,7 +55,7 @@ class ChannelCustomerBasedListSubscriptionStatusUpdaterSpec extends ObjectBehavi
 
         $this->shouldThrow(new InvalidArgumentException('The customer "info@email.com" does not have an association with the channel "ecommerce".'))->during(
             'update',
-            [$customer, $channel, ListSubscriptionStatusResolverInterface::SUBSCRIBED_STATUS_CODE]
+            [$customer, $channel, ContactListInterface::SUBSCRIBED_STATUS_CODE]
         );
     }
 
@@ -64,9 +65,9 @@ class ChannelCustomerBasedListSubscriptionStatusUpdaterSpec extends ObjectBehavi
         ChannelCustomerInterface $channelCustomer,
         RepositoryInterface $channelCustomerRepository
     ): void {
-        $channelCustomer->setListSubscriptionStatus(ListSubscriptionStatusResolverInterface::SUBSCRIBED_STATUS_CODE)->shouldBeCalledOnce();
+        $channelCustomer->setListSubscriptionStatus(ContactListInterface::SUBSCRIBED_STATUS_CODE)->shouldBeCalledOnce();
         $channelCustomerRepository->add($channelCustomer)->shouldBeCalledOnce();
 
-        $this->update($customer, $channel, ListSubscriptionStatusResolverInterface::SUBSCRIBED_STATUS_CODE);
+        $this->update($customer, $channel, ContactListInterface::SUBSCRIBED_STATUS_CODE);
     }
 }

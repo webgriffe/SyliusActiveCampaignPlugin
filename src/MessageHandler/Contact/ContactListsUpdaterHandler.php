@@ -10,10 +10,10 @@ use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactListsUpdater;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactListInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Resolver\CustomerChannelsResolverInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Resolver\ListSubscriptionStatusResolverInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Updater\ListSubscriptionStatusUpdaterInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\RetrieveContactResponseInterface;
 
@@ -75,10 +75,10 @@ final class ContactListsUpdaterHandler
     private function getActiveCampaignSubscriptionStatusCode(int $status): int
     {
         if (in_array($status, [
-            ListSubscriptionStatusResolverInterface::UNCONFIRMED_STATUS_CODE,
-            ListSubscriptionStatusResolverInterface::SUBSCRIBED_STATUS_CODE,
-            ListSubscriptionStatusResolverInterface::UNSUBSCRIBED_STATUS_CODE,
-            ListSubscriptionStatusResolverInterface::BOUNCED_STATUS_CODE,
+            ContactListInterface::UNCONFIRMED_STATUS_CODE,
+            ContactListInterface::SUBSCRIBED_STATUS_CODE,
+            ContactListInterface::UNSUBSCRIBED_STATUS_CODE,
+            ContactListInterface::BOUNCED_STATUS_CODE,
             ], true)) {
             return $status;
         }
