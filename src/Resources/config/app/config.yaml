@@ -5,6 +5,7 @@ framework:
             'Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactUpdate': main
             'Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactRemove': main
             'Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactTagsAdder': main
+            'Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactListsSubscriber': main
             'Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactListsUpdater': main
 
             'Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionCreate': main

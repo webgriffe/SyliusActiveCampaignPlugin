@@ -12,7 +12,9 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Throwable;
 use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\ContactEnqueuerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\EcommerceCustomerEnqueuerInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactListsSubscriber;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactRemove;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactTagsAdder;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerRemove;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
@@ -32,9 +34,9 @@ final class CustomerSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            'sylius.customer.post_register' => [['enqueueContact'], ['enqueueEcommerceCustomer']],
-            'sylius.customer.post_create' => [['enqueueContact'], ['enqueueEcommerceCustomer']],
-            'sylius.customer.post_update' => [['enqueueContact'], ['enqueueEcommerceCustomer']],
+            'sylius.customer.post_register' => [['enqueueContact'], ['enqueueEcommerceCustomer'], ['addContactTags'], ['subscribeContactToLists']],
+            'sylius.customer.post_create' => [['enqueueContact'], ['enqueueEcommerceCustomer'], ['addContactTags'], ['subscribeContactToLists']],
+            'sylius.customer.post_update' => [['enqueueContact'], ['enqueueEcommerceCustomer'], ['addContactTags'], ['subscribeContactToLists']],
             'sylius.customer.post_delete' => [['removeContact'], ['removeEcommerceCustomer']],
         ];
     }
@@ -70,6 +72,36 @@ final class CustomerSubscriber implements EventSubscriberInterface
                 $this->logger->error($throwable->getMessage(), $throwable->getTrace());
             }
         }
+    }
+
+    public function addContactTags(GenericEvent $event): void
+    {
+        $customer = $event->getSubject();
+        if (!$customer instanceof CustomerInterface || !$customer instanceof CustomerActiveCampaignAwareInterface) {
+            return;
+        }
+        /** @var int|string|null $customerId */
+        $customerId = $customer->getId();
+        if ($customerId === null) {
+            return;
+        }
+
+        $this->messageBus->dispatch(new ContactTagsAdder($customerId));
+    }
+
+    public function subscribeContactToLists(GenericEvent $event): void
+    {
+        $customer = $event->getSubject();
+        if (!$customer instanceof CustomerInterface || !$customer instanceof CustomerActiveCampaignAwareInterface) {
+            return;
+        }
+        /** @var int|string|null $customerId */
+        $customerId = $customer->getId();
+        if ($customerId === null) {
+            return;
+        }
+
+        $this->messageBus->dispatch(new ContactListsSubscriber($customerId));
     }
 
     public function removeContact(GenericEvent $event): void
