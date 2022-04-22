@@ -8,6 +8,7 @@
         <parameter key="webgriffe_sylius_active_campaign.command.enqueue_ecommerce_abandoned_cart.name">webgriffe:active-campaign:enqueue-ecommerce-abandoned-cart</parameter>
         <parameter key="webgriffe_sylius_active_campaign.command.enqueue_webhook.name">webgriffe:active-campaign:enqueue-webhook</parameter>
         <parameter key="webgriffe_sylius_active_campaign.command.enqueue_contact_lists_subscription.name">webgriffe:active-campaign:enqueue-contact-lists-subscription</parameter>
+        <parameter key="webgriffe_sylius_active_campaign.command.enqueue_contact_tags_adder.name">webgriffe:active-campaign:enqueue-contact-tags-adder</parameter>
         <parameter key="webgriffe_sylius_active_campaign.cart_becomes_abandoned_period">1 day</parameter>
     </parameters>
     <services>
@@ -59,6 +60,14 @@
             <argument type="service" id="sylius.repository.customer"/>
             <argument type="service" id="messenger.default_bus"/>
             <argument>%webgriffe_sylius_active_campaign.command.enqueue_contact_lists_subscription.name%</argument>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="webgriffe.sylius_active_campaign_plugin.command.enqueue_contact_tags_adder"
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Command\EnqueueContactTagsAdderCommand">
+            <argument type="service" id="sylius.repository.customer"/>
+            <argument type="service" id="messenger.default_bus"/>
+            <argument>%webgriffe_sylius_active_campaign.command.enqueue_contact_tags_adder.name%</argument>
             <tag name="console.command"/>
         </service>
     </services>
