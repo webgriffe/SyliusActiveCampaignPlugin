@@ -2,6 +2,13 @@
 
 ## UPGRADE FROM `v0.2.0` TO `v0.3.0`
 
+Adjust you entity following the subsequent PR notes, then remember to run a migration diff and run it with:
+
+```shell
+php bin/console doctrine:migrations:diff
+php bin/console doctrine:migrations:migrate
+```
+
 ### Codebase
 
 #### Add tags to a contact (#40)
@@ -18,7 +25,7 @@ The `messenger.default_bus` is now passed to both `webgriffe.sylius_active_campa
 #### Add Contact List Subscription Message and Handler (#41)
 
 ##### TL;DR
-The `listSubscriptionStatus` property has been added to the `ChannelCustomer` entity, so two new methods (get and set) of that property, have been added to the `ChannelCustomerInterface`.
+The `listSubscriptionStatus` property has been added to the `ChannelCustomer` entity, so two new methods (get and set) of that property, have been added to the `ChannelCustomerInterface`. You can use the `Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelActiveCampaignAwareTrait` to implement these methods.
 
 ##### BC Breaks
 
