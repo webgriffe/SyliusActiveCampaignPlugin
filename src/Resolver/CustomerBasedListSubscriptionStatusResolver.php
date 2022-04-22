@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Webgriffe\SyliusActiveCampaignPlugin\Resolver;
 
 use Webgriffe\SyliusActiveCampaignPlugin\Exception\ChannelListIdDoesNotExistException;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactListInterface;
 
 final class CustomerBasedListSubscriptionStatusResolver implements ListSubscriptionStatusResolverInterface
 {
@@ -15,6 +16,6 @@ final class CustomerBasedListSubscriptionStatusResolver implements ListSubscript
             throw new ChannelListIdDoesNotExistException(sprintf('The channel "%s" does not have a list id.', (string) $channel->getCode()));
         }
 
-        return $customer->isSubscribedToNewsletter() ? ListSubscriptionStatusResolverInterface::SUBSCRIBED_STATUS_CODE : ListSubscriptionStatusResolverInterface::UNSUBSCRIBED_STATUS_CODE;
+        return $customer->isSubscribedToNewsletter() ? ContactListInterface::SUBSCRIBED_STATUS_CODE : ContactListInterface::UNSUBSCRIBED_STATUS_CODE;
     }
 }

@@ -14,6 +14,7 @@ use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactListsUpdater;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactListsUpdaterHandler;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactListInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Resolver\CustomerChannelsResolverInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Resolver\ListSubscriptionStatusResolverInterface;
@@ -125,8 +126,8 @@ class ContactListsUpdaterHandlerSpec extends ObjectBehavior
         ChannelInterface $channel1,
         ChannelInterface $channel2
     ): void {
-        $listSubscriptionStatusUpdater->update($customer, $channel1, ListSubscriptionStatusResolverInterface::SUBSCRIBED_STATUS_CODE)->shouldBeCalledOnce();
-        $listSubscriptionStatusUpdater->update($customer, $channel2, ListSubscriptionStatusResolverInterface::UNSUBSCRIBED_STATUS_CODE)->shouldBeCalledOnce();
+        $listSubscriptionStatusUpdater->update($customer, $channel1, ContactListInterface::SUBSCRIBED_STATUS_CODE)->shouldBeCalledOnce();
+        $listSubscriptionStatusUpdater->update($customer, $channel2, ContactListInterface::UNSUBSCRIBED_STATUS_CODE)->shouldBeCalledOnce();
 
         $this->__invoke(new ContactListsUpdater(12));
     }
