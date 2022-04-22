@@ -129,7 +129,7 @@
    }
    ```
    If you have added the ChannelCustomer entity be sure to mark it as a Sylius Resource by adding the following lines in
-   the
+   the `webgriffe_sylius_active_campaign_plugin.yaml` file:
 
     ```yaml
     webgriffe_sylius_active_campaign:

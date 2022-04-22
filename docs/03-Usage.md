@@ -47,11 +47,12 @@ same `email`.
 
 #### Contact tags
 
-By creating or updating a contact you will probably have to add some tags to this contact. If this is your case there is
-nothing to more simple than add this tags to your contact 😀. After the creating or the update of a contact a new
+To complete your contact you will probably have to add some tags to this contact. If this is your case there is
+nothing to more simple than add this tags to your contact 😀. After the creation or the update of a Sylius customer a
+new
 Message `ContactTagsAdder` will be dispatched to the messenger bus. The `ContactTagsAdderHandler` will use
 the `webgriffe.sylius_active_campaign_plugin.resolver.contact_tags`
-service to resolve a list of tags to add to the contact. By default this service will return an empty list, but you can
+service to resolve a list of tags to add to the contact. By default, this service will return an empty list, but you can
 customize it by overriding this service and by making it implements
 the `Webgriffe\SyliusActiveCampaignPlugin\Resolver\ContactTagsResolverInterface`. The more beautiful thing is that you
 don't have to worry about retrieve the ActiveCampaign tag's id, the plugin will do it for you 🎉. You just have to
@@ -77,7 +78,7 @@ contact to a list.
 
 ![Channel list ID form](images/edit_channel_list_id_form.png "Channel list ID form")
 
-With the create/update contact handler a new `ContactListsSubscriber` message is dispatched.
+With the create/update of a Sylius customer a new `ContactListsSubscriber` message is dispatched.
 The `ContactListsSubscriberHandler` will then use the `CustomerChannelsResolver` to determine the channels for which a
 contact list subscription should be created or updated. Then each channel will check if a list id is provided, if not it
 will skip that channel. Then the `ListSubscriptionStatusResolverInterface` service is called. This service is
@@ -122,19 +123,16 @@ If you have enabled the contact list subscription feature it could be probably t
 ActiveCampaign if this state change on this system. Let's make an example: The customer have subscribed to the
 newsletter, so it has been subscribed to a contact's list. But, after a while, the customer chooses to unsubscribe from
 this list thanks to the email link. When the customer make some update to his data or when a new contact update is
-dispatched the contact will be subscribed again in the list if the subscription status is not touched. This will cause a
-problem for you contact and your image. In order to prevent this we have thought to use the ActiveCampaign's webhook
+dispatched, the contact will be subscribed again in the list if the subscription status is not touched. This will cause
+a
+problem for you contact and your business image. In order to prevent this we have thought to use the ActiveCampaign's
+webhook
 functionality to receive the new list status subscription.
-First of all, if you have skipped the app_routes step in the installation you should add this route to your application.
+First, if you have skipped the `app_routes` step in the installation you should add this route to your application.
 Then, you should add the webhook on ActiveCampaign. Of course, you could add the webhook manually from the app
-dashboard, but we have prepared a command to add it directly from your Sylius store.
+dashboard, but we have prepared a command to add it directly from your Sylius store, check
+the [First setup docs](03_A-First_setup.md) on how to launch this command.
 
-```shell
-php bin/console webgriffe:active-campaign:enqueue-webhook --all
-```
-
-This command will create the webhook for all the channels that have an ActiveCampaign list id not nullable. You can also
-launch the previous command with argument the id of the channel for which create a list status update webhook.
 When the webhook comes from ActiveCampaign a new ContactListsUpdater message is dispatched to the bus.
 Then the ContactListsUpdaterHandler will catch this message and make an HTTP get request to retrieve the updated contact
 from ActiveCampaign. Now, as for the subscriber, there are two possibilities to update the status of the list
@@ -153,7 +151,9 @@ subscription that both implement the
   the `webgriffe.sylius_active_campaign_plugin.updater.channel_customer_based_list_subscription_status`
   with `webgriffe.sylius_active_campaign_plugin.updater.customer_based_list_subscription_status`.
 
-**NOTE!** If you use the customer's isSubscribedToNewsletter property and you have more than one list you probably have to customize the StatusUpdater service to update the status only if the status comes from a certain list or by others logic.
+**NOTE!** If you use the customer's isSubscribedToNewsletter property, and you have more than one list you probably have
+to customize the StatusUpdater service to update the status only if the status comes from a certain list or by others
+logic.
 
 ### Connection
 
@@ -179,6 +179,22 @@ customer with the same `email` and `connectionid` (the channel's code).
 
 The ActiveCampaign's Ecommerce Order is the equivalent of the Sylius Order. In addition, as done on Sylius, The
 Abandoned Cart is the same entity as the Ecommerce Order, so also the Abandoned Cart is related to the Sylius Order.
+
+But what if you need to export to ActiveCampaign only some Sylius Orders? Simply, just override the logic inside the
+`findAllToEnqueue` `OrderRepository`'s method. So, you can, for example, exports only orders by some customers.
+
+The EcommerceOrderProductMapper service set the product image url needed to show it in the ActiveCampaign admin
+dashboard but also for the email template. By default, the service will take the first image for the product, but you can
+specify a Sylius image type to use for this purpose (for example you could have a `main` type used to specify the first
+image of the product). Set this parameter in the `webgriffe_sylius_active_campaign_plugin.yaml` file:
+
+```yaml
+webgriffe_sylius_active_campaign:
+    ...
+    mapper:
+        ecommerce_order_product:
+            image_type: 'main'
+```
 
 Before creating the resource on ActiveCampaign, the EcommerceOrderEnqueuer queries for a corresponding ecommerce order
 with the same `email` and `externalid` (the order's id)/`externalcheckoutid` (the cart's id) based on the state of the
