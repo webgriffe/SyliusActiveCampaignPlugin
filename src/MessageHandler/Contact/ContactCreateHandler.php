@@ -7,12 +7,9 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact;
 use InvalidArgumentException;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactListsSubscriber;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactTagsAdder;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 
 final class ContactCreateHandler
@@ -20,8 +17,7 @@ final class ContactCreateHandler
     public function __construct(
         private ContactMapperInterface $contactMapper,
         private ActiveCampaignResourceClientInterface $activeCampaignContactClient,
-        private CustomerRepositoryInterface $customerRepository,
-        private MessageBusInterface $messageBus
+        private CustomerRepositoryInterface $customerRepository
     ) {
     }
 
@@ -44,8 +40,5 @@ final class ContactCreateHandler
         $createContactResponse = $this->activeCampaignContactClient->create($this->contactMapper->mapFromCustomer($customer));
         $customer->setActiveCampaignId($createContactResponse->getResourceResponse()->getId());
         $this->customerRepository->add($customer);
-
-        $this->messageBus->dispatch(new ContactTagsAdder($customerId));
-        $this->messageBus->dispatch(new ContactListsSubscriber($customerId));
     }
 }
