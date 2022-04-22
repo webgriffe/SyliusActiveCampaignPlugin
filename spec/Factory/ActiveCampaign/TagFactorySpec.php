@@ -14,7 +14,7 @@ class TagFactorySpec extends ObjectBehavior
 {
     public function let(): void
     {
-        $this->beConstructedWith();
+        $this->beConstructedWith(Tag::class);
     }
 
     public function it_is_initializable(): void

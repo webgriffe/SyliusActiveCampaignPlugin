@@ -4,16 +4,23 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign;
 
-use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\Tag;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\TagInterface;
 
 final class TagFactory implements TagFactoryInterface
 {
-    public function createNew(string $tag, string $tagType = TagInterface::CONTACT_TAG_TYPE): TagInterface
+    public function __construct(
+        private string $tagFQCN
+    ) {
+    }
+
+    public function createNew(string $tagName, string $tagType = TagInterface::CONTACT_TAG_TYPE): TagInterface
     {
-        return new Tag(
-            $tag,
+        /** @var TagInterface $tag */
+        $tag = new $this->tagFQCN(
+            $tagName,
             $tagType
         );
+
+        return $tag;
     }
 }

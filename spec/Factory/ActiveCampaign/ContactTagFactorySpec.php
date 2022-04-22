@@ -13,7 +13,7 @@ class ContactTagFactorySpec extends ObjectBehavior
 {
     public function let(): void
     {
-        $this->beConstructedWith();
+        $this->beConstructedWith(ContactTag::class);
     }
 
     public function it_is_initializable(): void

@@ -13,7 +13,7 @@ class EcommerceOrderDiscountFactorySpec extends ObjectBehavior
 {
     public function let(): void
     {
-        $this->beConstructedWith();
+        $this->beConstructedWith(EcommerceOrderDiscount::class);
     }
 
     public function it_is_initializable(): void

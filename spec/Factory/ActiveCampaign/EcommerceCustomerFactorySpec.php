@@ -7,13 +7,14 @@ namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign;
 use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceCustomerFactory;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceCustomerFactoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceCustomer;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceCustomerInterface;
 
 class EcommerceCustomerFactorySpec extends ObjectBehavior
 {
     public function let(): void
     {
-        $this->beConstructedWith();
+        $this->beConstructedWith(EcommerceCustomer::class);
     }
 
     public function it_is_initializable(): void

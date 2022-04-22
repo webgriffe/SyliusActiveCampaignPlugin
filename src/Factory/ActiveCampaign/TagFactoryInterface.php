@@ -8,5 +8,5 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\TagInterface;
 
 interface TagFactoryInterface
 {
-    public function createNew(string $tag, string $tagType = TagInterface::CONTACT_TAG_TYPE): TagInterface;
+    public function createNew(string $tagName, string $tagType = TagInterface::CONTACT_TAG_TYPE): TagInterface;
 }

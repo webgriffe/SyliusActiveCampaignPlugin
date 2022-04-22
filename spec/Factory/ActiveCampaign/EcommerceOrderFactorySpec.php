@@ -10,13 +10,14 @@ use Webgriffe\SyliusActiveCampaignPlugin\Exception\EcommerceOrderAbandonedDateRe
 use Webgriffe\SyliusActiveCampaignPlugin\Exception\EcommerceOrderExternalIdNotValidException;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderFactory;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderFactoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrder;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderInterface;
 
 class EcommerceOrderFactorySpec extends ObjectBehavior
 {
     public function let(): void
     {
-        $this->beConstructedWith();
+        $this->beConstructedWith(EcommerceOrder::class);
     }
 
     public function it_is_initializable(): void
