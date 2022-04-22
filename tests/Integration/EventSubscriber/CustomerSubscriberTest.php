@@ -11,7 +11,9 @@ use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\InMemoryTransport;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactListsSubscriber;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactRemove;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactTagsAdder;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerRemove;
@@ -49,7 +51,7 @@ final class CustomerSubscriberTest extends AbstractEventDispatcherTest
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
-        $this->assertCount(3, $messages);
+        $this->assertCount(5, $messages);
         $message = $messages[0];
         $this->assertInstanceOf(ContactCreate::class, $message->getMessage());
         $this->assertEquals($customerJim->getId(), $message->getMessage()->getCustomerId());
@@ -61,6 +63,12 @@ final class CustomerSubscriberTest extends AbstractEventDispatcherTest
         $this->assertInstanceOf(EcommerceCustomerCreate::class, $message->getMessage());
         $this->assertEquals($customerJim->getId(), $message->getMessage()->getCustomerId());
         $this->assertEquals($digitalChannel->getId(), $message->getMessage()->getChannelId());
+        $message = $messages[3];
+        $this->assertInstanceOf(ContactTagsAdder::class, $message->getMessage());
+        $this->assertEquals($customerJim->getId(), $message->getMessage()->getCustomerId());
+        $message = $messages[4];
+        $this->assertInstanceOf(ContactListsSubscriber::class, $message->getMessage());
+        $this->assertEquals($customerJim->getId(), $message->getMessage()->getCustomerId());
     }
 
     public function test_that_it_updates_existing_contact_and_existing_ecommerce_customer_on_active_campaign(): void
@@ -74,7 +82,7 @@ final class CustomerSubscriberTest extends AbstractEventDispatcherTest
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
-        $this->assertCount(3, $messages);
+        $this->assertCount(5, $messages);
         $message = $messages[0];
         $this->assertInstanceOf(ContactUpdate::class, $message->getMessage());
         $this->assertEquals($customerBob->getId(), $message->getMessage()->getCustomerId());
@@ -88,6 +96,12 @@ final class CustomerSubscriberTest extends AbstractEventDispatcherTest
         $this->assertInstanceOf(EcommerceCustomerCreate::class, $message->getMessage());
         $this->assertEquals($customerBob->getId(), $message->getMessage()->getCustomerId());
         $this->assertEquals($digitalChannel->getId(), $message->getMessage()->getChannelId());
+        $message = $messages[3];
+        $this->assertInstanceOf(ContactTagsAdder::class, $message->getMessage());
+        $this->assertEquals($customerBob->getId(), $message->getMessage()->getCustomerId());
+        $message = $messages[4];
+        $this->assertInstanceOf(ContactListsSubscriber::class, $message->getMessage());
+        $this->assertEquals($customerBob->getId(), $message->getMessage()->getCustomerId());
     }
 
     public function test_that_it_removes_contact_and_ecommerce_customer_on_active_campaign(): void
