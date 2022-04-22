@@ -53,6 +53,24 @@ The get method has been added to the `ActiveCampaignResourceClientInterface`. A 
 ###### Added
 - [BC] Method get() was added to interface Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface
 
+#### Use FQCN injected for factory services (#47)
+
+##### TL;DR
+The FQCN is now injected in all factories.
+
+##### BC Breaks
+
+###### Changed
+- [BC] Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ConnectionFactory#__construct() increased from 0 to 1
+- [BC] Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ContactFactory#__construct() increased from 0 to 1
+- [BC] Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ContactListFactory#__construct() increased from 0 to 1
+- [BC] Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ContactTagFactory#__construct() increased from 0 to 1
+- [BC] Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceCustomerFactory#__construct() increased from 0 to 1
+- [BC] Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderDiscountFactory#__construct() increased from 0 to 1
+- [BC] Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderFactory#__construct() increased from 0 to 1
+- [BC] Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderProductFactory#__construct() increased from 0 to 1
+- [BC] Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\TagFactory#__construct() increased from 0 to 1
+
 ## UPGRADE FROM `v0.1.0` TO `v0.2.0`
 
 ### Codebase

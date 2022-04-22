@@ -7,13 +7,14 @@ namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign;
 use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ContactFactory;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ContactFactoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\Contact;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 
 class ContactFactorySpec extends ObjectBehavior
 {
     public function let(): void
     {
-        $this->beConstructedWith();
+        $this->beConstructedWith(Contact::class);
     }
 
     public function it_is_initializable(): void

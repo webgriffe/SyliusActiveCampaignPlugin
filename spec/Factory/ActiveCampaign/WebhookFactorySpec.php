@@ -13,7 +13,7 @@ class WebhookFactorySpec extends ObjectBehavior
 {
     public function let(): void
     {
-        $this->beConstructedWith();
+        $this->beConstructedWith(Webhook::class);
     }
 
     public function it_is_initializable(): void

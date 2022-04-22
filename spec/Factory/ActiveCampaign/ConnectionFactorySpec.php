@@ -7,13 +7,14 @@ namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ConnectionFactory;
 use PhpSpec\ObjectBehavior;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ConnectionFactoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\Connection;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ConnectionInterface;
 
 class ConnectionFactorySpec extends ObjectBehavior
 {
     public function let(): void
     {
-        $this->beConstructedWith();
+        $this->beConstructedWith(Connection::class);
     }
 
     public function it_is_initializable(): void

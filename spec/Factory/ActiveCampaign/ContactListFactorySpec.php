@@ -13,7 +13,7 @@ class ContactListFactorySpec extends ObjectBehavior
 {
     public function let(): void
     {
-        $this->beConstructedWith();
+        $this->beConstructedWith(ContactList::class);
     }
 
     public function it_is_initializable(): void

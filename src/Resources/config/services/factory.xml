@@ -3,33 +3,53 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <service id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.contact"
-                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ContactFactory"/>
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ContactFactory">
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\Contact</argument>
+        </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.connection"
-                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ConnectionFactory"/>
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ConnectionFactory">
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\Connection</argument>
+        </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.ecommerce_customer"
-                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceCustomerFactory"/>
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceCustomerFactory">
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceCustomer</argument>
+        </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.ecommerce_order"
-                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderFactory"/>
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderFactory">
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrder</argument>
+        </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.ecommerce_order_product"
-                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderProductFactory"/>
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderProductFactory">
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderProduct</argument>
+        </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.ecommerce_order_discount"
-                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderDiscountFactory"/>
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderDiscountFactory">
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderDiscount</argument>
+        </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.tag"
-                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\TagFactory"/>
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\TagFactory">
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\Tag</argument>
+        </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.contact_tag"
-                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ContactTagFactory"/>
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ContactTagFactory">
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactTag</argument>
+        </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.contact_list"
-                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ContactListFactory"/>
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ContactListFactory">
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactList</argument>
+        </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.factory.active_campaign.webhook"
-                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\WebhookFactory"/>
+                 class="Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\WebhookFactory">
+            <argument type="string">Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\Webhook</argument>
+        </service>
     </services>
 </container>
