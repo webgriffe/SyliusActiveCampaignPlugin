@@ -43,6 +43,16 @@ The `webgriffe.sylius_active_campaign_plugin.factory.active_campaign.connection`
 ###### Changed
 - [BC] The number of required arguments for Webgriffe\SyliusActiveCampaignPlugin\Mapper\ConnectionMapper#__construct() increased from 0 to 1
 
+#### Update lists status subscription from ActiveCampaign (#44)
+
+##### TL;DR
+The get method has been added to the `ActiveCampaignResourceClientInterface`. A new app route has been added for a webhook.
+
+##### BC Breaks
+
+###### Added
+- [BC] Method get() was added to interface Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface
+
 ## UPGRADE FROM `v0.1.0` TO `v0.2.0`
 
 ### Codebase
