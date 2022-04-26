@@ -26,7 +26,7 @@ final class UpdateContactListsSubscriptionCommandTest extends AbstractCommandTes
         ], [], [], PurgeMode::createDeleteMode());
     }
 
-    public function test_that_it_enqueues_contact_lists_subscription(): void
+    public function test_that_it_updates_contact_lists_subscription(): void
     {
         $customer = $this->customerRepository->findOneBy(['email' => 'jim@email.com']);
         self::assertNotNull($customer->getId());
@@ -46,7 +46,7 @@ final class UpdateContactListsSubscriptionCommandTest extends AbstractCommandTes
         $this->assertEquals($customer->getId(), $message->getMessage()->getCustomerId());
     }
 
-    public function test_that_it_enqueues_contact_lists_subscription_interactively(): void
+    public function test_that_it_updates_contact_lists_subscription_interactively(): void
     {
         $customer = $this->customerRepository->findOneBy(['email' => 'jim@email.com']);
         self::assertNotNull($customer->getId());
@@ -65,7 +65,7 @@ final class UpdateContactListsSubscriptionCommandTest extends AbstractCommandTes
         $this->assertEquals($customer->getId(), $message->getMessage()->getCustomerId());
     }
 
-    public function test_that_it_enqueues_all_contacts_lists_subscription(): void
+    public function test_that_it_updates_all_contacts_lists_subscription(): void
     {
         $commandTester = $this->executeCommand([
             '--all' => true,
