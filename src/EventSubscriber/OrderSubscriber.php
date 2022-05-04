@@ -68,6 +68,10 @@ final class OrderSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $this->messageBus->dispatch(new EcommerceOrderRemove($activeCampaignId));
+        try {
+            $this->messageBus->dispatch(new EcommerceOrderRemove($activeCampaignId));
+        } catch (Throwable $throwable) {
+            $this->logger->error($throwable->getMessage(), $throwable->getTrace());
+        }
     }
 }

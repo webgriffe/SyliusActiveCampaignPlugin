@@ -86,7 +86,11 @@ final class CustomerSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $this->messageBus->dispatch(new ContactTagsAdder($customerId));
+        try {
+            $this->messageBus->dispatch(new ContactTagsAdder($customerId));
+        } catch (Throwable $throwable) {
+            $this->logger->error($throwable->getMessage(), $throwable->getTrace());
+        }
     }
 
     public function subscribeContactToLists(GenericEvent $event): void
@@ -101,7 +105,11 @@ final class CustomerSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $this->messageBus->dispatch(new ContactListsSubscriber($customerId));
+        try {
+            $this->messageBus->dispatch(new ContactListsSubscriber($customerId));
+        } catch (Throwable $throwable) {
+            $this->logger->error($throwable->getMessage(), $throwable->getTrace());
+        }
     }
 
     public function removeContact(GenericEvent $event): void
@@ -115,7 +123,11 @@ final class CustomerSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $this->messageBus->dispatch(new ContactRemove($activeCampaignId));
+        try {
+            $this->messageBus->dispatch(new ContactRemove($activeCampaignId));
+        } catch (Throwable $throwable) {
+            $this->logger->error($throwable->getMessage(), $throwable->getTrace());
+        }
     }
 
     public function removeEcommerceCustomer(GenericEvent $event): void
@@ -129,7 +141,11 @@ final class CustomerSubscriber implements EventSubscriberInterface
             return;
         }
         foreach ($customer->getChannelCustomers() as $channelCustomer) {
-            $this->messageBus->dispatch(new EcommerceCustomerRemove($channelCustomer->getActiveCampaignId()));
+            try {
+                $this->messageBus->dispatch(new EcommerceCustomerRemove($channelCustomer->getActiveCampaignId()));
+            } catch (Throwable $throwable) {
+                $this->logger->error($throwable->getMessage(), $throwable->getTrace());
+            }
         }
     }
 }

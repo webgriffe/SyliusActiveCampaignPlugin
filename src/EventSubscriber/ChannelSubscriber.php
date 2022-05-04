@@ -57,6 +57,10 @@ final class ChannelSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $this->messageBus->dispatch(new ConnectionRemove($activeCampaignId));
+        try {
+            $this->messageBus->dispatch(new ConnectionRemove($activeCampaignId));
+        } catch (Throwable $throwable) {
+            $this->logger->error($throwable->getMessage(), $throwable->getTrace());
+        }
     }
 }
