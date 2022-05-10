@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Webgriffe\SyliusActiveCampaignPlugin\Command;
 
 use InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
@@ -15,6 +16,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Stopwatch\Stopwatch;
+use Throwable;
 use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\ConnectionEnqueuerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface;
@@ -36,6 +38,7 @@ final class EnqueueConnectionCommand extends Command
     public function __construct(
         private ActiveCampaignResourceRepositoryInterface $channelRepository,
         private ConnectionEnqueuerInterface $connectionEnqueuer,
+        private LoggerInterface $logger,
         private ?string $name = null
     ) {
         parent::__construct($this->name);
@@ -120,7 +123,15 @@ final class EnqueueConnectionCommand extends Command
             if (!$channel instanceof ActiveCampaignAwareInterface) {
                 continue;
             }
-            $this->connectionEnqueuer->enqueue($channel);
+
+            try {
+                $this->connectionEnqueuer->enqueue($channel);
+            } catch (Throwable $throwable) {
+                $this->logger->error($throwable->getMessage(), $throwable->getTrace());
+
+                continue;
+            }
+
             $progressBar->setMessage(sprintf('Channel "%s" enqueued!', (string) $channel->getId()), 'status');
             $progressBar->advance();
         }

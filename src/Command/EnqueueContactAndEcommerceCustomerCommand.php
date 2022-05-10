@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Webgriffe\SyliusActiveCampaignPlugin\Command;
 
 use InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
@@ -15,6 +16,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Stopwatch\Stopwatch;
+use Throwable;
 use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\ContactEnqueuerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\EcommerceCustomerEnqueuerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
@@ -41,6 +43,7 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
         private CustomerChannelsResolverInterface $customerChannelsResolver,
         private ContactEnqueuerInterface $contactEnqueuer,
         private EcommerceCustomerEnqueuerInterface $ecommerceCustomerEnqueuer,
+        private LoggerInterface $logger,
         private ?string $name = null
     ) {
         parent::__construct($this->name);
@@ -125,14 +128,28 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
             if (!$customer instanceof CustomerActiveCampaignAwareInterface) {
                 continue;
             }
-            $this->contactEnqueuer->enqueue($customer);
+
+            try {
+                $this->contactEnqueuer->enqueue($customer);
+            } catch (Throwable $throwable) {
+                $this->logger->error($throwable->getMessage(), $throwable->getTrace());
+
+                continue;
+            }
 
             $channels = $this->customerChannelsResolver->resolve($customer);
             foreach ($channels as $channel) {
                 if (!$channel instanceof ActiveCampaignAwareInterface) {
                     continue;
                 }
-                $this->ecommerceCustomerEnqueuer->enqueue($customer, $channel);
+
+                try {
+                    $this->ecommerceCustomerEnqueuer->enqueue($customer, $channel);
+                } catch (Throwable $throwable) {
+                    $this->logger->error($throwable->getMessage(), $throwable->getTrace());
+
+                    continue;
+                }
             }
 
             $progressBar->setMessage(sprintf('Customer "%s" enqueued!', (string) $customer->getId()), 'status');
