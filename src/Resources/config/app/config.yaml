@@ -30,3 +30,9 @@ sylius_ui:
         sylius.admin.channel.create.form:
             blocks:
                 active_campaign_form: '@WebgriffeSyliusActiveCampaignPlugin/Admin/Channel/_form.html.twig'
+        sylius.shop.layout.javascripts:
+            blocks:
+                active_campaign_tracking: '@WebgriffeSyliusActiveCampaignPlugin/Shop/_active_campaign_tracking.html.twig'
+twig:
+    globals:
+        webgriffe_active_campaign_tracking_account_id: '%env(default::WEBGRIFFE_SYLIUS_ACTIVE_CAMPAIGN_ACCOUNT_ID)%'
