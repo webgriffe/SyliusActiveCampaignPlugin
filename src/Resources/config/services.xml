@@ -17,6 +17,7 @@
         <import resource="services/middleware.xml"/>
         <import resource="services/resolver.xml"/>
         <import resource="services/serializer.xml"/>
+        <import resource="services/twig.xml"/>
         <import resource="services/updater.xml"/>
     </imports>
 </container>
