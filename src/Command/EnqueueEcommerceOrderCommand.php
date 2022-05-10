@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Webgriffe\SyliusActiveCampaignPlugin\Command;
 
 use InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
@@ -15,6 +16,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Stopwatch\Stopwatch;
+use Throwable;
 use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\EcommerceOrderEnqueuerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignResourceRepositoryInterface;
@@ -36,6 +38,7 @@ final class EnqueueEcommerceOrderCommand extends Command
     public function __construct(
         private ActiveCampaignResourceRepositoryInterface $orderRepository,
         private EcommerceOrderEnqueuerInterface $ecommerceOrderEnqueuer,
+        private LoggerInterface $logger,
         private ?string $name = null
     ) {
         parent::__construct($this->name);
@@ -121,7 +124,14 @@ final class EnqueueEcommerceOrderCommand extends Command
             if (!$order instanceof ActiveCampaignAwareInterface) {
                 continue;
             }
-            $this->ecommerceOrderEnqueuer->enqueue($order, false);
+
+            try {
+                $this->ecommerceOrderEnqueuer->enqueue($order, false);
+            } catch (Throwable $throwable) {
+                $this->logger->error($throwable->getMessage(), $throwable->getTrace());
+
+                continue;
+            }
 
             $progressBar->setMessage(sprintf('Order "%s" enqueued!', (string) $order->getId()), 'status');
             $progressBar->advance();

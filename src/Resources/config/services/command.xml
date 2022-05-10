@@ -19,6 +19,7 @@
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.resolver.enqueuable_channels"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.enqueuer.contact"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.enqueuer.ecommerce_customer"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.logger"/>
             <argument>%webgriffe_sylius_active_campaign.command.enqueue_contact_and_ecommerce_customer.name%</argument>
             <tag name="console.command"/>
         </service>
@@ -27,6 +28,7 @@
                  class="Webgriffe\SyliusActiveCampaignPlugin\Command\EnqueueConnectionCommand">
             <argument type="service" id="sylius.repository.channel"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.enqueuer.connection"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.logger"/>
             <argument>%webgriffe_sylius_active_campaign.command.enqueue_connection.name%</argument>
             <tag name="console.command"/>
         </service>
@@ -35,6 +37,7 @@
                  class="Webgriffe\SyliusActiveCampaignPlugin\Command\EnqueueEcommerceOrderCommand">
             <argument type="service" id="sylius.repository.order"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.enqueuer.ecommerce_order"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.logger"/>
             <argument>%webgriffe_sylius_active_campaign.command.enqueue_ecommerce_order.name%</argument>
             <tag name="console.command"/>
         </service>
@@ -43,6 +46,7 @@
                  class="Webgriffe\SyliusActiveCampaignPlugin\Command\EnqueueEcommerceAbandonedCartCommand">
             <argument type="service" id="sylius.repository.order"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.enqueuer.ecommerce_order"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.logger"/>
             <argument>%webgriffe_sylius_active_campaign.cart_becomes_abandoned_period%</argument>
             <argument>%webgriffe_sylius_active_campaign.command.enqueue_ecommerce_abandoned_cart.name%</argument>
             <tag name="console.command"/>
@@ -52,6 +56,7 @@
                  class="Webgriffe\SyliusActiveCampaignPlugin\Command\EnqueueWebhookCommand">
             <argument type="service" id="sylius.repository.channel"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.enqueuer.webhook"/>
+            <argument type="service" id="webgriffe.sylius_active_campaign_plugin.logger"/>
             <argument>%webgriffe_sylius_active_campaign.command.enqueue_webhook.name%</argument>
             <tag name="console.command"/>
         </service>

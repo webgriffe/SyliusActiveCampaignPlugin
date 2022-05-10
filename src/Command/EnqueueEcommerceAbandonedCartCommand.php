@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Webgriffe\SyliusActiveCampaignPlugin\Command;
 
 use DateTime;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -12,6 +13,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Stopwatch\Stopwatch;
+use Throwable;
 use Webgriffe\SyliusActiveCampaignPlugin\Enqueuer\EcommerceOrderEnqueuerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Repository\ActiveCampaignOrderRepositoryInterface;
@@ -29,6 +31,7 @@ final class EnqueueEcommerceAbandonedCartCommand extends Command
     public function __construct(
         private ActiveCampaignOrderRepositoryInterface $orderRepository,
         private EcommerceOrderEnqueuerInterface $ecommerceOrderEnqueuer,
+        private LoggerInterface $logger,
         private string $cartBecomesAbandonedPeriod,
         private ?string $name = null
     ) {
@@ -72,7 +75,13 @@ final class EnqueueEcommerceAbandonedCartCommand extends Command
             }
             Assert::null($abandonedCart->getActiveCampaignId());
 
-            $this->ecommerceOrderEnqueuer->enqueue($abandonedCart, true);
+            try {
+                $this->ecommerceOrderEnqueuer->enqueue($abandonedCart, true);
+            } catch (Throwable $throwable) {
+                $this->logger->error($throwable->getMessage(), $throwable->getTrace());
+
+                continue;
+            }
 
             $progressBar->setMessage(sprintf('Abandoned cart "%s" enqueued!', (string) $abandonedCart->getId()), 'status');
             $progressBar->advance();
