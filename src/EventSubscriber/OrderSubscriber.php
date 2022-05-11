@@ -46,7 +46,7 @@ final class OrderSubscriber implements EventSubscriberInterface
     private function enqueueOrder(GenericEvent $event, bool $isInRealTime): void
     {
         $order = $event->getSubject();
-        if (!$order instanceof OrderInterface || !$order instanceof ActiveCampaignAwareInterface) {
+        if (!$order instanceof OrderInterface || !$order instanceof ActiveCampaignAwareInterface || $order->getCustomer() === null) {
             return;
         }
 
