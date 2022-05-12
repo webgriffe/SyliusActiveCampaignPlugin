@@ -117,7 +117,7 @@ class EcommerceOrderDiscountMapperSpec extends ObjectBehavior
         $otherPromotion->getCode()->willReturn('OTHER');
         $otherPromotion->getName()->willReturn('Other');
         $ecommerceOrderDiscount->setName('Other')->shouldBeCalledOnce();
-        $ecommerceOrderDiscount->setDiscountAmount(null)->shouldNotBeCalled();
+        $ecommerceOrderDiscount->setDiscountAmount(0)->shouldNotBeCalled();
         $ecommerceOrderDiscount->setType(EcommerceOrderDiscountInterface::ORDER_DISCOUNT_TYPE)->shouldNotBeCalled();
         $ecommerceOrderDiscount->setType(EcommerceOrderDiscountInterface::SHIPPING_DISCOUNT_TYPE)->shouldNotBeCalled();
 

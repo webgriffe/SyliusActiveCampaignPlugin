@@ -9,7 +9,7 @@ final class EcommerceOrderDiscount implements EcommerceOrderDiscountInterface
     public function __construct(
         private ?string $name = null,
         private ?string $type = self::ORDER_DISCOUNT_TYPE,
-        private ?int $discountAmount = null,
+        private int $discountAmount = 0,
     ) {
     }
 
@@ -33,12 +33,12 @@ final class EcommerceOrderDiscount implements EcommerceOrderDiscountInterface
         $this->type = $type;
     }
 
-    public function getDiscountAmount(): ?int
+    public function getDiscountAmount(): int
     {
         return $this->discountAmount;
     }
 
-    public function setDiscountAmount(?int $discountAmount): void
+    public function setDiscountAmount(int $discountAmount): void
     {
         $this->discountAmount = $discountAmount;
     }
