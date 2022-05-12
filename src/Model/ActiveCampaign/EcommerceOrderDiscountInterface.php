@@ -18,7 +18,7 @@ interface EcommerceOrderDiscountInterface
 
     public function setType(?string $type): void;
 
-    public function getDiscountAmount(): ?int;
+    public function getDiscountAmount(): int;
 
-    public function setDiscountAmount(?int $discountAmount): void;
+    public function setDiscountAmount(int $discountAmount): void;
 }
