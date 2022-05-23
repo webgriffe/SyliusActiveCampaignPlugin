@@ -6,17 +6,12 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign;
 
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderDiscountInterface;
 
-final class EcommerceOrderDiscountFactory implements EcommerceOrderDiscountFactoryInterface
+final class EcommerceOrderDiscountFactory extends AbstractFactory implements EcommerceOrderDiscountFactoryInterface
 {
-    public function __construct(
-        private string $ecommerceOrderDiscountFQCN
-    ) {
-    }
-
     public function createNew(): EcommerceOrderDiscountInterface
     {
         /** @var EcommerceOrderDiscountInterface $ecommerceOrderDiscount */
-        $ecommerceOrderDiscount = new $this->ecommerceOrderDiscountFQCN();
+        $ecommerceOrderDiscount = new $this->targetClassFQCN();
 
         return $ecommerceOrderDiscount;
     }

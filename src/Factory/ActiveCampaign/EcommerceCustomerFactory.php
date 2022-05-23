@@ -6,17 +6,12 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign;
 
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceCustomerInterface;
 
-final class EcommerceCustomerFactory implements EcommerceCustomerFactoryInterface
+final class EcommerceCustomerFactory extends AbstractFactory implements EcommerceCustomerFactoryInterface
 {
-    public function __construct(
-        private string $ecommerceCustomerFQCN
-    ) {
-    }
-
     public function createNew(string $email, string $connectionId, string $externalId): EcommerceCustomerInterface
     {
         /** @var EcommerceCustomerInterface $ecommerceCustomer */
-        $ecommerceCustomer = new $this->ecommerceCustomerFQCN($email, $connectionId, $externalId);
+        $ecommerceCustomer = new $this->targetClassFQCN($email, $connectionId, $externalId);
 
         return $ecommerceCustomer;
     }

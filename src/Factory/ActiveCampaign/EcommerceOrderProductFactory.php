@@ -6,17 +6,12 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign;
 
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderProductInterface;
 
-final class EcommerceOrderProductFactory implements EcommerceOrderProductFactoryInterface
+final class EcommerceOrderProductFactory extends AbstractFactory implements EcommerceOrderProductFactoryInterface
 {
-    public function __construct(
-        private string $ecommerceOrderFQCN
-    ) {
-    }
-
     public function createNew(string $name, int $price, int $quantity, string $externalId): EcommerceOrderProductInterface
     {
         /** @var EcommerceOrderProductInterface $ecommerceOrderProduct */
-        $ecommerceOrderProduct = new $this->ecommerceOrderFQCN(
+        $ecommerceOrderProduct = new $this->targetClassFQCN(
             $name,
             $price,
             $quantity,

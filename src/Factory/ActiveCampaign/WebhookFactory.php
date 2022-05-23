@@ -6,17 +6,12 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign;
 
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\WebhookInterface;
 
-final class WebhookFactory implements WebhookFactoryInterface
+final class WebhookFactory extends AbstractFactory implements WebhookFactoryInterface
 {
-    public function __construct(
-        private string $webhookFQCN
-    ) {
-    }
-
     public function createNewFromNameAndUrl(string $name, string $url): WebhookInterface
     {
         /** @var WebhookInterface $webhook */
-        $webhook = new $this->webhookFQCN(
+        $webhook = new $this->targetClassFQCN(
             $name,
             $url
         );

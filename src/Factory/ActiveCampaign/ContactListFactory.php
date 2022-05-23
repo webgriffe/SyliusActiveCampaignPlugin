@@ -6,17 +6,12 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign;
 
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactListInterface;
 
-final class ContactListFactory implements ContactListFactoryInterface
+final class ContactListFactory extends AbstractFactory implements ContactListFactoryInterface
 {
-    public function __construct(
-        private string $contactListFQCN
-    ) {
-    }
-
     public function createNew(int $listId, int $contactId, int $status): ContactListInterface
     {
         /** @var ContactListInterface $contactList */
-        $contactList = new $this->contactListFQCN($listId, $contactId, $status);
+        $contactList = new $this->targetClassFQCN($listId, $contactId, $status);
 
         return $contactList;
     }
