@@ -200,6 +200,24 @@ Before creating the resource on ActiveCampaign, the EcommerceOrderEnqueuer queri
 with the same `email` and `externalid` (the order's id)/`externalcheckoutid` (the cart's id) based on the state of the
 order (cart or different).
 
+### Customer tracking
+
+As stated in
+the [ActiveCampaign documentation](https://help.activecampaign.com/hc/en-us/articles/221542267-An-overview-of-Site-Tracking)
+, the tool provide an easy way to add website contact tracking to finalize your marketing automations. To add this
+feature on your store, you should simply add the account id as an environment variable to you app:
+
+```dotenv
+WEBGRIFFE_SYLIUS_ACTIVE_CAMPAIGN_ACCOUNT_ID=account-id-sample
+```
+
+Automatically the script will be added to all the website pages. Take note that to works the script needs the email of
+the contact which is using the website, to retrieve this email the plugin use the CustomerContext Sylius's service. This
+one provide always the email if the user is logged in, otherwise it will provide the email only after a guest login for
+example.
+
+### Start with Sylius ActiveCampaign plugin
+
 Here are some points/actions to do or to take inspiration from to start using the plugin:
 
 - [First setup](03_A-First_setup.md)
