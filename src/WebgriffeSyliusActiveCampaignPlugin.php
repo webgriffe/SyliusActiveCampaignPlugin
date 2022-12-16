@@ -19,6 +19,11 @@ final class WebgriffeSyliusActiveCampaignPlugin extends AbstractResourceBundle
         ];
     }
 
+    public function getPath(): string
+    {
+        return __DIR__;
+    }
+
     protected function getModelNamespace(): string
     {
         return 'Webgriffe\SyliusActiveCampaignPlugin\Model';
