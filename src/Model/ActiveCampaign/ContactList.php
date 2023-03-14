@@ -10,7 +10,7 @@ final class ContactList implements ContactListInterface
         private int $listId,
         private int $contactId,
         private int $status,
-        private ?int $sourceId = null
+        private ?int $sourceId = null,
     ) {
     }
 

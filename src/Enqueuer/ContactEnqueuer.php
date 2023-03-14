@@ -17,7 +17,7 @@ final class ContactEnqueuer implements ContactEnqueuerInterface
     public function __construct(
         private MessageBusInterface $messageBus,
         private ActiveCampaignResourceClientInterface $activeCampaignContactClient,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
     ) {
     }
 

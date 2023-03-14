@@ -9,7 +9,7 @@ final class EcommerceOrderCreate
     /** @param string|int $orderId */
     public function __construct(
         private mixed $orderId,
-        private bool $isInRealTime = true
+        private bool $isInRealTime = true,
     ) {
     }
 

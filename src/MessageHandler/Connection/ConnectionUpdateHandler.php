@@ -17,7 +17,7 @@ final class ConnectionUpdateHandler
     public function __construct(
         private ConnectionMapperInterface $connectionMapper,
         private ActiveCampaignResourceClientInterface $activeCampaignConnectionClient,
-        private ChannelRepositoryInterface $channelRepository
+        private ChannelRepositoryInterface $channelRepository,
     ) {
     }
 

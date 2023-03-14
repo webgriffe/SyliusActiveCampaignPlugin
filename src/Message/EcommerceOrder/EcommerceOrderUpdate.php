@@ -10,7 +10,7 @@ final class EcommerceOrderUpdate
     public function __construct(
         private mixed $orderId,
         private int $activeCampaignId,
-        private bool $isInRealTime = true
+        private bool $isInRealTime = true,
     ) {
     }
 

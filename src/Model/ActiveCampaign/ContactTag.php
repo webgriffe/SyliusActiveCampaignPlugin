@@ -8,7 +8,7 @@ final class ContactTag implements ContactTagInterface
 {
     public function __construct(
         private int $contactId,
-        private int $tagId
+        private int $tagId,
     ) {
     }
 

@@ -26,8 +26,8 @@ final class ActiveCampaignConnectionClientStub implements ActiveCampaignResource
     {
         return new CreateConnectionResponse(
             new ConnectionResponse(
-                self::$activeCampaignResourceId
-            )
+                self::$activeCampaignResourceId,
+            ),
         );
     }
 

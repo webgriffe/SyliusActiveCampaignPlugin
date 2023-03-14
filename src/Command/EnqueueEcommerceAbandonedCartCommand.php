@@ -33,7 +33,7 @@ final class EnqueueEcommerceAbandonedCartCommand extends Command
         private EcommerceOrderEnqueuerInterface $ecommerceOrderEnqueuer,
         private LoggerInterface $logger,
         private string $cartBecomesAbandonedPeriod,
-        private ?string $name = null
+        private ?string $name = null,
     ) {
         parent::__construct($this->name);
     }
@@ -111,7 +111,7 @@ final class EnqueueEcommerceAbandonedCartCommand extends Command
     {
         $progressBar = new ProgressBar($output, count($abandonedCarts));
         $progressBar->setFormat(
-            "<fg=white;bg=black> %status:-45s%</>\n%current%/%max% [%bar%] %percent:3s%%\n🏁  %estimated:-21s% %memory:21s%"
+            "<fg=white;bg=black> %status:-45s%</>\n%current%/%max% [%bar%] %percent:3s%%\n🏁  %estimated:-21s% %memory:21s%",
         );
         $progressBar->setBarCharacter('<fg=red>⚬</>');
         $progressBar->setEmptyBarCharacter('<fg=blue>⚬</>');

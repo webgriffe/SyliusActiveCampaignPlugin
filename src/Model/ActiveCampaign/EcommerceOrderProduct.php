@@ -15,7 +15,7 @@ final class EcommerceOrderProduct implements EcommerceOrderProductInterface
         private ?string $sku = null,
         private ?string $description = null,
         private ?string $imageUrl = null,
-        private ?string $productUrl = null
+        private ?string $productUrl = null,
     ) {
     }
 

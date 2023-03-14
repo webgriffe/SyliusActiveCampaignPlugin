@@ -10,7 +10,7 @@ final class ListContactsResponse implements ListResourcesResponseInterface
 {
     /** @param ContactResponse[] $contacts */
     public function __construct(
-        private array $contacts
+        private array $contacts,
     ) {
     }
 

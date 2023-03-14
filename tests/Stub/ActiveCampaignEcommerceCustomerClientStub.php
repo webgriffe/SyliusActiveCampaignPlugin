@@ -27,8 +27,8 @@ final class ActiveCampaignEcommerceCustomerClientStub implements ActiveCampaignR
     {
         return new CreateEcommerceCustomerResponse(
             new EcommerceCustomerResponse(
-                self::$activeCampaignResourceId
-            )
+                self::$activeCampaignResourceId,
+            ),
         );
     }
 
@@ -56,8 +56,8 @@ final class ActiveCampaignEcommerceCustomerClientStub implements ActiveCampaignR
     {
         return new UpdateEcommerceCustomerResponse(
             new EcommerceCustomerResponse(
-                $activeCampaignResourceId
-            )
+                $activeCampaignResourceId,
+            ),
         );
     }
 

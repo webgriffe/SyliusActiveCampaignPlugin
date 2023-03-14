@@ -17,7 +17,7 @@ final class ContactCreateHandler
     public function __construct(
         private ContactMapperInterface $contactMapper,
         private ActiveCampaignResourceClientInterface $activeCampaignContactClient,
-        private CustomerRepositoryInterface $customerRepository
+        private CustomerRepositoryInterface $customerRepository,
     ) {
     }
 

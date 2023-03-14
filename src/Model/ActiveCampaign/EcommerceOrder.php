@@ -33,7 +33,7 @@ final class EcommerceOrder implements EcommerceOrderInterface
         private ?DateTimeInterface $externalUpdatedDate = null,
         private ?string $shippingMethod = null,
         private ?string $orderNumber = null,
-        private array $orderDiscounts = []
+        private array $orderDiscounts = [],
     ) {
         if ($this->externalCheckoutId === null && $this->externalId === null) {
             throw new EcommerceOrderExternalIdNotValidException('One property between "externalId" and "externalCheckoutId" must be valued.');

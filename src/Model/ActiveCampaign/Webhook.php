@@ -15,7 +15,7 @@ final class Webhook implements WebhookInterface
         private string $url,
         private array $events = [],
         private array $sources = [],
-        private ?int $listId = null
+        private ?int $listId = null,
     ) {
     }
 

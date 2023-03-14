@@ -26,8 +26,8 @@ final class ActiveCampaignWebhookClientStub implements ActiveCampaignResourceCli
     {
         return new CreateWebhookResponse(
             new WebhookResponse(
-                self::$activeCampaignResourceId
-            )
+                self::$activeCampaignResourceId,
+            ),
         );
     }
 

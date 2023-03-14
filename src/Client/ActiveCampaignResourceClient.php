@@ -30,7 +30,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
         private ?string $createResourceResponseType = null,
         private ?string $retrieveResourceResponseType = null,
         private ?string $listResourcesResponseType = null,
-        private ?string $updateResourceResponseType = null
+        private ?string $updateResourceResponseType = null,
     ) {
     }
 
@@ -41,14 +41,14 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
         }
         $serializedResource = $this->serializer->serialize(
             [$this->resourceName => $resource],
-            'json'
+            'json',
         );
 
         $response = $this->httpClient->send(new Request(
             'POST',
             self::API_ENDPOINT_VERSIONED . '/' . $this->resourceName . 's',
             [],
-            $serializedResource
+            $serializedResource,
         ));
         if (($statusCode = $response->getStatusCode()) !== 201) {
             switch ($statusCode) {
@@ -60,6 +60,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
                 case 422:
                     /** @var array{errors: array{title: string, detail: string, code: string, source: array{pointer: string}}} $errorResponse */
                     $errorResponse = json_decode($response->getBody()->getContents(), true, 512, \JSON_THROW_ON_ERROR);
+                    /** @var string[] $titles */
                     $titles = array_column($errorResponse['errors'], 'title');
 
                     throw new UnprocessableEntityHttpException(implode('; ', $titles));
@@ -73,7 +74,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
             $response->getBody()->getContents(),
             $this->createResourceResponseType,
             'json',
-            ['resource' => $this->resourceName]
+            ['resource' => $this->resourceName],
         );
 
         return $createResourceResponse;
@@ -86,7 +87,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
         }
         $response = $this->httpClient->send(new Request(
             'GET',
-            self::API_ENDPOINT_VERSIONED . '/' . $this->resourceName . 's' . '/' . $resourceId
+            self::API_ENDPOINT_VERSIONED . '/' . $this->resourceName . 's' . '/' . $resourceId,
         ));
         if (($statusCode = $response->getStatusCode()) !== 200) {
             if ($statusCode === 404) {
@@ -104,7 +105,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
             $response->getBody()->getContents(),
             $this->retrieveResourceResponseType,
             'json',
-            ['resource' => $this->resourceName]
+            ['resource' => $this->resourceName],
         );
 
         return $retrieveResourceResponse;
@@ -137,7 +138,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
                 'resource' => $this->resourceName,
                 'responseType' => $this->resourceResponseType,
                 'type' => ListResourcesResponseInterface::class,
-            ]
+            ],
         );
 
         return $listResourcesResponse;
@@ -150,14 +151,14 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
         }
         $serializedResource = $this->serializer->serialize(
             [$this->resourceName => $resource],
-            'json'
+            'json',
         );
 
         $response = $this->httpClient->send(new Request(
             'PUT',
             self::API_ENDPOINT_VERSIONED . '/' . $this->resourceName . 's' . '/' . $activeCampaignResourceId,
             [],
-            $serializedResource
+            $serializedResource,
         ));
         if (($statusCode = $response->getStatusCode()) !== 200) {
             if ($statusCode === 404) {
@@ -175,7 +176,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
             $response->getBody()->getContents(),
             $this->updateResourceResponseType,
             'json',
-            ['resource' => $this->resourceName]
+            ['resource' => $this->resourceName],
         );
 
         return $updateResourceResponse;
@@ -185,7 +186,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
     {
         $response = $this->httpClient->send(new Request(
             'DELETE',
-            self::API_ENDPOINT_VERSIONED . '/' . $this->resourceName . 's' . '/' . $activeCampaignResourceId
+            self::API_ENDPOINT_VERSIONED . '/' . $this->resourceName . 's' . '/' . $activeCampaignResourceId,
         ));
         if (($statusCode = $response->getStatusCode()) === 200) {
             return;

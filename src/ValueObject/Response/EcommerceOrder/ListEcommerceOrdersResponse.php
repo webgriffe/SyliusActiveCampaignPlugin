@@ -10,7 +10,7 @@ final class ListEcommerceOrdersResponse implements ListResourcesResponseInterfac
 {
     /** @param EcommerceOrderResponse[] $ecommerceOrders */
     public function __construct(
-        private array $ecommerceOrders
+        private array $ecommerceOrders,
     ) {
     }
 

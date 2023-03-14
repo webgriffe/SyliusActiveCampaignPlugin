@@ -17,7 +17,7 @@ final class ContactMapper implements ContactMapperInterface
 {
     public function __construct(
         private ContactFactoryInterface $contactFactory,
-        private EventDispatcherInterface $eventDispatcher
+        private EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
@@ -27,7 +27,7 @@ final class ContactMapper implements ContactMapperInterface
         if ($customerEmail === null) {
             throw new CustomerDoesNotHaveEmailException(sprintf(
                 'Unable to create a new ActiveCampaign Contact, the customer "%s" does not have a valid email.',
-                (string) $customer->getId()
+                (string) $customer->getId(),
             ));
         }
         $contact = $this->contactFactory->createNewFromEmail($customerEmail);
@@ -37,7 +37,6 @@ final class ContactMapper implements ContactMapperInterface
 
         /** @var FieldValueInterface[] $fieldValues */
         $fieldValues = [];
-        /** @var GenericEvent $event */
         $event = $this->eventDispatcher->dispatch(new GenericEvent($customer, ['fieldValues' => $fieldValues]), 'webgriffe.sylius_active_campaign_plugin.mapper.customer.pre_add_field_values');
         /** @var FieldValueInterface[]|mixed $fieldValues */
         $fieldValues = $event->getArgument('fieldValues');

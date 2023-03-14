@@ -9,7 +9,7 @@ final class ContactUpdate
     /** @param string|int $customerId */
     public function __construct(
         private mixed $customerId,
-        private int $activeCampaignId
+        private int $activeCampaignId,
     ) {
     }
 

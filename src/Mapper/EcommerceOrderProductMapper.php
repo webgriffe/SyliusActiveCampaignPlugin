@@ -24,7 +24,7 @@ final class EcommerceOrderProductMapper implements EcommerceOrderProductMapperIn
         private ChannelHostnameUrlGeneratorInterface $channelHostnameUrlGenerator,
         private string $defaultLocale,
         private string $scheme = 'http',
-        private ?string $imageType = null
+        private ?string $imageType = null,
     ) {
     }
 
@@ -43,7 +43,7 @@ final class EcommerceOrderProductMapper implements EcommerceOrderProductMapperIn
             $productName,
             $orderItem->getUnitPrice(),
             $orderItem->getQuantity(),
-            (string) $productId
+            (string) $productId,
         );
         $mainTaxon = $product->getMainTaxon();
         if ($mainTaxon instanceof TaxonInterface) {
@@ -66,7 +66,7 @@ final class EcommerceOrderProductMapper implements EcommerceOrderProductMapperIn
         // TODO: is there any better way to handle this? Especially the media/image directory
         $urlPackage = new UrlPackage(
             $this->scheme . '://' . $hostname . (str_ends_with($hostname, '/') ? '' : '/') . 'media/image',
-            new EmptyVersionStrategy()
+            new EmptyVersionStrategy(),
         );
 
         return $urlPackage->getUrl($path);
@@ -112,7 +112,7 @@ final class EcommerceOrderProductMapper implements EcommerceOrderProductMapperIn
             [
                 '_locale' => $localeCode,
                 'slug' => $product->getSlug(),
-            ]
+            ],
         );
     }
 }

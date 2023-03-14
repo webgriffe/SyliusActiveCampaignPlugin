@@ -13,7 +13,7 @@ final class ChannelHostnameUrlGenerator implements ChannelHostnameUrlGeneratorIn
 {
     public function __construct(
         private UrlGeneratorInterface $urlGenerator,
-        private string $scheme = 'https'
+        private string $scheme = 'https',
     ) {
     }
 

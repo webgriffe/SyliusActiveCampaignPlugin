@@ -21,7 +21,7 @@ final class EcommerceOrderFactory extends AbstractFactory implements EcommerceOr
             $createdAt,
             $externalId,
             $externalCheckoutId,
-            $abandonedDate
+            $abandonedDate,
         );
 
         return $ecommerceOrder;

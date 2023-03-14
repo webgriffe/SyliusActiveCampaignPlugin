@@ -15,7 +15,7 @@ final class Connection implements ConnectionInterface
         private string $externalId,
         private string $name,
         private string $logoUrl = self::SYLIUS_LOGO_URL,
-        private string $linkUrl = self::WEBGRIFFE_SYLIUS_ACTIVE_CAMPAIGN_PLUGIN_GITHUB_URL
+        private string $linkUrl = self::WEBGRIFFE_SYLIUS_ACTIVE_CAMPAIGN_PLUGIN_GITHUB_URL,
     ) {
     }
 

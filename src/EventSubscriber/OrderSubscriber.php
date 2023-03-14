@@ -19,7 +19,7 @@ final class OrderSubscriber implements EventSubscriberInterface
     public function __construct(
         private MessageBusInterface $messageBus,
         private EcommerceOrderEnqueuerInterface $ecommerceOrderEnqueuer,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
     ) {
     }
 

@@ -10,7 +10,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseIn
 final class CreateWebhookResponse implements CreateResourceResponseInterface
 {
     public function __construct(
-        private WebhookResponse $webhook
+        private WebhookResponse $webhook,
     ) {
     }
 

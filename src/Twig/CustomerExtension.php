@@ -11,7 +11,7 @@ use Twig\TwigFunction;
 final class CustomerExtension extends AbstractExtension
 {
     public function __construct(
-        private CustomerContextInterface $customerContext
+        private CustomerContextInterface $customerContext,
     ) {
     }
 

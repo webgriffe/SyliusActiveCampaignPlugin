@@ -20,7 +20,7 @@ final class WebhookController extends AbstractController
 
     public function __construct(
         private ActiveCampaignCustomerRepositoryInterface $customerRepository,
-        private MessageBusInterface $messageBus
+        private MessageBusInterface $messageBus,
     ) {
     }
 

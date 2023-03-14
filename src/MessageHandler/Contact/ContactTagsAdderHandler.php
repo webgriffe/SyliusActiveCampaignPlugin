@@ -26,7 +26,7 @@ final class ContactTagsAdderHandler
         private ContactTagsResolverInterface $contactTagsResolver,
         private TagMapperInterface $tagMapper,
         private ContactTagFactoryInterface $contactTagFactory,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
     ) {
     }
 

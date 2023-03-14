@@ -7,7 +7,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign;
 abstract class AbstractFactory
 {
     public function __construct(
-        protected string $targetClassFQCN
+        protected string $targetClassFQCN,
     ) {
     }
 }

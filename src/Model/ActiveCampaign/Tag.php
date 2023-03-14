@@ -9,7 +9,7 @@ final class Tag implements TagInterface
     public function __construct(
         private string $tag,
         private string $tagType = TagInterface::CONTACT_TAG_TYPE,
-        private ?string $description = null
+        private ?string $description = null,
     ) {
     }
 

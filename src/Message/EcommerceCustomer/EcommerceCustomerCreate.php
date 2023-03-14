@@ -12,7 +12,7 @@ final class EcommerceCustomerCreate
      */
     public function __construct(
         private mixed $customerId,
-        private mixed $channelId
+        private mixed $channelId,
     ) {
     }
 

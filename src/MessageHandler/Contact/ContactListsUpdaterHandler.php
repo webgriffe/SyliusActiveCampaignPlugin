@@ -23,7 +23,7 @@ final class ContactListsUpdaterHandler
         private CustomerRepositoryInterface $customerRepository,
         private CustomerChannelsResolverInterface $customerChannelsResolver,
         private ActiveCampaignResourceClientInterface $activeCampaignContactClient,
-        private ListSubscriptionStatusUpdaterInterface $listSubscriptionUpdater
+        private ListSubscriptionStatusUpdaterInterface $listSubscriptionUpdater,
     ) {
     }
 

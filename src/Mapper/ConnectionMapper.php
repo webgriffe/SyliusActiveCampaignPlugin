@@ -12,7 +12,7 @@ use Webmozart\Assert\Assert;
 final class ConnectionMapper implements ConnectionMapperInterface
 {
     public function __construct(
-        private ConnectionFactoryInterface $connectionFactory
+        private ConnectionFactoryInterface $connectionFactory,
     ) {
     }
 
@@ -24,7 +24,7 @@ final class ConnectionMapper implements ConnectionMapperInterface
         return $this->connectionFactory->createNew(
             'sylius',
             $channelCode,
-            $channel->getName() ?? 'Sylius eCommerce'
+            $channel->getName() ?? 'Sylius eCommerce',
         );
     }
 }

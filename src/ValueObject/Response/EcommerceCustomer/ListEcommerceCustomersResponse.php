@@ -12,7 +12,7 @@ final class ListEcommerceCustomersResponse implements ListResourcesResponseInter
      * @param EcommerceCustomerResponse[] $ecommerceCustomers
      */
     public function __construct(
-        private array $ecommerceCustomers
+        private array $ecommerceCustomers,
     ) {
     }
 

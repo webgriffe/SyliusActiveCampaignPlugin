@@ -10,7 +10,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResp
 final class UpdateEcommerceCustomerResponse implements UpdateResourceResponseInterface
 {
     public function __construct(
-        private EcommerceCustomerResponse $ecommerceCustomer
+        private EcommerceCustomerResponse $ecommerceCustomer,
     ) {
     }
 

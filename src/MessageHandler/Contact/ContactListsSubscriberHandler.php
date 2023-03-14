@@ -26,7 +26,7 @@ final class ContactListsSubscriberHandler
         private ListSubscriptionStatusResolverInterface $listSubscriptionStatusResolver,
         private ActiveCampaignResourceClientInterface $activeCampaignContactListClient,
         private ContactListMapperInterface $contactListMapper,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
     ) {
     }
 
@@ -68,7 +68,7 @@ final class ContactListsSubscriberHandler
                 $this->activeCampaignContactListClient->create($this->contactListMapper->mapFromListContactStatusAndSourceId(
                     $activeCampaignListId,
                     $activeCampaignContactId,
-                    $listSubscriptionStatus
+                    $listSubscriptionStatus,
                 ));
             } catch (HttpException $httpException) {
                 if ($httpException->getStatusCode() !== 200) {

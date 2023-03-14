@@ -81,7 +81,7 @@ final class ActiveCampaignEcommerceOrderClientTest extends KernelTestCase
                 new EcommerceOrderDiscount(
                     '1OFF',
                     EcommerceOrderDiscountInterface::ORDER_DISCOUNT_TYPE,
-                    100
+                    100,
                 ),
             ],
         );
@@ -95,7 +95,7 @@ final class ActiveCampaignEcommerceOrderClientTest extends KernelTestCase
         self::assertEquals('POST', $sentRequest->getMethod());
         self::assertEquals(
             '{"ecomOrder":{"email":"alice@example.com","connectionid":"1","customerid":"1","currency":"USD","totalPrice":9111,"externalCreatedDate":"2016-09-13T17:41:39-04:00","externalid":"3246315233","externalcheckoutid":null,"source":"1","orderProducts":[{"name":"Pogo Stick","price":4900,"quantity":1,"externalid":"PROD12345","category":"Toys","sku":"POGO-12","description":"lorem ipsum...","imageUrl":"https:\/\/example.com\/product.jpg","productUrl":"https:\/\/store.example.com\/product12345"},{"name":"Skateboard","price":3000,"quantity":1,"externalid":"PROD23456","category":"Toys","sku":"SK8BOARD145","description":"lorem ipsum...","imageUrl":"https:\/\/example.com\/product.jpg","productUrl":"https:\/\/store.example.com\/product45678"}],"shippingAmount":200,"taxAmount":500,"discountAmount":100,"orderUrl":"https:\/\/example.com\/orders\/3246315233","externalUpdatedDate":"2016-09-14T17:41:39-04:00","abandonedDate":null,"shippingMethod":"UPS Ground","orderNumber":"myorder-123","orderDiscounts":[{"name":"1OFF","type":"order","discountAmount":100}]}}',
-            $sentRequest->getBody()->getContents()
+            $sentRequest->getBody()->getContents(),
         );
 
         self::assertNotNull($createdEcommerceOrder);
@@ -177,7 +177,7 @@ final class ActiveCampaignEcommerceOrderClientTest extends KernelTestCase
                 new EcommerceOrderDiscount(
                     '1OFF',
                     EcommerceOrderDiscountInterface::ORDER_DISCOUNT_TYPE,
-                    100
+                    100,
                 ),
             ],
         );
@@ -191,7 +191,7 @@ final class ActiveCampaignEcommerceOrderClientTest extends KernelTestCase
         self::assertEquals('PUT', $sentRequest->getMethod());
         self::assertEquals(
             '{"ecomOrder":{"email":"alice@example.com","connectionid":"1","customerid":"1","currency":"USD","totalPrice":9111,"externalCreatedDate":"2016-09-13T17:41:39-04:00","externalid":"3246315237","externalcheckoutid":null,"source":"1","orderProducts":[{"name":"Pogo Stick","price":4900,"quantity":1,"externalid":"PROD12345","category":"Toys","sku":"POGO-12","description":"lorem ipsum...","imageUrl":"https:\/\/example.com\/product.jpg","productUrl":"https:\/\/store.example.com\/product12345"},{"name":"Skateboard","price":3000,"quantity":1,"externalid":"PROD23456","category":"Toys","sku":"SK8BOARD145","description":"lorem ipsum...","imageUrl":"https:\/\/example.com\/product.jpg","productUrl":"https:\/\/store.example.com\/product45678"}],"shippingAmount":200,"taxAmount":500,"discountAmount":100,"orderUrl":"https:\/\/example.com\/orders\/3246315233","externalUpdatedDate":"2016-09-15T17:41:39-04:00","abandonedDate":null,"shippingMethod":"UPS Ground","orderNumber":"12345-1","orderDiscounts":[{"name":"1OFF","type":"order","discountAmount":100}]}}',
-            $sentRequest->getBody()->getContents()
+            $sentRequest->getBody()->getContents(),
         );
 
         self::assertNotNull($updatedEcommerceOrder);

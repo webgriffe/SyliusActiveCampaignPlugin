@@ -17,7 +17,7 @@ final class EcommerceOrderUpdateHandler
     public function __construct(
         private EcommerceOrderMapperInterface $ecommerceOrderMapper,
         private ActiveCampaignResourceClientInterface $activeCampaignEcommerceOrderClient,
-        private OrderRepositoryInterface $orderRepository
+        private OrderRepositoryInterface $orderRepository,
     ) {
     }
 

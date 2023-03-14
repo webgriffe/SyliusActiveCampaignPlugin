@@ -34,7 +34,7 @@ final class EcommerceOrderCreateHandlerTest extends KernelTestCase
         $this->ecommerceOrderCreateHandler = new EcommerceOrderCreateHandler(
             self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.mapper.ecommerce_order'),
             self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.client_stub.active_campaign.ecommerce_order'),
-            $this->orderRepository
+            $this->orderRepository,
         );
     }
 

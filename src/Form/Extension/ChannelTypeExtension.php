@@ -16,7 +16,8 @@ final class ChannelTypeExtension extends AbstractTypeExtension
         $builder
             ->add('activeCampaignListId', TextType::class, [
                 'label' => 'webgriffe_sylius_active_campaign.ui.list_id',
-            ]);
+            ])
+        ;
     }
 
     public static function getExtendedTypes(): iterable

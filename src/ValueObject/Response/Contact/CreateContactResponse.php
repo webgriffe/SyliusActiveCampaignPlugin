@@ -10,7 +10,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseIn
 final class CreateContactResponse implements CreateResourceResponseInterface
 {
     public function __construct(
-        private ContactResponse $contact
+        private ContactResponse $contact,
     ) {
     }
 

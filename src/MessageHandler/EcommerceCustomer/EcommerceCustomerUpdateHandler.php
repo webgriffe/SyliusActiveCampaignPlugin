@@ -21,7 +21,7 @@ final class EcommerceCustomerUpdateHandler
         private EcommerceCustomerMapperInterface $ecommerceCustomerMapper,
         private ActiveCampaignResourceClientInterface $activeCampaignClient,
         private CustomerRepositoryInterface $customerRepository,
-        private ChannelRepositoryInterface $channelRepository
+        private ChannelRepositoryInterface $channelRepository,
     ) {
     }
 

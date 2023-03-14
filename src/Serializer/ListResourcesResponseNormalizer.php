@@ -11,7 +11,7 @@ use Webmozart\Assert\Assert;
 final class ListResourcesResponseNormalizer implements DenormalizerInterface
 {
     public function __construct(
-        private DenormalizerInterface $denormalizer
+        private DenormalizerInterface $denormalizer,
     ) {
     }
 

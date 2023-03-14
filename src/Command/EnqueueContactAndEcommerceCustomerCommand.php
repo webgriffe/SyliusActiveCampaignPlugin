@@ -44,7 +44,7 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
         private ContactEnqueuerInterface $contactEnqueuer,
         private EcommerceCustomerEnqueuerInterface $ecommerceCustomerEnqueuer,
         private LoggerInterface $logger,
-        private ?string $name = null
+        private ?string $name = null,
     ) {
         parent::__construct($this->name);
     }
@@ -112,7 +112,7 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
             if ($customer === null) {
                 throw new InvalidArgumentException(sprintf(
                     'Unable to find a Customer with id "%s".',
-                    $customerId
+                    $customerId,
                 ));
             }
             $customersToExport = [$customer];
@@ -215,7 +215,7 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
     {
         $progressBar = new ProgressBar($output, count($customersToExport));
         $progressBar->setFormat(
-            "<fg=white;bg=black> %status:-45s%</>\n%current%/%max% [%bar%] %percent:3s%%\n🏁  %estimated:-21s% %memory:21s%"
+            "<fg=white;bg=black> %status:-45s%</>\n%current%/%max% [%bar%] %percent:3s%%\n🏁  %estimated:-21s% %memory:21s%",
         );
         $progressBar->setBarCharacter('<fg=red>⚬</>');
         $progressBar->setEmptyBarCharacter('<fg=blue>⚬</>');

@@ -10,7 +10,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactListInterfa
 final class ContactListMapper implements ContactListMapperInterface
 {
     public function __construct(
-        private ContactListFactoryInterface $contactListFactory
+        private ContactListFactoryInterface $contactListFactory,
     ) {
     }
 

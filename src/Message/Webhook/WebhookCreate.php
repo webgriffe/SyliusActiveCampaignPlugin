@@ -8,7 +8,7 @@ final class WebhookCreate
 {
     /** @param string|int $channelId */
     public function __construct(
-        private mixed $channelId
+        private mixed $channelId,
     ) {
     }
 
