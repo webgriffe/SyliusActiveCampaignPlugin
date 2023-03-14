@@ -20,13 +20,16 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterf
 
 final class EcommerceCustomerCreateHandler
 {
+    /**
+     * @param FactoryInterface<ChannelCustomerInterface> $channelCustomerFactory
+     */
     public function __construct(
         private EcommerceCustomerMapperInterface $ecommerceCustomerMapper,
         private ActiveCampaignResourceClientInterface $activeCampaignClient,
         private CustomerRepositoryInterface $customerRepository,
         private ChannelRepositoryInterface $channelRepository,
         private FactoryInterface $channelCustomerFactory,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -59,7 +62,6 @@ final class EcommerceCustomerCreateHandler
             throw new InvalidArgumentException(sprintf('The Customer with id "%s" has been already created on ActiveCampaign on the EcommerceCustomer with id "%s"', $customerId, $activeCampaignId));
         }
         $response = $this->activeCampaignClient->create($this->ecommerceCustomerMapper->mapFromCustomerAndChannel($customer, $channel));
-        /** @var ChannelCustomerInterface $channelCustomer */
         $channelCustomer = $this->channelCustomerFactory->createNew();
         $channelCustomer->setCustomer($customer);
         $channelCustomer->setActiveCampaignId($response->getResourceResponse()->getId());

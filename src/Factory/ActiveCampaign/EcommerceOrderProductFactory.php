@@ -15,7 +15,7 @@ final class EcommerceOrderProductFactory extends AbstractFactory implements Ecom
             $name,
             $price,
             $quantity,
-            $externalId
+            $externalId,
         );
 
         return $ecommerceOrderProduct;

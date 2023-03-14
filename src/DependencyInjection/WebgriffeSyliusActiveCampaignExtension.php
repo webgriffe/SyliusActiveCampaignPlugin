@@ -25,7 +25,7 @@ final class WebgriffeSyliusActiveCampaignExtension extends AbstractResourceExten
 
         $container->setParameter(
             'webgriffe.sylius_active_campaign_plugin.serializer.mapping.xml_file_path',
-            $fileLocator->locate('serialization.xml')
+            $fileLocator->locate('serialization.xml'),
         );
         $container->setParameter('webgriffe_sylius_active_campaign.api_client.base_url', (string) $config['api_client']['base_url']);
         $container->setParameter('webgriffe_sylius_active_campaign.api_client.key', (string) $config['api_client']['key']);

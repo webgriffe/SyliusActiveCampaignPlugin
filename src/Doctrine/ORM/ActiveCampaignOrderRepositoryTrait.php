@@ -30,7 +30,6 @@ trait ActiveCampaignOrderRepositoryTrait
         ;
     }
 
-    /** @return OrderInterface|null */
     public function findOneToEnqueue(mixed $id): ?OrderInterface
     {
         assert($this instanceof EntityRepository);

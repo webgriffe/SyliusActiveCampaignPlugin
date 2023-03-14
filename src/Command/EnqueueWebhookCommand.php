@@ -39,7 +39,7 @@ final class EnqueueWebhookCommand extends Command
         private ActiveCampaignResourceRepositoryInterface $channelRepository,
         private WebhookEnqueuerInterface $webhookEnqueuer,
         private LoggerInterface $logger,
-        private ?string $name = null
+        private ?string $name = null,
     ) {
         parent::__construct($this->name);
     }
@@ -107,7 +107,7 @@ final class EnqueueWebhookCommand extends Command
             if ($channel === null) {
                 throw new InvalidArgumentException(sprintf(
                     'Unable to find a Channel with id "%s".',
-                    $channelId
+                    $channelId,
                 ));
             }
             $channelsToExport = [$channel];
@@ -199,7 +199,7 @@ final class EnqueueWebhookCommand extends Command
     {
         $progressBar = new ProgressBar($output, count($channelsToExport));
         $progressBar->setFormat(
-            "<fg=white;bg=black> %status:-45s%</>\n%current%/%max% [%bar%] %percent:3s%%\n🏁  %estimated:-21s% %memory:21s%"
+            "<fg=white;bg=black> %status:-45s%</>\n%current%/%max% [%bar%] %percent:3s%%\n🏁  %estimated:-21s% %memory:21s%",
         );
         $progressBar->setBarCharacter('<fg=red>⚬</>');
         $progressBar->setEmptyBarCharacter('<fg=blue>⚬</>');

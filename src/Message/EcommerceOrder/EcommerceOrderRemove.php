@@ -7,7 +7,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder;
 final class EcommerceOrderRemove
 {
     public function __construct(
-        private int $activeCampaignId
+        private int $activeCampaignId,
     ) {
     }
 

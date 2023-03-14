@@ -14,7 +14,7 @@ use Webmozart\Assert\Assert;
 final class EcommerceOrderDiscountMapper implements EcommerceOrderDiscountMapperInterface
 {
     public function __construct(
-        private EcommerceOrderDiscountFactoryInterface $ecommerceOrderDiscountFactory
+        private EcommerceOrderDiscountFactoryInterface $ecommerceOrderDiscountFactory,
     ) {
     }
 

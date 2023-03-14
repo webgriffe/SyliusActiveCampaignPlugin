@@ -20,7 +20,7 @@ final class EcommerceOrderEnqueuer implements EcommerceOrderEnqueuerInterface
     public function __construct(
         private MessageBusInterface $messageBus,
         private EntityManagerInterface $entityManager,
-        private ActiveCampaignResourceClientInterface $activeCampaignEcommerceOrderClient
+        private ActiveCampaignResourceClientInterface $activeCampaignEcommerceOrderClient,
     ) {
     }
 

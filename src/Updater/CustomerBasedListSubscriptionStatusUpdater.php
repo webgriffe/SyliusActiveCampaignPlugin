@@ -12,7 +12,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactListInterfa
 final class CustomerBasedListSubscriptionStatusUpdater implements ListSubscriptionStatusUpdaterInterface
 {
     public function __construct(
-        private CustomerRepositoryInterface $customerRepository
+        private CustomerRepositoryInterface $customerRepository,
     ) {
     }
 

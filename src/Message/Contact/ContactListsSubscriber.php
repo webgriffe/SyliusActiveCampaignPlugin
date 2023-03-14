@@ -8,7 +8,7 @@ final class ContactListsSubscriber
 {
     /** @param string|int $customerId */
     public function __construct(
-        private mixed $customerId
+        private mixed $customerId,
     ) {
     }
 

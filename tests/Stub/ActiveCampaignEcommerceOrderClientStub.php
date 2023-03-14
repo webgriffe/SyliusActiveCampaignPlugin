@@ -26,8 +26,8 @@ final class ActiveCampaignEcommerceOrderClientStub implements ActiveCampaignReso
     {
         return new CreateEcommerceOrderResponse(
             new EcommerceOrderResponse(
-                self::$activeCampaignResourceId
-            )
+                self::$activeCampaignResourceId,
+            ),
         );
     }
 

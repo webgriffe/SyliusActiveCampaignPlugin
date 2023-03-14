@@ -26,7 +26,7 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
         private EcommerceOrderProductMapperInterface $ecommerceOrderProductMapper,
         private EcommerceOrderDiscountMapperInterface $ecommerceOrderDiscountMapper,
         private ChannelHostnameUrlGeneratorInterface $channelHostnameUrlGenerator,
-        private string $defaultLocale
+        private string $defaultLocale,
     ) {
     }
 
@@ -74,7 +74,7 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
             $createdAt,
             !$isCart ? (string) $orderId : null,
             $isCart ? (string) $orderId : null,
-            $isCart ? new DateTime('now') : null
+            $isCart ? new DateTime('now') : null,
         );
         if (!$isInRealTime) {
             $ecommerceOrder->setSource(EcommerceOrderInterface::HISTORICAL_SOURCE_CODE);
@@ -129,7 +129,7 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
                 'sylius_shop_cart_summary',
                 [
                     '_locale' => $localeCode,
-                ]
+                ],
             );
         }
 
@@ -139,7 +139,7 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
             [
                 'tokenValue' => $order->getTokenValue(),
                 '_locale' => $localeCode,
-            ]
+            ],
         );
     }
 }

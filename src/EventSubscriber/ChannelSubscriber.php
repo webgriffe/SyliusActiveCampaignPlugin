@@ -19,7 +19,7 @@ final class ChannelSubscriber implements EventSubscriberInterface
     public function __construct(
         private MessageBusInterface $messageBus,
         private ConnectionEnqueuerInterface $connectionEnqueuer,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
     ) {
     }
 

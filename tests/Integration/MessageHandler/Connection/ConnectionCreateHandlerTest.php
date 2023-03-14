@@ -32,7 +32,7 @@ final class ConnectionCreateHandlerTest extends KernelTestCase
         $this->connectionCreateHandler = new ConnectionCreateHandler(
             self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.mapper.connection'),
             self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.client_stub.active_campaign.connection'),
-            $this->channelRepository
+            $this->channelRepository,
         );
     }
 

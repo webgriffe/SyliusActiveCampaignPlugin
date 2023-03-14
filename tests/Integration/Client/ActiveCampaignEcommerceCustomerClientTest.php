@@ -34,7 +34,7 @@ final class ActiveCampaignEcommerceCustomerClientTest extends KernelTestCase
             'alice@example.com',
             '1',
             '56789',
-            '1'
+            '1',
         );
 
         $createdEcommerceCustomer = $this->client->create($ecommerceCustomer);
@@ -46,7 +46,7 @@ final class ActiveCampaignEcommerceCustomerClientTest extends KernelTestCase
         self::assertEquals('POST', $sentRequest->getMethod());
         self::assertEquals(
             '{"ecomCustomer":{"email":"alice@example.com","connectionid":"1","externalid":"56789","acceptsMarketing":"1"}}',
-            $sentRequest->getBody()->getContents()
+            $sentRequest->getBody()->getContents(),
         );
 
         self::assertNotNull($createdEcommerceCustomer);
@@ -86,7 +86,7 @@ final class ActiveCampaignEcommerceCustomerClientTest extends KernelTestCase
             'alice@example.com',
             '1',
             '98765',
-            '1'
+            '1',
         );
 
         $updatedEcommerceCustomer = $this->client->update(1, $ecommerceCustomer);
@@ -98,7 +98,7 @@ final class ActiveCampaignEcommerceCustomerClientTest extends KernelTestCase
         self::assertEquals('PUT', $sentRequest->getMethod());
         self::assertEquals(
             '{"ecomCustomer":{"email":"alice@example.com","connectionid":"1","externalid":"98765","acceptsMarketing":"1"}}',
-            $sentRequest->getBody()->getContents()
+            $sentRequest->getBody()->getContents(),
         );
 
         self::assertNotNull($updatedEcommerceCustomer);

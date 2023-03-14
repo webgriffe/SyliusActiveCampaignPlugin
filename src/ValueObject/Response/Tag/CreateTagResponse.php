@@ -10,7 +10,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseIn
 final class CreateTagResponse implements CreateResourceResponseInterface
 {
     public function __construct(
-        private TagResponse $tag
+        private TagResponse $tag,
     ) {
     }
 

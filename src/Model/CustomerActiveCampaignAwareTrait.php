@@ -13,6 +13,7 @@ trait CustomerActiveCampaignAwareTrait
 {
     /**
      * @var Collection<ChannelCustomerInterface>|ChannelCustomerInterface[]
+     *
      * @ORM\OneToMany(targetEntity="Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface", mappedBy="customer")
      */
     protected $channelCustomers;

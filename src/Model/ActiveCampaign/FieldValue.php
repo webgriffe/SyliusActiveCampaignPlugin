@@ -8,7 +8,7 @@ final class FieldValue implements FieldValueInterface
 {
     public function __construct(
         private string $field,
-        private string $value
+        private string $value,
     ) {
     }
 

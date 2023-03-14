@@ -9,7 +9,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseIn
 final class WebhookResponse implements ResourceResponseInterface
 {
     public function __construct(
-        private int $id
+        private int $id,
     ) {
     }
 

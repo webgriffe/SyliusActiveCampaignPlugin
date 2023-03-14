@@ -13,7 +13,7 @@ final class EcommerceCustomerUpdate
     public function __construct(
         private mixed $customerId,
         private int $activeCampaignId,
-        private mixed $channelId
+        private mixed $channelId,
     ) {
     }
 

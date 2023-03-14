@@ -8,7 +8,7 @@ final class ConnectionCreate
 {
     /** @param string|int $channelId */
     public function __construct(
-        private mixed $channelId
+        private mixed $channelId,
     ) {
     }
 

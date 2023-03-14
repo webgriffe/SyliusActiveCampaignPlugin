@@ -13,7 +13,7 @@ final class WebhookFactory extends AbstractFactory implements WebhookFactoryInte
         /** @var WebhookInterface $webhook */
         $webhook = new $this->targetClassFQCN(
             $name,
-            $url
+            $url,
         );
 
         return $webhook;

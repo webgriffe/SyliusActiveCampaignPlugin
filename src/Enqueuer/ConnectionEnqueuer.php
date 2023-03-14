@@ -17,7 +17,7 @@ final class ConnectionEnqueuer implements ConnectionEnqueuerInterface
     public function __construct(
         private MessageBusInterface $messageBus,
         private ActiveCampaignResourceClientInterface $activeCampaignConnectionClient,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
     ) {
     }
 

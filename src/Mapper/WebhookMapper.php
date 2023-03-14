@@ -10,7 +10,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\WebhookInterface;
 final class WebhookMapper implements WebhookMapperInterface
 {
     public function __construct(
-        private WebhookFactoryInterface $webhookFactory
+        private WebhookFactoryInterface $webhookFactory,
     ) {
     }
 

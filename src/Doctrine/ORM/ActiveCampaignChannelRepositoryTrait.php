@@ -9,7 +9,6 @@ use Sylius\Component\Core\Model\ChannelInterface;
 
 trait ActiveCampaignChannelRepositoryTrait
 {
-    /** @return ChannelInterface|null */
     public function findOneToEnqueue(mixed $id): ?ChannelInterface
     {
         assert($this instanceof EntityRepository);

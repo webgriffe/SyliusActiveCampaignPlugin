@@ -10,7 +10,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseIn
 final class CreateConnectionResponse implements CreateResourceResponseInterface
 {
     public function __construct(
-        private ConnectionResponse $connection
+        private ConnectionResponse $connection,
     ) {
     }
 

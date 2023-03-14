@@ -10,7 +10,7 @@ final class ListWebhooksResponse implements ListResourcesResponseInterface
 {
     /** @param WebhookResponse[] $webhooks */
     public function __construct(
-        private array $webhooks
+        private array $webhooks,
     ) {
     }
 

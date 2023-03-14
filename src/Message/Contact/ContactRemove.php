@@ -7,7 +7,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Message\Contact;
 final class ContactRemove
 {
     public function __construct(
-        private int $activeCampaignId
+        private int $activeCampaignId,
     ) {
     }
 

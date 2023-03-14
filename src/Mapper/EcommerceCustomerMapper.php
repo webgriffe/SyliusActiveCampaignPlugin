@@ -13,7 +13,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceCustomerI
 final class EcommerceCustomerMapper implements EcommerceCustomerMapperInterface
 {
     public function __construct(
-        private EcommerceCustomerFactoryInterface $ecommerceCustomerFactory
+        private EcommerceCustomerFactoryInterface $ecommerceCustomerFactory,
     ) {
     }
 
@@ -23,7 +23,7 @@ final class EcommerceCustomerMapper implements EcommerceCustomerMapperInterface
         if ($connectionId === null) {
             throw new ChannelConnectionNotSetException(sprintf(
                 'Unable to create a new ActiveCampaign Ecommerce Customer, the channel "%s" does not have a connection id. Please, create the connection from the channel before create the ecommerce customer for the channel.',
-                (string) $channel->getCode()
+                (string) $channel->getCode(),
             ));
         }
 
@@ -33,7 +33,7 @@ final class EcommerceCustomerMapper implements EcommerceCustomerMapperInterface
         if ($customerEmail === null) {
             throw new CustomerDoesNotHaveEmailException(sprintf(
                 'Unable to create a new ActiveCampaign Ecommerce Customer, the customer "%s" does not have a valid email.',
-                (string) $customerId
+                (string) $customerId,
             ));
         }
         $ecommerceCustomer = $this->ecommerceCustomerFactory->createNew($customerEmail, (string) $connectionId, (string) $customerId);

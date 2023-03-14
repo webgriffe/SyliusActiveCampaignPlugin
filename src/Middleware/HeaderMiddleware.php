@@ -9,7 +9,7 @@ use Psr\Http\Message\RequestInterface;
 final class HeaderMiddleware
 {
     public function __construct(
-        private string $apiKey
+        private string $apiKey,
     ) {
     }
 
@@ -21,7 +21,7 @@ final class HeaderMiddleware
         /** @psalm-suppress MissingClosureReturnType */
         return function (
             RequestInterface $request,
-            array $options
+            array $options,
         ) use ($handler) {
             $request = $request
                 ->withHeader('Api-Token', $this->apiKey)

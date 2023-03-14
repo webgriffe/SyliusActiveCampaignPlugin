@@ -14,10 +14,10 @@ final class RetrieveContactResponse implements RetrieveContactResponseInterface
     /** @param array<array-key, array> $contactLists */
     public function __construct(
         private ContactResponse $contact,
-        array $contactLists
+        array $contactLists,
     ) {
         // @TODO This should be replaced by serializing this array of array as an array of objects
-        /** @var array{contact: string, list: string, status: string, id: string}|array<string, string> $contactList */
+        /** @var array{contact?: string, list?: string, status?: string, id?: string} $contactList */
         foreach ($contactLists as $contactList) {
             if (!array_key_exists('contact', $contactList) ||
                 !array_key_exists('list', $contactList) ||

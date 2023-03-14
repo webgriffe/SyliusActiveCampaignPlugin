@@ -19,7 +19,7 @@ final class WebhookCreateHandler
         private WebhookMapperInterface $webhookMapper,
         private ActiveCampaignResourceClientInterface $activeCampaignWebhookClient,
         private ChannelRepositoryInterface $channelRepository,
-        private ChannelHostnameUrlGeneratorInterface $channelHostnameUrlGenerator
+        private ChannelHostnameUrlGeneratorInterface $channelHostnameUrlGenerator,
     ) {
     }
 
@@ -43,7 +43,7 @@ final class WebhookCreateHandler
             $this->channelHostnameUrlGenerator->generate($channel, 'webgriffe_sylius_active_campaign_list_status_webhook'),
             ['subscribe', 'unsubscribe'],
             ['public', 'admin', 'system'],
-            $activeCampaignListId
+            $activeCampaignListId,
         ));
     }
 }

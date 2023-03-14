@@ -16,6 +16,9 @@ use Webmozart\Assert\Assert;
 
 final class EcommerceCustomerEnqueuer implements EcommerceCustomerEnqueuerInterface
 {
+    /**
+     * @param FactoryInterface<ChannelCustomerInterface> $channelCustomerFactory
+     */
     public function __construct(
         private MessageBusInterface $messageBus,
         private ActiveCampaignResourceClientInterface $activeCampaignEcommerceCustomerClient,
@@ -53,7 +56,6 @@ final class EcommerceCustomerEnqueuer implements EcommerceCustomerEnqueuerInterf
             /** @var EcommerceCustomerResponse $ecommerceCustomer */
             $ecommerceCustomer = reset($ecommerceCustomerList);
             $activeCampaignEcommerceCustomerId = $ecommerceCustomer->getId();
-            /** @var ChannelCustomerInterface $channelCustomer */
             $channelCustomer = $this->channelCustomerFactory->createNew();
             $channelCustomer->setActiveCampaignId($activeCampaignEcommerceCustomerId);
             $channelCustomer->setChannel($channel);

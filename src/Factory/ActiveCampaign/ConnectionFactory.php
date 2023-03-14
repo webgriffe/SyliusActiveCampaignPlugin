@@ -14,7 +14,7 @@ final class ConnectionFactory extends AbstractFactory implements ConnectionFacto
         $connection = new $this->targetClassFQCN(
             $service,
             $externalId,
-            $name
+            $name,
         );
 
         return $connection;

@@ -9,7 +9,7 @@ final class ConnectionUpdate
     /** @param string|int $channelId */
     public function __construct(
         private mixed $channelId,
-        private int $activeCampaignId
+        private int $activeCampaignId,
     ) {
     }
 

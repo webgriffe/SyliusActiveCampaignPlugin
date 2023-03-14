@@ -13,7 +13,7 @@ final class TagFactory extends AbstractFactory implements TagFactoryInterface
         /** @var TagInterface $tag */
         $tag = new $this->targetClassFQCN(
             $tagName,
-            $tagType
+            $tagType,
         );
 
         return $tag;

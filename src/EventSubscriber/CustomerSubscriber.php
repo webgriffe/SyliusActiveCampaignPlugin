@@ -27,7 +27,7 @@ final class CustomerSubscriber implements EventSubscriberInterface
         private CustomerChannelsResolverInterface $customerChannelsResolver,
         private ContactEnqueuerInterface $contactEnqueuer,
         private EcommerceCustomerEnqueuerInterface $ecommerceCustomerEnqueuer,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
     ) {
     }
 

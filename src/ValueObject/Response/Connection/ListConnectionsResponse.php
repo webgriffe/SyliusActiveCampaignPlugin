@@ -12,7 +12,7 @@ final class ListConnectionsResponse implements ListResourcesResponseInterface
      * @param ConnectionResponse[] $connections
      */
     public function __construct(
-        private array $connections
+        private array $connections,
     ) {
     }
 

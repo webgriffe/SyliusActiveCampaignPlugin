@@ -10,7 +10,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\TagInterface;
 final class TagMapper implements TagMapperInterface
 {
     public function __construct(
-        private TagFactoryInterface $tagFactory
+        private TagFactoryInterface $tagFactory,
     ) {
     }
 

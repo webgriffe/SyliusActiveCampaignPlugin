@@ -9,7 +9,6 @@ use Sylius\Component\Core\Model\CustomerInterface;
 
 trait ActiveCampaignCustomerRepositoryTrait
 {
-    /** @return CustomerInterface|null */
     public function findOneToEnqueue(mixed $id): ?CustomerInterface
     {
         assert($this instanceof EntityRepository);

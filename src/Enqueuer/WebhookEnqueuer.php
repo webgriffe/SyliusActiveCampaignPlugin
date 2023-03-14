@@ -15,7 +15,7 @@ final class WebhookEnqueuer implements WebhookEnqueuerInterface
     public function __construct(
         private MessageBusInterface $messageBus,
         private ActiveCampaignResourceClientInterface $activeCampaignWebhookClient,
-        private ChannelHostnameUrlGeneratorInterface $channelHostnameUrlGenerator
+        private ChannelHostnameUrlGeneratorInterface $channelHostnameUrlGenerator,
     ) {
     }
 

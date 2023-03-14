@@ -12,7 +12,7 @@ final class Contact implements ContactInterface
         private ?string $firstName = null,
         private ?string $lastName = null,
         private ?string $phone = null,
-        private array $fieldValues = []
+        private array $fieldValues = [],
     ) {
     }
 

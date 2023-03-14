@@ -39,7 +39,7 @@ final class EnqueueEcommerceOrderCommand extends Command
         private ActiveCampaignResourceRepositoryInterface $orderRepository,
         private EcommerceOrderEnqueuerInterface $ecommerceOrderEnqueuer,
         private LoggerInterface $logger,
-        private ?string $name = null
+        private ?string $name = null,
     ) {
         parent::__construct($this->name);
     }
@@ -107,7 +107,7 @@ final class EnqueueEcommerceOrderCommand extends Command
             if ($order === null) {
                 throw new InvalidArgumentException(sprintf(
                     'Unable to find an Order with id "%s".',
-                    $orderId
+                    $orderId,
                 ));
             }
             $ordersToExport = [$order];
@@ -196,7 +196,7 @@ final class EnqueueEcommerceOrderCommand extends Command
     {
         $progressBar = new ProgressBar($output, count($ordersToExport));
         $progressBar->setFormat(
-            "<fg=white;bg=black> %status:-45s%</>\n%current%/%max% [%bar%] %percent:3s%%\n🏁  %estimated:-21s% %memory:21s%"
+            "<fg=white;bg=black> %status:-45s%</>\n%current%/%max% [%bar%] %percent:3s%%\n🏁  %estimated:-21s% %memory:21s%",
         );
         $progressBar->setBarCharacter('<fg=red>⚬</>');
         $progressBar->setEmptyBarCharacter('<fg=blue>⚬</>');

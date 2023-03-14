@@ -8,12 +8,16 @@ use InvalidArgumentException;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
 
 final class ChannelCustomerBasedListSubscriptionStatusUpdater implements ListSubscriptionStatusUpdaterInterface
 {
+    /**
+     * @param RepositoryInterface<ChannelCustomerInterface> $channelCustomerRepository
+     */
     public function __construct(
-        private RepositoryInterface $channelCustomerRepository
+        private RepositoryInterface $channelCustomerRepository,
     ) {
     }
 

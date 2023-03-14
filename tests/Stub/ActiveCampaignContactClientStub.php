@@ -26,8 +26,8 @@ final class ActiveCampaignContactClientStub implements ActiveCampaignResourceCli
     {
         return new CreateContactResponse(
             new ContactResponse(
-                self::$activeCampaignResourceId
-            )
+                self::$activeCampaignResourceId,
+            ),
         );
     }
 

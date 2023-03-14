@@ -17,6 +17,7 @@ return static function (ECSConfig $ecsConfig): void {
         'tests/Integration',
         'tests/Stub',
     ]);
+    $ecsConfig->skip(['src/Kernel.php']);
 
     $ecsConfig->parameters()->set(Option::SKIP, [
         VisibilityRequiredFixer::class => ['*Spec.php'],

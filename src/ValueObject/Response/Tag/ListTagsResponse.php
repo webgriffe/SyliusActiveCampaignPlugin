@@ -10,7 +10,7 @@ final class ListTagsResponse implements ListResourcesResponseInterface
 {
     /** @param TagResponse[] $tags */
     public function __construct(
-        private array $tags
+        private array $tags,
     ) {
     }
 
