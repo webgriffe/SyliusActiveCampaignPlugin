@@ -37,7 +37,9 @@ final class ContactMapper implements ContactMapperInterface
 
         /** @var FieldValueInterface[] $fieldValues */
         $fieldValues = [];
+        /** @var GenericEvent|mixed $event */
         $event = $this->eventDispatcher->dispatch(new GenericEvent($customer, ['fieldValues' => $fieldValues]), 'webgriffe.sylius_active_campaign_plugin.mapper.customer.pre_add_field_values');
+        Assert::isInstanceOf($event, GenericEvent::class);
         /** @var FieldValueInterface[]|mixed $fieldValues */
         $fieldValues = $event->getArgument('fieldValues');
         Assert::isArray($fieldValues, 'The field values should be an array.');
