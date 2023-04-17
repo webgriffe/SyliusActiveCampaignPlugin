@@ -82,10 +82,11 @@ final class EnqueueWebhookCommandTest extends AbstractCommandTest
 
         $fashionChannel = $this->channelRepository->findOneBy(['code' => 'fashion_shop']);
         $digitalChannel = $this->channelRepository->findOneBy(['code' => 'digital_shop']);
+        $otherChannel = $this->channelRepository->findOneBy(['code' => 'other_shop']);
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
-        $this->assertCount(2, $messages);
+        $this->assertCount(3, $messages);
         $message = $messages[0];
         $this->assertInstanceOf(WebhookCreate::class, $message->getMessage());
         $this->assertEquals($fashionChannel->getId(), $message->getMessage()->getChannelId());
@@ -93,6 +94,10 @@ final class EnqueueWebhookCommandTest extends AbstractCommandTest
         $message = $messages[1];
         $this->assertInstanceOf(WebhookCreate::class, $message->getMessage());
         $this->assertEquals($digitalChannel->getId(), $message->getMessage()->getChannelId());
+
+        $message = $messages[2];
+        $this->assertInstanceOf(WebhookCreate::class, $message->getMessage());
+        $this->assertEquals($otherChannel->getId(), $message->getMessage()->getChannelId());
     }
 
     protected function getCommandDefinition(): string
