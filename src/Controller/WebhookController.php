@@ -31,7 +31,7 @@ final class WebhookController extends AbstractController
             throw new BadRequestException(sprintf('Only "%s" types are allowed for this webhook', implode(', ', self::ALLOWED_TYPES)));
         }
         /** @var array{"id":string, "email":string,"first_name":string,"last_name":string,"phone":string,"ip":string,"tags":string,"customer_acct_name":string,"orgname":string} $contact */
-        $contact = (array) $request->request->get('contact');
+        $contact = $request->request->all('contact');
 
         $customer = $this->customerRepository->findByContactId((int) $contact['id']);
         if ($customer === null) {
