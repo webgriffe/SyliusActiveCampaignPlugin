@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Generator;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RequestContext;
@@ -37,9 +36,14 @@ class ChannelHostnameUrlGeneratorSpec extends ObjectBehavior
 
     public function it_should_returns_a_url(
         ChannelInterface $channel,
-        UrlGeneratorInterface $router
+        UrlGeneratorInterface $router,
+        RequestContext $context
     ): void {
-        $router->setContext(Argument::type(RequestContext::class))->shouldBeCalledOnce();
+        $router->getContext()->willReturn($context);
+        $context->getHost()->willReturn('otherdomain.com');
+
+        $context->setHost('domain.com')->shouldBeCalledOnce()->willReturn($context);
+        $context->setHost('otherdomain.com')->shouldBeCalledOnce()->willReturn($context);
 
         $this->generate($channel, 'route', [])->shouldReturn('/route');
     }
