@@ -8,7 +8,6 @@
         <service id="webgriffe.sylius_active_campaign_plugin.generator.channel_hostname_url"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Generator\ChannelHostnameUrlGenerator">
             <argument type="service" id="router"/>
-            <argument type="string">%webgriffe_sylius_active_campaign.scheme%</argument>
         </service>
     </services>
 </container>
