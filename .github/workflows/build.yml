@@ -206,4 +206,4 @@ jobs:
 
             -
                 name: Roave Backward Compatibility Check
-                uses: docker://nyholm/roave-bc-check-ga
+                uses: ./.github/actions/roave-bc-check
