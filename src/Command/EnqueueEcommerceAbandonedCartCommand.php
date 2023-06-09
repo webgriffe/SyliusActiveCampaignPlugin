@@ -91,7 +91,9 @@ final class EnqueueEcommerceAbandonedCartCommand extends Command
             if (!$customer instanceof CustomerActiveCampaignAwareInterface) {
                 continue;
             }
+            /** @var string|int|null $customerId */
             $customerId = $customer->getId();
+            Assert::notNull($customerId);
             $channel = $abandonedCart->getChannel();
             Assert::isInstanceOf($channel, ChannelInterface::class);
             if (!$channel instanceof ChannelActiveCampaignAwareInterface) {
