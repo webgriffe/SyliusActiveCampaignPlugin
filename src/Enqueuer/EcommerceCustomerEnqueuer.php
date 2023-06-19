@@ -33,6 +33,11 @@ final class EcommerceCustomerEnqueuer implements EcommerceCustomerEnqueuerInterf
         $channelId = $channel->getId();
         Assert::notNull($channelId, 'The channel id should not be null');
 
+        // TEMP FIX:
+        // Sometimes it occurs the error that the association between customer and channel already exists on DB, but it looks like
+        // it is not loaded in the customer object. So we try to refresh the customer object to be sure that the association is loaded.
+        $this->entityManager->refresh($customer);
+
         $channelCustomer = $customer->getChannelCustomerByChannel($channel);
         if ($channelCustomer !== null) {
             $this->messageBus->dispatch(new EcommerceCustomerUpdate($customerId, $channelCustomer->getActiveCampaignId(), $channelId));
