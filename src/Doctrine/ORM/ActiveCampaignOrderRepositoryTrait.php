@@ -17,7 +17,9 @@ trait ActiveCampaignOrderRepositoryTrait
         assert($this instanceof EntityRepository);
 
         return $this->createQueryBuilder('o')
+            ->distinct()
             ->join('o.customer', 'c')
+            ->join('o.items', 'oi')
             ->andWhere('o.state = :state')
             ->andWhere('o.customer IS NOT NULL')
             ->andWhere('o.activeCampaignId IS NULL')
