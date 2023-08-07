@@ -15,6 +15,17 @@ App\Entity\Order\Order:
         customer: '@customer_bob'
         updatedAt: '<(new DateTime("-2 day"))>'
         activeCampaignId: null
+        items:
+            - '@cart_1_day_old_item_1'
+            - '@cart_1_day_old_item_2'
+    cart_1_day_old_without_items:
+        channel: '@fashion_shop'
+        state: 'cart'
+        currency_code: 'EUR'
+        locale_code: 'en_US'
+        customer: '@customer_sam'
+        updatedAt: '<(new DateTime("-2 day"))>'
+        activeCampaignId: null
     cart_new:
         channel: '@fashion_shop'
         state: 'cart'
@@ -32,3 +43,24 @@ App\Entity\Order\Order:
         updatedAt: '<(new DateTime("now"))>'
         activeCampaignId: null
 
+Sylius\Component\Core\Model\OrderItem:
+    cart_1_day_old_item_1:
+        order: '@cart_1_day_old'
+        variant: '@variant_1'
+    cart_1_day_old_item_2:
+        order: '@cart_1_day_old'
+        variant: '@variant_2'
+
+Sylius\Component\Core\Model\ProductVariant:
+    variant_1:
+        code: 'variant_1'
+        product: '@product_1'
+    variant_2:
+        code: 'variant_2'
+        product: '@product_1'
+
+Sylius\Component\Core\Model\Product:
+    product_1:
+        code: 'product_1'
+        variants:
+            - '@variant_1'
