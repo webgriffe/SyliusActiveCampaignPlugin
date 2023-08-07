@@ -11,4 +11,4 @@ webgriffe_sylius_active_campaign:
     resources:
         channel_customer:
             classes:
-                model: App\Entity\Customer\ChannelCustomer
+                model: Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Customer\ChannelCustomer

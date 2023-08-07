@@ -1,4 +1,4 @@
-App\Entity\Customer\Customer:
+Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Customer\Customer:
     customer_01:
         email: 'jim@email.com'
         first_name: 'James'
@@ -6,7 +6,7 @@ App\Entity\Customer\Customer:
         channelCustomers:
             - "@customer_01_fashion_shop"
 
-App\Entity\Customer\ChannelCustomer:
+Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Customer\ChannelCustomer:
     customer_01_fashion_shop:
         channel: "@fashion_shop"
         customer: "@customer_01"

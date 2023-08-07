@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Entity\Channel;
+namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Channel;
 
 use Sylius\Component\Core\Model\ChannelInterface as BaseChannelInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelActiveCampaignAwareInterface;

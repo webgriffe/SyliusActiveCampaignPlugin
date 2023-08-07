@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Entity\Customer;
+namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Customer;
 
 use Doctrine\ORM\Mapping as ORM;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomer as BaseChannelCustomer;

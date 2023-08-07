@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Entity\Customer;
+namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Customer;
 
 use Sylius\Component\Core\Model\CustomerInterface as BaseCustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;

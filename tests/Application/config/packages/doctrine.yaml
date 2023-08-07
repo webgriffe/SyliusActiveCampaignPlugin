@@ -18,9 +18,9 @@ doctrine:
             default:
                 auto_mapping: true
                 mappings:
-                    App:
+                    Tests\Webgriffe\SyliusActiveCampaignPlugin\App:
                         is_bundle: false
                         type: annotation
                         dir: '%kernel.project_dir%/src/Entity'
-                        prefix: 'App\Entity'
-                        alias: App
+                        prefix: 'Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity'
+                        alias: Tests\Webgriffe\SyliusActiveCampaignPlugin\App
