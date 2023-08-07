@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace spec\Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceOrder;
 
-use App\Entity\Order\OrderInterface;
+use Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Order\OrderInterface;
 use InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
 use Sylius\Component\Core\Model\OrderInterface as SyliusOrderInterface;

@@ -1,4 +1,4 @@
-App\Entity\Order\Order:
+Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Order\Order:
     order_1:
         channel: '@fashion_shop'
         number: '0001'

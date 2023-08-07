@@ -21,19 +21,19 @@ sylius_channel:
     resources:
         channel:
             classes:
-                model: App\Entity\Channel\Channel
-                repository: App\Doctrine\ORM\ChannelRepository
+                model: Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Channel\Channel
+                repository: Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Doctrine\ORM\ChannelRepository
 
 sylius_customer:
     resources:
         customer:
             classes:
-                model: App\Entity\Customer\Customer
-                repository: App\Doctrine\ORM\CustomerRepository
+                model: Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Customer\Customer
+                repository: Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Doctrine\ORM\CustomerRepository
 
 sylius_order:
     resources:
         order:
             classes:
-                model: App\Entity\Order\Order
-                repository: App\Doctrine\ORM\OrderRepository
+                model: Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Order\Order
+                repository: Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Doctrine\ORM\OrderRepository

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Entity\Channel;
+namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Channel;
 
 use Doctrine\ORM\Mapping as ORM;
 use Sylius\Component\Core\Model\Channel as BaseChannel;

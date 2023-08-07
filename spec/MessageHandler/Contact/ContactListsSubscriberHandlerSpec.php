@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace spec\Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact;
 
-use App\Entity\Channel\ChannelInterface;
-use App\Entity\Customer\CustomerInterface;
+use Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Channel\ChannelInterface;
+use Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Customer\CustomerInterface;
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\ChannelInterface as SyliusChannelInterface;

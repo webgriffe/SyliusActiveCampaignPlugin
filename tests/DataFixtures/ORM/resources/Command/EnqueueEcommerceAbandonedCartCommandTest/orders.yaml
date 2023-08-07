@@ -1,4 +1,4 @@
-App\Entity\Order\Order:
+Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Order\Order:
     cart_already_abandoned:
         channel: '@fashion_shop'
         state: 'cart'

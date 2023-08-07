@@ -1,4 +1,4 @@
-App\Entity\Channel\Channel:
+Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Channel\Channel:
     fashion_shop:
         code: "fashion_shop"
         name: "Fashion shop"
