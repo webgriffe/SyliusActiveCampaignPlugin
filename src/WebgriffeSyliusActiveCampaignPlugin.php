@@ -7,6 +7,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin;
 use Sylius\Bundle\CoreBundle\Application\SyliusPluginTrait;
 use Sylius\Bundle\ResourceBundle\AbstractResourceBundle;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
+use function dirname;
 
 final class WebgriffeSyliusActiveCampaignPlugin extends AbstractResourceBundle
 {
@@ -21,11 +22,20 @@ final class WebgriffeSyliusActiveCampaignPlugin extends AbstractResourceBundle
 
     public function getPath(): string
     {
-        return __DIR__;
+        return dirname(__DIR__);
     }
 
     protected function getModelNamespace(): string
     {
         return 'Webgriffe\SyliusActiveCampaignPlugin\Model';
+    }
+
+    protected function getConfigFilesPath(): string
+    {
+        return sprintf(
+            '%s/config/doctrine/%s',
+            $this->getPath(),
+            strtolower($this->getDoctrineMappingDirectory()),
+        );
     }
 }
