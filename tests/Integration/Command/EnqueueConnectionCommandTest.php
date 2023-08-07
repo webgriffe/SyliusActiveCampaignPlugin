@@ -6,11 +6,14 @@ namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Integration\Command;
 
 use Fidry\AliceDataFixtures\Persistence\PurgeMode;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
+use Sylius\Component\Core\Model\ChannelInterface;
 use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\Transport\InMemory\InMemoryTransport;
 use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\ActiveCampaignConnectionClientStub;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\ConnectionResponse;
+use Webmozart\Assert\Assert;
 
 final class EnqueueConnectionCommandTest extends AbstractCommandTest
 {
@@ -82,20 +85,21 @@ final class EnqueueConnectionCommandTest extends AbstractCommandTest
         $fashionChannel = $this->channelRepository->findOneBy(['code' => 'fashion_shop']);
         $digitalChannel = $this->channelRepository->findOneBy(['code' => 'digital_shop']);
         $otherChannel = $this->channelRepository->findOneBy(['code' => 'other_shop']);
+        /** @var InMemoryTransport $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
         $this->assertCount(3, $messages);
-        $message = $messages[0];
+        $message = self::getMessageFromChannel($messages, $fashionChannel);
         $this->assertInstanceOf(ConnectionCreate::class, $message->getMessage());
         $this->assertEquals($fashionChannel->getId(), $message->getMessage()->getChannelId());
 
-        $message = $messages[1];
+        $message = self::getMessageFromChannel($messages, $digitalChannel);
         $this->assertInstanceOf(ConnectionUpdate::class, $message->getMessage());
         $this->assertEquals($digitalChannel->getId(), $message->getMessage()->getChannelId());
         $this->assertEquals(12, $message->getMessage()->getActiveCampaignId());
 
-        $message = $messages[2];
+        $message = self::getMessageFromChannel($messages, $otherChannel);
         $this->assertInstanceOf(ConnectionUpdate::class, $message->getMessage());
         $this->assertEquals($otherChannel->getId(), $message->getMessage()->getChannelId());
         $this->assertEquals(132, $message->getMessage()->getActiveCampaignId());
@@ -104,5 +108,15 @@ final class EnqueueConnectionCommandTest extends AbstractCommandTest
     protected function getCommandDefinition(): string
     {
         return 'webgriffe.sylius_active_campaign_plugin.command.enqueue_connection';
+    }
+
+    private static function getMessageFromChannel(array $messages, ChannelInterface $fashionChannel): Envelope
+    {
+        $messages = array_filter($messages, static function (Envelope $envelope) use ($fashionChannel) {
+            return $envelope->getMessage()->getChannelId() === $fashionChannel->getId();
+        });
+        Assert::count($messages, 1);
+
+        return reset($messages);
     }
 }

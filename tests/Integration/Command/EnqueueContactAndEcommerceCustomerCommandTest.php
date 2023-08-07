@@ -6,6 +6,8 @@ namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Integration\Command;
 
 use Fidry\AliceDataFixtures\Persistence\PurgeMode;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
+use Sylius\Component\Core\Model\ChannelInterface;
+use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Symfony\Component\Messenger\Envelope;
 use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\ActiveCampaignContactClientStub;
@@ -16,6 +18,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCust
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ContactResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\EcommerceCustomerResponse;
+use Webmozart\Assert\Assert;
 
 final class EnqueueContactAndEcommerceCustomerCommandTest extends AbstractCommandTest
 {
@@ -70,14 +73,14 @@ final class EnqueueContactAndEcommerceCustomerCommandTest extends AbstractComman
         /** @var Envelope[] $messages */
         $messages = $transport->get();
         $this->assertCount(3, $messages);
-        $message = $messages[0];
+        $message = self::getMessageFromCustomerTypeAndChannel($messages, $customer, ContactCreate::class);
         $this->assertInstanceOf(ContactCreate::class, $message->getMessage());
         $this->assertEquals($customer->getId(), $message->getMessage()->getCustomerId());
-        $message = $messages[1];
+        $message = self::getMessageFromCustomerTypeAndChannel($messages, $customer, EcommerceCustomerCreate::class, $fashionShopChannel);
         $this->assertInstanceOf(EcommerceCustomerCreate::class, $message->getMessage());
         $this->assertEquals($customer->getId(), $message->getMessage()->getCustomerId());
         $this->assertEquals($fashionShopChannel->getId(), $message->getMessage()->getChannelId());
-        $message = $messages[2];
+        $message = self::getMessageFromCustomerTypeAndChannel($messages, $customer, EcommerceCustomerCreate::class, $digitalShopChannel);
         $this->assertInstanceOf(EcommerceCustomerCreate::class, $message->getMessage());
         $this->assertEquals($customer->getId(), $message->getMessage()->getCustomerId());
         $this->assertEquals($digitalShopChannel->getId(), $message->getMessage()->getChannelId());
@@ -99,14 +102,14 @@ final class EnqueueContactAndEcommerceCustomerCommandTest extends AbstractComman
         /** @var Envelope[] $messages */
         $messages = $transport->get();
         $this->assertCount(3, $messages);
-        $message = $messages[0];
+        $message = self::getMessageFromCustomerTypeAndChannel($messages, $customer, ContactCreate::class);
         $this->assertInstanceOf(ContactCreate::class, $message->getMessage());
         $this->assertEquals($customer->getId(), $message->getMessage()->getCustomerId());
-        $message = $messages[1];
+        $message = self::getMessageFromCustomerTypeAndChannel($messages, $customer, EcommerceCustomerCreate::class, $fashionShopChannel);
         $this->assertInstanceOf(EcommerceCustomerCreate::class, $message->getMessage());
         $this->assertEquals($customer->getId(), $message->getMessage()->getCustomerId());
         $this->assertEquals($fashionShopChannel->getId(), $message->getMessage()->getChannelId());
-        $message = $messages[2];
+        $message = self::getMessageFromCustomerTypeAndChannel($messages, $customer, EcommerceCustomerCreate::class, $digitalShopChannel);
         $this->assertInstanceOf(EcommerceCustomerCreate::class, $message->getMessage());
         $this->assertEquals($customer->getId(), $message->getMessage()->getCustomerId());
         $this->assertEquals($digitalShopChannel->getId(), $message->getMessage()->getChannelId());
@@ -130,43 +133,43 @@ final class EnqueueContactAndEcommerceCustomerCommandTest extends AbstractComman
         $messages = $transport->get();
         $this->assertCount(9, $messages);
 
-        $message = $messages[0];
+        $message = self::getMessageFromCustomerTypeAndChannel($messages, $customerJim, ContactCreate::class);
         $this->assertInstanceOf(ContactCreate::class, $message->getMessage());
         $this->assertEquals($customerJim->getId(), $message->getMessage()->getCustomerId());
-        $message = $messages[1];
+        $message = self::getMessageFromCustomerTypeAndChannel($messages, $customerJim, EcommerceCustomerCreate::class, $fashionShopChannel);
         $this->assertInstanceOf(EcommerceCustomerCreate::class, $message->getMessage());
         $this->assertEquals($customerJim->getId(), $message->getMessage()->getCustomerId());
         $this->assertEquals($fashionShopChannel->getId(), $message->getMessage()->getChannelId());
-        $message = $messages[2];
+        $message = self::getMessageFromCustomerTypeAndChannel($messages, $customerJim, EcommerceCustomerCreate::class, $digitalShopChannel);
         $this->assertInstanceOf(EcommerceCustomerCreate::class, $message->getMessage());
         $this->assertEquals($customerJim->getId(), $message->getMessage()->getCustomerId());
         $this->assertEquals($digitalShopChannel->getId(), $message->getMessage()->getChannelId());
 
-        $message = $messages[3];
+        $message = self::getMessageFromCustomerTypeAndChannel($messages, $customerBob, ContactUpdate::class);
         $this->assertInstanceOf(ContactUpdate::class, $message->getMessage());
         $this->assertEquals($customerBob->getId(), $message->getMessage()->getCustomerId());
         $this->assertEquals(32, $message->getMessage()->getActiveCampaignId());
-        $message = $messages[4];
+        $message = self::getMessageFromCustomerTypeAndChannel($messages, $customerBob, EcommerceCustomerUpdate::class, $fashionShopChannel);
         $this->assertInstanceOf(EcommerceCustomerUpdate::class, $message->getMessage());
         $this->assertEquals($customerBob->getId(), $message->getMessage()->getCustomerId());
         $this->assertEquals($fashionShopChannel->getId(), $message->getMessage()->getChannelId());
         $this->assertEquals(576, $message->getMessage()->getActiveCampaignId());
-        $message = $messages[5];
+        $message = self::getMessageFromCustomerTypeAndChannel($messages, $customerBob, EcommerceCustomerUpdate::class, $digitalShopChannel);
         $this->assertInstanceOf(EcommerceCustomerUpdate::class, $message->getMessage());
         $this->assertEquals($customerBob->getId(), $message->getMessage()->getCustomerId());
         $this->assertEquals($digitalShopChannel->getId(), $message->getMessage()->getChannelId());
         $this->assertEquals(234, $message->getMessage()->getActiveCampaignId());
 
-        $message = $messages[6];
+        $message = self::getMessageFromCustomerTypeAndChannel($messages, $customerSam, ContactUpdate::class);
         $this->assertInstanceOf(ContactUpdate::class, $message->getMessage());
         $this->assertEquals($customerSam->getId(), $message->getMessage()->getCustomerId());
         $this->assertEquals(143, $message->getMessage()->getActiveCampaignId());
-        $message = $messages[7];
+        $message = self::getMessageFromCustomerTypeAndChannel($messages, $customerSam, EcommerceCustomerUpdate::class, $fashionShopChannel);
         $this->assertInstanceOf(EcommerceCustomerUpdate::class, $message->getMessage());
         $this->assertEquals($customerSam->getId(), $message->getMessage()->getCustomerId());
         $this->assertEquals($fashionShopChannel->getId(), $message->getMessage()->getChannelId());
         $this->assertEquals(765, $message->getMessage()->getActiveCampaignId());
-        $message = $messages[8];
+        $message = self::getMessageFromCustomerTypeAndChannel($messages, $customerSam, EcommerceCustomerUpdate::class, $digitalShopChannel);
         $this->assertInstanceOf(EcommerceCustomerUpdate::class, $message->getMessage());
         $this->assertEquals($customerSam->getId(), $message->getMessage()->getCustomerId());
         $this->assertEquals($digitalShopChannel->getId(), $message->getMessage()->getChannelId());
@@ -176,5 +179,31 @@ final class EnqueueContactAndEcommerceCustomerCommandTest extends AbstractComman
     protected function getCommandDefinition(): string
     {
         return 'webgriffe.sylius_active_campaign_plugin.command.enqueue_contact_and_ecommerce_customer';
+    }
+
+    /**
+     * @param Envelope[] $messages
+     * @param class-string $messageClass
+     */
+    private static function getMessageFromCustomerTypeAndChannel(
+        array $messages,
+        CustomerInterface $customer,
+        string $messageClass,
+        ChannelInterface $channel = null
+    ): Envelope {
+        $messages = array_filter($messages, static function (Envelope $envelope) use ($customer, $messageClass, $channel) {
+            $message = $envelope->getMessage();
+            if (!$message instanceof $messageClass) {
+                return false;
+            }
+            if ($channel !== null && $message->getChannelId() !== $channel->getId()) {
+                return false;
+            }
+
+            return $message->getCustomerId() === $customer->getId();
+        });
+        Assert::count($messages, 1);
+
+        return reset($messages);
     }
 }

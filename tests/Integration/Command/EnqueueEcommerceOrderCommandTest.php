@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Integration\Command;
 
 use Fidry\AliceDataFixtures\Persistence\PurgeMode;
+use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Repository\OrderRepositoryInterface;
 use Symfony\Component\Messenger\Envelope;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderRemove;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderUpdate;
+use Webmozart\Assert\Assert;
 
 // TODO: This test should be improved with testing an already existing order in ActiveCampaign, but there is the need to found a way to "force"
 // id on alice data fixture.
@@ -44,7 +46,7 @@ final class EnqueueEcommerceOrderCommandTest extends AbstractCommandTest
         /** @var Envelope[] $messages */
         $messages = $transport->get();
         $this->assertCount(1, $messages);
-        $message = $messages[0];
+        $message = self::getMessageFromOrder($messages, $order);
         $this->assertInstanceOf(EcommerceOrderCreate::class, $message->getMessage());
         $this->assertEquals($order->getId(), $message->getMessage()->getOrderId());
     }
@@ -62,7 +64,7 @@ final class EnqueueEcommerceOrderCommandTest extends AbstractCommandTest
         /** @var Envelope[] $messages */
         $messages = $transport->get();
         $this->assertCount(1, $messages);
-        $message = $messages[0];
+        $message = self::getMessageFromOrder($messages, $order);
         $this->assertInstanceOf(EcommerceOrderCreate::class, $message->getMessage());
         $this->assertEquals($order->getId(), $message->getMessage()->getOrderId());
     }
@@ -81,16 +83,16 @@ final class EnqueueEcommerceOrderCommandTest extends AbstractCommandTest
         /** @var Envelope[] $messages */
         $messages = $transport->get();
         $this->assertCount(3, $messages);
-        $message = $messages[0];
+        $message = self::getMessageFromOrder($messages, $order0001);
         $this->assertInstanceOf(EcommerceOrderCreate::class, $message->getMessage());
         $this->assertEquals($order0001->getId(), $message->getMessage()->getOrderId());
 
-        $message = $messages[1];
+        $message = self::getMessageFromOrder($messages, $order0002);
         $this->assertInstanceOf(EcommerceOrderUpdate::class, $message->getMessage());
         $this->assertEquals($order0002->getId(), $message->getMessage()->getOrderId());
         $this->assertEquals($order0002->getActiveCampaignId(), $message->getMessage()->getActiveCampaignId());
 
-        $message = $messages[2];
+        $message = self::getMessageFromOrder($messages, null, 6);
         $this->assertInstanceOf(EcommerceOrderRemove::class, $message->getMessage());
         $this->assertEquals(6, $message->getMessage()->getActiveCampaignId());
         $this->assertNull($order0003->getActiveCampaignId());
@@ -99,5 +101,19 @@ final class EnqueueEcommerceOrderCommandTest extends AbstractCommandTest
     protected function getCommandDefinition(): string
     {
         return 'webgriffe.sylius_active_campaign_plugin.command.enqueue_ecommerce_order';
+    }
+
+    private static function getMessageFromOrder(array $messages, ?OrderInterface $order = null, ?int $activeCampaignOrderId = null): Envelope
+    {
+        $messages = array_filter($messages, static function (Envelope $envelope) use ($order, $activeCampaignOrderId) {
+            if ($envelope->getMessage() instanceof EcommerceOrderRemove) {
+                return $activeCampaignOrderId !== null && $envelope->getMessage()->getActiveCampaignId() === $activeCampaignOrderId;
+            }
+
+            return $order !== null && $envelope->getMessage()->getOrderId() === $order->getId();
+        });
+        Assert::count($messages, 1);
+
+        return reset($messages);
     }
 }

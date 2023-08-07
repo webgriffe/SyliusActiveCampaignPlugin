@@ -6,11 +6,13 @@ namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Integration\Command;
 
 use Fidry\AliceDataFixtures\Persistence\PurgeMode;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
+use Sylius\Component\Core\Model\ChannelInterface;
 use Symfony\Component\Messenger\Envelope;
 use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\ActiveCampaignWebhookClientStub;
 use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\HttpClientStub;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Webhook\WebhookCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Webhook\WebhookResponse;
+use Webmozart\Assert\Assert;
 
 final class EnqueueWebhookCommandTest extends AbstractCommandTest
 {
@@ -87,15 +89,15 @@ final class EnqueueWebhookCommandTest extends AbstractCommandTest
         /** @var Envelope[] $messages */
         $messages = $transport->get();
         $this->assertCount(3, $messages);
-        $message = $messages[0];
+        $message = self::getMessageFromChannel($messages, $fashionChannel);
         $this->assertInstanceOf(WebhookCreate::class, $message->getMessage());
         $this->assertEquals($fashionChannel->getId(), $message->getMessage()->getChannelId());
 
-        $message = $messages[1];
+        $message = self::getMessageFromChannel($messages, $digitalChannel);
         $this->assertInstanceOf(WebhookCreate::class, $message->getMessage());
         $this->assertEquals($digitalChannel->getId(), $message->getMessage()->getChannelId());
 
-        $message = $messages[2];
+        $message = self::getMessageFromChannel($messages, $otherChannel);
         $this->assertInstanceOf(WebhookCreate::class, $message->getMessage());
         $this->assertEquals($otherChannel->getId(), $message->getMessage()->getChannelId());
     }
@@ -103,5 +105,15 @@ final class EnqueueWebhookCommandTest extends AbstractCommandTest
     protected function getCommandDefinition(): string
     {
         return 'webgriffe.sylius_active_campaign_plugin.command.enqueue_webhook';
+    }
+
+    private static function getMessageFromChannel(array $messages, ChannelInterface $fashionChannel): Envelope
+    {
+        $messages = array_filter($messages, static function (Envelope $envelope) use ($fashionChannel) {
+            return $envelope->getMessage()->getChannelId() === $fashionChannel->getId();
+        });
+        Assert::count($messages, 1);
+
+        return reset($messages);
     }
 }
