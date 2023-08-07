@@ -1,5 +1,5 @@
 imports:
-    - { resource: "@WebgriffeSyliusActiveCampaignPlugin/Resources/config/app/config.yaml" }
+    - { resource: "@WebgriffeSyliusActiveCampaignPlugin/config/app/config.yaml" }
 
 webgriffe_sylius_active_campaign:
     api_client:

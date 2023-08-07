@@ -1,5 +1,21 @@
 # UPGRADE FROM `v0.1.0` TO `v0.X`
 
+## UPGRADE FROM `v0.6.0` TO `v0.7.0`
+
+The plugin directory structure has been updated to follow the Symfony bundle best practices.
+Adjust your `config/packages/webgriffe_sylius_active_campaign_plugin.yaml` file by removing the word `Resources`:
+```diff
+-   - { resource: "@WebgriffeSyliusActiveCampaignPlugin/Resources/config/app/config.yaml" }
++   - { resource: "@WebgriffeSyliusActiveCampaignPlugin/config/app/config.yaml" }
+```
+
+Update your route config import file by removing the word `Resources`:
+```diff
+webgriffe_sylius_active_campaign_shop:
+-   resource: "@WebgriffeSyliusActiveCampaignPlugin/Resources/config/app_routing.yml"
++   resource: "@WebgriffeSyliusActiveCampaignPlugin/config/app_routing.yml"
+```
+
 ## UPGRADE FROM `v0.2.0` TO `v0.3.0`
 
 Adjust you entity following the subsequent PR notes, then remember to run a migration diff and run it with:

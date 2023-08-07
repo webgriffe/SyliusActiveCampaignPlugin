@@ -18,7 +18,7 @@ final class WebgriffeSyliusActiveCampaignExtension extends AbstractResourceExten
     public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
-        $fileLocator = new FileLocator(__DIR__ . '/../Resources/config');
+        $fileLocator = new FileLocator(__DIR__ . '/../../config');
         $loader = new XmlFileLoader($container, $fileLocator);
 
         $this->registerResources('webgriffe_sylius_active_campaign', $config['driver'], $config['resources'], $container);

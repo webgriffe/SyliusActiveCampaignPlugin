@@ -12,7 +12,7 @@
 3. Configure your ActiveCampaign API connection parameters by creating the `config/packages/webgriffe_sylius_active_campaign_plugin.yaml` file with the following content:
     ```yaml
     imports:
-        - { resource: "@WebgriffeSyliusActiveCampaignPlugin/Resources/config/app/config.yaml" }
+        - { resource: "@WebgriffeSyliusActiveCampaignPlugin/config/app/config.yaml" }
 
     webgriffe_sylius_active_campaign:
         api_client:
@@ -26,7 +26,7 @@
 4. Import the routes needed for updating the list status of contact (you can omit this if you don't need to update the list status, or you don't use the list subscription feature). Add the following to your `config/routes.yaml` file:
    ```yaml
    webgriffe_sylius_active_campaign_shop:
-       resource: "@WebgriffeSyliusActiveCampaignPlugin/Resources/config/app_routing.yml"
+       resource: "@WebgriffeSyliusActiveCampaignPlugin/config/app_routing.yml"
     ```
    Note that these routes shouldn't be inside your "shop routes", the locale parameter is not needed.
 
