@@ -1,6 +1,11 @@
-# Running tests
+---
+title: Running tests
+layout: page
+nav_order: 2
+parent: Contributing
+---
 
-[Return to Contributing](04-Contributing.md)
+# Running tests
 
 - PHPUnit
 
@@ -62,5 +67,3 @@
   ```bash
   vendor/bin/ecs check
   ```
-
-[Return to Contributing](04-Contributing.md)

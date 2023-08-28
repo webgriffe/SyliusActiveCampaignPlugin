@@ -1,6 +1,11 @@
-# Usage
+---
+title: Usage
+layout: page
+nav_order: 3
+has_children: true
+---
 
-[Return to Summary main page](README.md)
+# Usage
 
 > This plugin makes use of the two components of _Symfony_ [Messenger][symfony_messenger]
 > and [Serializer][symfony_serializer].
@@ -76,7 +81,7 @@ so, we have added a property to your Channel entity, the ActiveCampaign list id.
 admin channel page and should contain the id of the list for that channel, or you can leave it empty for not add the
 contact to a list.
 
-![Channel list ID form](images/edit_channel_list_id_form.png "Channel list ID form")
+![Channel list ID form](../images/edit_channel_list_id_form.png "Channel list ID form")
 
 With the create/update of a Sylius customer a new `ContactListsSubscriber` message is dispatched.
 The `ContactListsSubscriberHandler` will then use the `CustomerChannelsResolver` to determine the channels for which a
@@ -219,10 +224,6 @@ example.
 ### Start with Sylius ActiveCampaign plugin
 
 Here are some points/actions to do or to take inspiration from to start using the plugin:
-
-- [First setup](03_A-First_setup.md)
-- [Events](03_B-Events.md)
-- [Automation examples](03_C-Automation_example.md)
 
 [symfony_messenger]: https://symfony.com/doc/current/messenger.html
 

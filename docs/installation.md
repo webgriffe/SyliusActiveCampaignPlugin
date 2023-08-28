@@ -1,6 +1,10 @@
-# Installation
+---
+title: Installation
+layout: page
+nav_order: 2
+---
 
-[Return to Summary main page](README.md)
+# Installation
 
 1. Run
     ```shell

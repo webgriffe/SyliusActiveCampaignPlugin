@@ -1,6 +1,11 @@
-# First setup
+---
+title: First setup
+layout: page
+nav_order: 1
+parent: Usage
+---
 
-[Return to Usage](03-Usage.md)
+# First setup
 
 Right after installing the plugin, you need to export all the resources to ActiveCampaign if you start from scratch,
 persist the ActiveCampaign resource's id on Sylius resource if you already have ActiveCampaign populated, and/or of
@@ -160,5 +165,3 @@ You can also launch the command without any arguments, it will ask you automatic
 ```shell
 php bin/console webgriffe:active-campaign:enqueue-ecommerce-order
 ```
-
-[Return to Usage](03-Usage.md)

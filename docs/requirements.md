@@ -1,6 +1,10 @@
-# Requirements
+---
+title: Requirements
+layout: page
+nav_order: 1
+---
 
-[Return to Summary main page](README.md)
+# Requirements
 
 * PHP `^8.0` or higher
 * Sylius `^1.12`

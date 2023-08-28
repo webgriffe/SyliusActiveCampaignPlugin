@@ -8,7 +8,7 @@ final class Connection implements ConnectionInterface
 {
     private const SYLIUS_LOGO_URL = 'https://raw.githubusercontent.com/webgriffe/SyliusActiveCampaignPlugin/master/docs/images/sylius-logo.png';
 
-    private const WEBGRIFFE_SYLIUS_ACTIVE_CAMPAIGN_PLUGIN_GITHUB_URL = 'https://github.com/webgriffe/SyliusActiveCampaignPlugin';
+    private const WEBGRIFFE_SYLIUS_ACTIVE_CAMPAIGN_PLUGIN_GITHUB_URL = 'https://webgriffe.github.io/SyliusActiveCampaignPlugin';
 
     public function __construct(
         private string $service,

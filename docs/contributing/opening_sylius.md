@@ -1,6 +1,11 @@
-# Opening Sylius in the plugin
+---
+title: Opening Sylius in the plugin
+layout: page
+nav_order: 1
+parent: Contributing
+---
 
-[Return to Contributing](04-Contributing.md)
+# Opening Sylius in the plugin
 
 - Using `test` environment:
 
@@ -15,5 +20,3 @@
     (cd tests/Application && APP_ENV=dev bin/console sylius:fixtures:load)
     (cd tests/Application && APP_ENV=dev bin/console server:run -d public)
     ```
-
-[Return to Contributing](04-Contributing.md)

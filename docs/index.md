@@ -1,14 +1,10 @@
-<p align="center">
-    <a href="https://sylius.com" target="_blank">
-        <img src="https://demo.sylius.com/assets/shop/img/logo.png" />
-    </a>
-</p>
+---
+title: Home
+layout: home
+nav_order: 0
+---
 
-<h1 align="center">ActiveCampaign Plugin</h1>
-<p align="center">Sylius plugin to integrate the marketing # 1 automation platform</p>
-<p align="center"><a href="https://github.com/webgriffe/SyliusActiveCampaignPlugin/actions/workflows/build.yml"><img src="https://github.com/webgriffe/SyliusActiveCampaignPlugin/actions/workflows/build.yml/badge.svg?branch=master" alt="Build Status" /></a></p>
-
-<hr />
+# Webgriffe Sylius ActiveCampaign plugin
 
 ## What does this plugin do?
 
@@ -22,7 +18,7 @@ _ActiveCampaign_ and want to integrate it with _Sylius_.
 
 ## How can I install the plugin on my Sylius store?
 
-Please, check the documentation at the [Installation](https://webgriffe.github.io/SyliusActiveCampaignPlugin/installation.html) step.
+Please, check the documentation at the [Installation](installation.html) step.
 
 ## Is this plugin conformed to privacy?
 
@@ -35,6 +31,19 @@ designed with these issues in mind and is therefore easily customizable.
 
 ## Where do I start?
 
-First, we recommend that you read the entire documentation available at this [link](https://webgriffe.github.io/SyliusActiveCampaignPlugin/). Then you could start to
+First, we recommend that you read the entire documentation. Then you could start to
 install the plugin and use the basic features it gives such as the abandoned cart. You could also think to suggest some
 new features that this integration could add. So, let's start! 🚀
+
+
+## Docs Summary
+
+- [Requirements](requirements.html)
+- [Installation](installation.html)
+- [Usage](usage/index.html)
+    - [First setup](usage/first_setup.html)
+    - [Events](usage/events.html)
+    - [Automation example](usage/automation_examples.html)
+- [Contributing](contributing/index.html)
+    - [Opening Sylius with plugin](contributing/opening_sylius.html)
+    - [Running plugin tests](contributing/tests.html)
