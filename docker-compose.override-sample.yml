@@ -1,0 +1,16 @@
+services:
+    app:
+        profiles: ["disabled"]
+
+    mysql:
+        ports:
+            - "3306:3306"
+
+    #For development only
+    mailhog:
+        image: mailhog/mailhog
+        labels:
+            com.symfony.server.service-prefix: 'MAILER'
+        ports:
+            - "1025:1025"
+            - "8025:8025"
