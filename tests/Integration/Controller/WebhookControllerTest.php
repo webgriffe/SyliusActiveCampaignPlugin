@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\InMemoryTransport;
 use Webgriffe\SyliusActiveCampaignPlugin\Controller\WebhookController;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactAutomationEvent;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactListsUpdater;
 
 final class WebhookControllerTest extends KernelTestCase
@@ -84,5 +85,35 @@ final class WebhookControllerTest extends KernelTestCase
         /** @var Envelope[] $messages */
         $messages = $transport->get();
         $this->assertCount(0, $messages);
+    }
+
+    public function test_that_it_dispatch_contact_automation_event(): void
+    {
+        $bobCustomer = $this->customerRepository->findOneBy(['email' => 'bob@email.com']);
+
+        $this->webhookController->dispatchContactAutomationEventAction(new Request([], [
+            'seriesid' => '1',
+            'contact' => [
+                'id' => '50984',
+                'email' => 'bob@email.com',
+                'first_name' => 'test',
+                'last_name' => 'test',
+                'phone' => '',
+                'tags' => 'webhook,othertag',
+                'customer_acct_name' => '',
+                'orgname' => 'Webgriffe',
+                'ip4' => '127.0.0.1',
+            ],
+        ]));
+
+        /** @var InMemoryTransport $transport */
+        $transport = self::getContainer()->get('messenger.transport.main');
+        /** @var Envelope[] $messages */
+        $messages = $transport->get();
+        $this->assertCount(1, $messages);
+        $message = $messages[0];
+        $this->assertInstanceOf(ContactAutomationEvent::class, $message->getMessage());
+        $this->assertEquals($bobCustomer->getId(), $message->getMessage()->getCustomerId());
+        $this->assertEquals('1', $message->getMessage()->getAutomationId());
     }
 }
