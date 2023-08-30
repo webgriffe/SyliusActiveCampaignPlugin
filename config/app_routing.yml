@@ -4,3 +4,10 @@ webgriffe_sylius_active_campaign_list_status_webhook:
     defaults:
         _controller: webgriffe.sylius_active_campaign_plugin.controller.webhook::updateListStatusAction
         name: ~
+
+webgriffe_sylius_active_campaign_contact_automation_event_webhook:
+    path: webhook/activecampaign/contact-automation-event
+    methods: POST
+    defaults:
+        _controller: webgriffe.sylius_active_campaign_plugin.controller.webhook::dispatchContactAutomationEventAction
+        name: ~
