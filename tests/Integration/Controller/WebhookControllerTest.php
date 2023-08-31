@@ -91,7 +91,10 @@ final class WebhookControllerTest extends KernelTestCase
     {
         $bobCustomer = $this->customerRepository->findOneBy(['email' => 'bob@email.com']);
 
-        $this->webhookController->dispatchContactAutomationEventAction(new Request([], [
+        $this->webhookController->dispatchContactAutomationEventAction(new Request([
+            'promotionCode' => 'PROMOTION_CODE',
+            'other_query_param' => 23,
+        ], [
             'seriesid' => '1',
             'contact' => [
                 'id' => '50984',
@@ -115,5 +118,9 @@ final class WebhookControllerTest extends KernelTestCase
         $this->assertInstanceOf(ContactAutomationEvent::class, $message->getMessage());
         $this->assertEquals($bobCustomer->getId(), $message->getMessage()->getCustomerId());
         $this->assertEquals('1', $message->getMessage()->getAutomationId());
+        $this->assertEquals([
+            'promotionCode' => 'PROMOTION_CODE',
+            'other_query_param' => 23,
+        ], $message->getMessage()->getPayload());
     }
 }

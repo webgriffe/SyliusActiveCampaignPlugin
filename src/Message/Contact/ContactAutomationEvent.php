@@ -10,7 +10,14 @@ final class ContactAutomationEvent
     public function __construct(
         private mixed $customerId,
         private string $automationId,
+        private array $payload,
     ) {
+    }
+
+    /** @return string|int */
+    public function getCustomerId(): mixed
+    {
+        return $this->customerId;
     }
 
     public function getAutomationId(): string
@@ -18,9 +25,8 @@ final class ContactAutomationEvent
         return $this->automationId;
     }
 
-    /** @return string|int */
-    public function getCustomerId(): mixed
+    public function getPayload(): array
     {
-        return $this->customerId;
+        return $this->payload;
     }
 }
