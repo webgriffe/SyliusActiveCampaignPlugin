@@ -20,7 +20,23 @@ be dispatched to the messenger.
 **Note!** There is currently no message handler for this message, you have to create one yourself. Remember that the
 message will contain the ID of the Sylius client the automation was invoked for and the ID of the automation itself.
 This way, using the same URL, you can configure multiple different webhooks that do different things depending on which 
-automation invoked it. An example of a message handler could be the following:
+automation invoked it.
+
+It is possible that a single automation may require different actions to be performed. To achieve this, we have included
+the parameters entered in the query string in the message body. This allows you to use the data to differentiate the
+behavior as needed. It is important to note that in such cases, the appropriate parameters must be inserted in the query
+string of the URL invoked by the automation webhook. For example:
+https://yourdomain.com/webhook/activecampaign/contact-automation-event?promotionCode=WINTER_SALE&promotionExpirationDate=2023-12-31.
+In this case, you will get in the payload the following array:
+
+```php
+[
+    'promotionCode' => 'WINTER_SALE',
+    'promotionExpirationDate' => '2023-12-31',
+]
+```
+
+An example of a message handler could be the following:
 
 ```php
 <?php

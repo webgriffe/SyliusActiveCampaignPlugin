@@ -62,7 +62,7 @@ final class WebhookController extends AbstractController
         Assert::notNull($customerId);
         Assert::string($seriesId);
 
-        $this->messageBus->dispatch(new ContactAutomationEvent($customerId, $seriesId));
+        $this->messageBus->dispatch(new ContactAutomationEvent($customerId, $seriesId, $request->query->all()));
 
         return new Response('OK');
     }
