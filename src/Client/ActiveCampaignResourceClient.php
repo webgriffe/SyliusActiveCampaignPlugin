@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Client;
 
+use DateTimeInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use InvalidArgumentException;
@@ -11,12 +12,15 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ResourceInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\RetrieveResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\WebgriffeSyliusActiveCampaignPlugin;
 
 final class ActiveCampaignResourceClient implements ActiveCampaignResourceClientInterface
 {
@@ -42,6 +46,9 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
         $serializedResource = $this->serializer->serialize(
             [$this->resourceName => $resource],
             'json',
+            [
+                DateTimeNormalizer::FORMAT_KEY => DateTimeInterface::ATOM,
+            ],
         );
 
         $response = $this->httpClient->send(new Request(
@@ -74,7 +81,11 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
             $response->getBody()->getContents(),
             $this->createResourceResponseType,
             'json',
-            ['resource' => $this->resourceName],
+            [
+                'resource' => $this->resourceName,
+                DateTimeNormalizer::FORMAT_KEY => DateTimeInterface::ATOM,
+                AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
+            ],
         );
 
         return $createResourceResponse;
@@ -105,7 +116,11 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
             $response->getBody()->getContents(),
             $this->retrieveResourceResponseType,
             'json',
-            ['resource' => $this->resourceName],
+            [
+                'resource' => $this->resourceName,
+                DateTimeNormalizer::FORMAT_KEY => DateTimeInterface::ATOM,
+                AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
+            ],
         );
 
         return $retrieveResourceResponse;
@@ -138,6 +153,8 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
                 'resource' => $this->resourceName,
                 'responseType' => $this->resourceResponseType,
                 'type' => ListResourcesResponseInterface::class,
+                DateTimeNormalizer::FORMAT_KEY => DateTimeInterface::ATOM,
+                AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
             ],
         );
 
@@ -152,6 +169,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
         $serializedResource = $this->serializer->serialize(
             [$this->resourceName => $resource],
             'json',
+            [DateTimeNormalizer::FORMAT_KEY => DateTimeInterface::ATOM],
         );
 
         $response = $this->httpClient->send(new Request(
@@ -176,7 +194,11 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
             $response->getBody()->getContents(),
             $this->updateResourceResponseType,
             'json',
-            ['resource' => $this->resourceName],
+            [
+                'resource' => $this->resourceName,
+                DateTimeNormalizer::FORMAT_KEY => DateTimeInterface::ATOM,
+                AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
+            ],
         );
 
         return $updateResourceResponse;
