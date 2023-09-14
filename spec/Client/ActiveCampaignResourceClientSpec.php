@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Client;
 
+use DateTimeInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use PhpSpec\ObjectBehavior;
@@ -14,6 +15,8 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
@@ -49,7 +52,7 @@ final class ActiveCampaignResourceClientSpec extends ObjectBehavior
             'Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\UpdateContactResponse'
         );
 
-        $serializer->serialize(['contact' => $contact], 'json')->willReturn('{"contact":{"email":"johndoe@example.com","firstName":"John","lastName":"Doe","phone":"7223224241","fieldValues":[{"field":"1","value":"The Value for First Field"},{"field":"6","value":"2008-01-20"}]}}');
+        $serializer->serialize(['contact' => $contact], 'json', [DateTimeNormalizer::FORMAT_KEY => DateTimeInterface::ATOM])->willReturn('{"contact":{"email":"johndoe@example.com","firstName":"John","lastName":"Doe","phone":"7223224241","fieldValues":[{"field":"1","value":"The Value for First Field"},{"field":"6","value":"2008-01-20"}]}}');
 
         $httpClient->send(Argument::type(Request::class))->willReturn($response);
     }
@@ -73,7 +76,11 @@ final class ActiveCampaignResourceClientSpec extends ObjectBehavior
             self::CREATE_CONTACT_RESPONSE_PAYLOAD,
             'Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\CreateContactResponse',
             'json',
-            ['resource' => 'contact']
+            [
+                'resource' => 'contact',
+                DateTimeNormalizer::FORMAT_KEY => DateTimeInterface::ATOM,
+                AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
+            ]
         )->shouldBeCalledOnce()->willReturn($createResourceResponse);
 
         $this->create($contact)->shouldReturn($createResourceResponse);
@@ -127,7 +134,11 @@ final class ActiveCampaignResourceClientSpec extends ObjectBehavior
             self::RETRIEVE_CONTACT_RESPONSE_PAYLOAD,
             'Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\RetrieveContactResponse',
             'json',
-            ['resource' => 'contact']
+            [
+                'resource' => 'contact',
+                DateTimeNormalizer::FORMAT_KEY => DateTimeInterface::ATOM,
+                AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
+            ]
         )->shouldBeCalledOnce()->willReturn($retrieveResourceResponse);
 
         $this->get(113)->shouldReturn($retrieveResourceResponse);
@@ -172,6 +183,8 @@ final class ActiveCampaignResourceClientSpec extends ObjectBehavior
                 'resource' => 'contact',
                 'responseType' => 'Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ContactResponse',
                 'type' => ListResourcesResponseInterface::class,
+                DateTimeNormalizer::FORMAT_KEY => DateTimeInterface::ATOM,
+                AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
             ]
         )->shouldBeCalledOnce()->willReturn($listResourcesResponse);
 
@@ -213,7 +226,11 @@ final class ActiveCampaignResourceClientSpec extends ObjectBehavior
             self::UPDATE_CONTACT_RESPONSE_PAYLOAD,
             'Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\UpdateContactResponse',
             'json',
-            ['resource' => 'contact']
+            [
+                'resource' => 'contact',
+                DateTimeNormalizer::FORMAT_KEY => DateTimeInterface::ATOM,
+                AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
+            ]
         )->shouldBeCalledOnce()->willReturn($updateResourceResponse);
 
         $this->update(113, $contact)->shouldReturn($updateResourceResponse);

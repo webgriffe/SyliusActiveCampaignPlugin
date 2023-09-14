@@ -5,7 +5,7 @@
         <service id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.contact"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient">
             <argument key="$httpClient" type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
-            <argument key="$serializer" type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
+            <argument key="$serializer" type="service" id="serializer"/>
             <argument key="$resourceName" type="string">contact</argument>
             <argument key="$resourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ContactResponse</argument>
             <argument key="$createResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\CreateContactResponse</argument>
@@ -17,7 +17,7 @@
         <service id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.connection"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient">
             <argument key="$httpClient" type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
-            <argument key="$serializer" type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
+            <argument key="$serializer" type="service" id="serializer"/>
             <argument key="$resourceName" type="string">connection</argument>
             <argument key="$resourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\ConnectionResponse</argument>
             <argument key="$createResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\CreateConnectionResponse</argument>
@@ -29,7 +29,7 @@
         <service id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.ecommerce_customer"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient">
             <argument key="$httpClient" type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
-            <argument key="$serializer" type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
+            <argument key="$serializer" type="service" id="serializer"/>
             <argument key="$resourceName" type="string">ecomCustomer</argument>
             <argument key="$resourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\EcommerceCustomerResponse</argument>
             <argument key="$createResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\CreateEcommerceCustomerResponse</argument>
@@ -41,7 +41,7 @@
         <service id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.ecommerce_order"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient">
             <argument key="$httpClient" type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
-            <argument key="$serializer" type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
+            <argument key="$serializer" type="service" id="serializer"/>
             <argument key="$resourceName" type="string">ecomOrder</argument>
             <argument key="$resourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\EcommerceOrderResponse</argument>
             <argument key="$createResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\CreateEcommerceOrderResponse</argument>
@@ -53,7 +53,7 @@
         <service id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.tag"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient">
             <argument key="$httpClient" type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
-            <argument key="$serializer" type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
+            <argument key="$serializer" type="service" id="serializer"/>
             <argument key="$resourceName" type="string">tag</argument>
             <argument key="$resourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Tag\TagResponse</argument>
             <argument key="$createResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Tag\CreateTagResponse</argument>
@@ -65,7 +65,7 @@
         <service id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.contact_tag"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient">
             <argument key="$httpClient" type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
-            <argument key="$serializer" type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
+            <argument key="$serializer" type="service" id="serializer"/>
             <argument key="$resourceName" type="string">contactTag</argument>
             <argument key="$resourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactTag\ContactTagResponse</argument>
             <argument key="$createResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactTag\CreateContactTagResponse</argument>
@@ -77,7 +77,7 @@
         <service id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.contact_list"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient">
             <argument key="$httpClient" type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
-            <argument key="$serializer" type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
+            <argument key="$serializer" type="service" id="serializer"/>
             <argument key="$resourceName" type="string">contactList</argument>
             <argument key="$resourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactList\ContactListResponse</argument>
             <argument key="$createResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactList\CreateContactListResponse</argument>
@@ -89,7 +89,7 @@
         <service id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.webhook"
                  class="Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClient">
             <argument key="$httpClient" type="service" id="webgriffe.sylius_active_campaign_plugin.http_client.active_campaign"/>
-            <argument key="$serializer" type="service" id="webgriffe.sylius_active_campaign_plugin.serializer"/>
+            <argument key="$serializer" type="service" id="serializer"/>
             <argument key="$resourceName" type="string">webhook</argument>
             <argument key="$resourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Webhook\WebhookResponse</argument>
             <argument key="$createResourceResponseType" type="string">Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Webhook\CreateWebhookResponse</argument>
