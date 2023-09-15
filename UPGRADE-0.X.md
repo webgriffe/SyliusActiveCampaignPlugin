@@ -1,5 +1,13 @@
 # UPGRADE FROM `v0.1.0` TO `v0.X`
 
+## UPGRADE FROM `v0.8.0` TO `v0.9.0`
+
+Some services have been removed, please check if you are using them in your application and replace them:
+
+* The `webgriffe.sylius_active_campaign_plugin.serializer` service has been removed, now we use the default `serializer`, please see #78 for more details.
+* Now the plugin messages use the `webgriffe_sylius_active_campaign_plugin.command_bus` messenger bus with some middleware, please see #80 for more details.
+* The `webgriffe.sylius_active_campaign_plugin.logger` service has been removed. Even the `webgriffe_sylius_active_campaign.logger.channel_name` parameter. Now we use a channel `webgriffe_sylius_active_campaign_plugin` on monolog, please see #79 for more details.
+
 ## UPGRADE FROM `v0.6.0` TO `v0.7.0`
 
 The plugin directory structure has been updated to follow the Symfony bundle best practices.
