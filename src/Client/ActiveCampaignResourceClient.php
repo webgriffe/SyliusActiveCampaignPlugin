@@ -20,7 +20,19 @@ use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResp
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\RetrieveResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\WebgriffeSyliusActiveCampaignPlugin;
+
+/**
+ * Don't know why, but Psalm says that on PHP 8.1 and 8.2 this constant is undefined! Anyway, if Psalm says the truth,
+ * the following condition should fix the case where that constant doesn't exist.
+ *
+ * @psalm-suppress UndefinedConstant
+ * @psalm-suppress MixedArgument
+ */
+if (class_exists(AbstractObjectNormalizer::class) && defined(AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT)) {
+    define("Webgriffe\SyliusActiveCampaignPlugin\Client\DISABLE_TYPE_ENFORCEMENT", AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT);
+} else {
+    define("Webgriffe\SyliusActiveCampaignPlugin\Client\DISABLE_TYPE_ENFORCEMENT", 'disable_type_enforcement');
+}
 
 final class ActiveCampaignResourceClient implements ActiveCampaignResourceClientInterface
 {
@@ -84,7 +96,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
             [
                 'resource' => $this->resourceName,
                 DateTimeNormalizer::FORMAT_KEY => DateTimeInterface::ATOM,
-                AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
+                DISABLE_TYPE_ENFORCEMENT => true,
             ],
         );
 
@@ -119,7 +131,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
             [
                 'resource' => $this->resourceName,
                 DateTimeNormalizer::FORMAT_KEY => DateTimeInterface::ATOM,
-                AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
+                DISABLE_TYPE_ENFORCEMENT => true,
             ],
         );
 
@@ -154,7 +166,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
                 'responseType' => $this->resourceResponseType,
                 'type' => ListResourcesResponseInterface::class,
                 DateTimeNormalizer::FORMAT_KEY => DateTimeInterface::ATOM,
-                AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
+                DISABLE_TYPE_ENFORCEMENT => true,
             ],
         );
 
@@ -197,7 +209,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
             [
                 'resource' => $this->resourceName,
                 DateTimeNormalizer::FORMAT_KEY => DateTimeInterface::ATOM,
-                AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
+                DISABLE_TYPE_ENFORCEMENT => true,
             ],
         );
 
