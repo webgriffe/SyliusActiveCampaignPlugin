@@ -197,7 +197,7 @@ jobs:
         name: Roave BC Check
         runs-on: ubuntu-latest
         env:
-            PHP_VERSION: 8.0
+            PHP_VERSION: 8.2
         steps:
             -   name: Checkout code
                 uses: actions/checkout@v3
@@ -212,8 +212,8 @@ jobs:
                     tools: flex,symfony
                     coverage: none
 
-            -   name: Install roave/backward-compatibility-check.
-                run: composer require --dev roave/backward-compatibility-check
+            -   name: Install PHP dependencies
+                run: composer install --no-interaction --no-plugins
 
             -   name: Run roave/backward-compatibility-check.
                 run: vendor/bin/roave-backward-compatibility-check --format=github-actions
