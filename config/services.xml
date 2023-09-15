@@ -11,7 +11,6 @@
         <import resource="services/form.xml"/>
         <import resource="services/generator.xml"/>
         <import resource="services/http_client.xml"/>
-        <import resource="services/logger.xml"/>
         <import resource="services/mapper.xml"/>
         <import resource="services/message_handler.xml"/>
         <import resource="services/middleware.xml"/>
