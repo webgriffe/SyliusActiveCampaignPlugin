@@ -50,3 +50,6 @@ sylius_ui:
 twig:
     globals:
         webgriffe_active_campaign_tracking_account_id: '%env(default::WEBGRIFFE_SYLIUS_ACTIVE_CAMPAIGN_ACCOUNT_ID)%'
+
+monolog:
+    channels: ['webgriffe_sylius_active_campaign_plugin']
