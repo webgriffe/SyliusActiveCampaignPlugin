@@ -23,6 +23,19 @@ framework:
 
             'Webgriffe\SyliusActiveCampaignPlugin\Message\Webhook\WebhookCreate': main
 
+        buses:
+            webgriffe_sylius_active_campaign_plugin.command_bus:
+                middleware:
+                    - validation
+
+                    - doctrine_ping_connection
+
+                    - doctrine_close_connection
+
+                    - doctrine_transaction
+
+                    - doctrine_open_transaction_logger
+
 sylius_ui:
     events:
         sylius.admin.channel.update.form:
