@@ -1,5 +1,0 @@
-name: 'Backward Compatibility Check'
-description: 'A tool that can be used to verify BC breaks between two versions of a PHP library.'
-runs:
-    using: 'docker'
-    image: 'Dockerfile'
