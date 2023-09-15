@@ -32,9 +32,9 @@ framework:
 
                     - doctrine_close_connection
 
-                    - doctrine_transaction
-
                     - doctrine_open_transaction_logger
+
+                    - doctrine_transaction
 
 sylius_ui:
     events:
