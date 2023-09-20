@@ -1,5 +1,75 @@
 # UPGRADE FROM `v0.1.0` TO `v0.X`
 
+## UPGRADE FROM `v0.9.0` TO `v0.10.0`
+
+> **BC** Method Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareTrait#__construct() was removed
+
+There was a bug due to a __construct method on the trait CustomerActiveCampaignAwareTrait. The constructor of the trait was never called. So that 
+the channelCustomers property was never initialized, or it was initialized to a null value. Even if it was a null value this was then used in a foreach, and it will trigger a deprecation error. 
+This bug has been fixed in this release. If you use the trait you can proceed in two ways:
+
+1 - You can import the channelCustomersInitializers method and call it in the constructor of your entity. The result will be like this:
+```php
+<?php
+
+namespace App\Entity\Customer;
+
+use Doctrine\ORM\Mapping as ORM;
+use Sylius\Component\Core\Model\Customer as BaseCustomer;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareTrait;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareTrait;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="sylius_customer")
+ */
+class Customer extends BaseCustomer implements CustomerActiveCampaignAwareInterface
+{
+    use ActiveCampaignAwareTrait;
+    use CustomerActiveCampaignAwareTrait {
+        CustomerActiveCampaignAwareTrait::channelCustomersInitializers as private __channelCustomersInitializers;
+    }
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->__channelCustomersInitializers();
+    }
+}
+```
+   
+2 - If you prefer you can avoid to import the channelCustomersInitializers method and initialize yourself the
+   channelCustomers property in the constructor. The result will be like this:
+```php
+<?php
+
+namespace App\Entity\Customer;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+use Sylius\Component\Core\Model\Customer as BaseCustomer;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareTrait;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareTrait;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="sylius_customer")
+ */
+class Customer extends BaseCustomer implements CustomerActiveCampaignAwareInterface
+{
+    use ActiveCampaignAwareTrait;
+    use CustomerActiveCampaignAwareTrait;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->channelCustomers = new ArrayCollection();
+    }
+}
+```
+
 ## UPGRADE FROM `v0.8.0` TO `v0.9.0`
 
 Some services have been removed, please check if you are using them in your application and replace them:

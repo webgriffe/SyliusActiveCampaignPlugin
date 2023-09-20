@@ -57,7 +57,47 @@ nav_order: 2
     class Customer extends BaseCustomer implements CustomerActiveCampaignAwareInterface
     {
         use ActiveCampaignAwareTrait;
+        use CustomerActiveCampaignAwareTrait {
+            CustomerActiveCampaignAwareTrait::channelCustomersInitializers as private __channelCustomersInitializers;
+        }
+   
+        public function __construct()
+        {
+            parent::__construct();
+            $this->__channelCustomersInitializers();
+        }
+    }
+    ```
+   
+   If you prefer you can avoid to import the channelCustomersInitializers method and initialize yourself the
+   channelCustomers property in the constructor. The result will be like this:
+   
+    ```php
+    <?php
+	
+    namespace App\Entity\Customer;
+	
+    use Doctrine\Common\Collections\ArrayCollection;
+    use Doctrine\ORM\Mapping as ORM;
+    use Sylius\Component\Core\Model\Customer as BaseCustomer;
+    use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareTrait;
+    use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
+    use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareTrait;
+	
+    /**
+     * @ORM\Entity
+     * @ORM\Table(name="sylius_customer")
+     */
+    class Customer extends BaseCustomer implements CustomerActiveCampaignAwareInterface
+    {
+        use ActiveCampaignAwareTrait;
         use CustomerActiveCampaignAwareTrait;
+   
+        public function __construct()
+        {
+            parent::__construct();
+            $this->channelCustomers = new ArrayCollection();
+        }
     }
     ```
 
