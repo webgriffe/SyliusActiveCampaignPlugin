@@ -18,9 +18,8 @@ trait CustomerActiveCampaignAwareTrait
      */
     protected $channelCustomers;
 
-    public function __construct()
+    private function channelCustomersInitializers(): void
     {
-        parent::__construct();
         $this->channelCustomers = new ArrayCollection();
     }
 

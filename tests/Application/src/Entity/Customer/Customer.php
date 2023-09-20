@@ -16,5 +16,13 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareTrait;
 class Customer extends BaseCustomer implements CustomerInterface
 {
     use ActiveCampaignAwareTrait;
-    use CustomerActiveCampaignAwareTrait;
+    use CustomerActiveCampaignAwareTrait {
+        CustomerActiveCampaignAwareTrait::channelCustomersInitializers as private __channelCustomersInitializers;
+    }
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->__channelCustomersInitializers();
+    }
 }
