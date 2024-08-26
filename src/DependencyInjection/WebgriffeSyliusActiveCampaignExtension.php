@@ -26,13 +26,20 @@ final class WebgriffeSyliusActiveCampaignExtension extends AbstractResourceExten
         $container->setParameter('webgriffe_sylius_active_campaign.api_client.base_url', (string) $config['api_client']['base_url']);
         $container->setParameter('webgriffe_sylius_active_campaign.api_client.key', (string) $config['api_client']['key']);
 
-        $container->setParameter('webgriffe_sylius_active_campaign.mapper.ecommerce_order_product.image_type', $config['mapper']['ecommerce_order_product']['image_type']);
-
         $loader->load('services.xml');
+
+        $this->addMapperOptionsOnMappers($container, $config);
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container): ConfigurationInterface
     {
         return new Configuration();
+    }
+
+    private function addMapperOptionsOnMappers(ContainerBuilder $container, array $config): void
+    {
+        $definition = $container->getDefinition('webgriffe.sylius_active_campaign_plugin.mapper.ecommerce_order_product');
+        $definition->setArgument('$imageType', $config['mapper']['ecommerce_order_product']['image_type']);
+        $definition->setArgument('$imageFilter', $config['mapper']['ecommerce_order_product']['image_filter']);
     }
 }

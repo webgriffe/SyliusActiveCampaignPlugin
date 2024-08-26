@@ -8,5 +8,7 @@ use Sylius\Component\Core\Model\ChannelInterface;
 
 interface ChannelHostnameUrlGeneratorInterface
 {
-    public function generate(ChannelInterface $channel, string $routeName, array $parameters = []): string;
+    public function generateForRoute(ChannelInterface $channel, string $routeName, array $parameters = []): string;
+
+    public function generateForImage(ChannelInterface $channel, string $imagePath, ?string $imageFilter = null): string;
 }

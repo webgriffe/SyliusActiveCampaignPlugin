@@ -124,7 +124,7 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
     private function getOrderUrl(BaseOrderInterface $order, ChannelInterface $channel, string $localeCode, bool $isCart): string
     {
         if ($isCart) {
-            return $this->channelHostnameUrlGenerator->generate(
+            return $this->channelHostnameUrlGenerator->generateForRoute(
                 $channel,
                 'sylius_shop_cart_summary',
                 [
@@ -133,7 +133,7 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
             );
         }
 
-        return $this->channelHostnameUrlGenerator->generate(
+        return $this->channelHostnameUrlGenerator->generateForRoute(
             $channel,
             'sylius_shop_order_show',
             [

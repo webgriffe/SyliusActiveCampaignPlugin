@@ -36,7 +36,8 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
     ): void {
         $ecommerceOrderProductFactory->createNew('Wine bottle', 1200, 2, '432')->willReturn($ecommerceOrderProduct);
 
-        $channelHostnameUrlGenerator->generate($channel, 'sylius_shop_product_show', ['_locale' => 'it_IT', 'slug' => 'wine-bottle'])->willReturn('https://localhost/products/wine-bottle');
+        $channelHostnameUrlGenerator->generateForRoute($channel, 'sylius_shop_product_show', ['_locale' => 'it_IT', 'slug' => 'wine-bottle'])->willReturn('https://localhost/products/wine-bottle');
+        $channelHostnameUrlGenerator->generateForImage($channel, 'path/wine.png', null)->willReturn('https://domain.org/media/image/path/wine.png');
 
         $frenchLocale->getCode()->willReturn('fr_FR');
 
@@ -69,7 +70,7 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
         $ecommerceOrderProduct->setImageUrl('https://domain.org/media/image/path/wine.png');
         $ecommerceOrderProduct->setProductUrl('https://localhost/products/wine-bottle');
 
-        $this->beConstructedWith($ecommerceOrderProductFactory, $channelHostnameUrlGenerator, 'en_US', 'https', null);
+        $this->beConstructedWith($ecommerceOrderProductFactory, $channelHostnameUrlGenerator, 'en_US', null, null);
     }
 
     public function it_is_initializable(): void
@@ -117,13 +118,6 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
             ->during('mapFromOrderItem', [$orderItem]);
     }
 
-    public function it_throws_if_order_item_order_channel_hostname_is_null(OrderItemInterface $orderItem, ChannelInterface $channel): void
-    {
-        $channel->getHostname()->willReturn(null);
-        $this->shouldThrow(new InvalidArgumentException('The channel\'s hostname should not be null.'))
-            ->during('mapFromOrderItem', [$orderItem]);
-    }
-
     public function it_maps_ecommerce_order_product_without_category_if_main_taxon_does_not_exist(
         OrderItemInterface $orderItem,
         ProductInterface $product,
@@ -154,8 +148,9 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
         ProductInterface $product,
         EcommerceOrderProductInterface $ecommerceOrderProduct
     ): void {
-        $this->beConstructedWith($ecommerceOrderProductFactory, $channelHostnameUrlGenerator, 'en_US', 'https', 'main');
+        $this->beConstructedWith($ecommerceOrderProductFactory, $channelHostnameUrlGenerator, 'en_US', 'main');
         $product->getImagesByType('main')->willReturn(new ArrayCollection());
+        $product->getImages()->willReturn(new ArrayCollection());
         $ecommerceOrderProduct->setImageUrl('media/image/path/wine.png')->shouldNotBeCalled();
         $ecommerceOrderProduct->setImageUrl(null)->shouldBeCalledOnce();
 
@@ -168,11 +163,13 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
         OrderItemInterface $orderItem,
         ProductInterface $product,
         EcommerceOrderProductInterface $ecommerceOrderProduct,
-        ImageInterface $typedImage
+        ImageInterface $typedImage,
+        ChannelInterface $channel,
     ): void {
-        $this->beConstructedWith($ecommerceOrderProductFactory, $channelHostnameUrlGenerator, 'en_US', 'https', 'main');
+        $this->beConstructedWith($ecommerceOrderProductFactory, $channelHostnameUrlGenerator, 'en_US', 'main');
         $product->getImagesByType('main')->willReturn(new ArrayCollection([$typedImage->getWrappedObject()]));
         $typedImage->getPath()->willReturn('path/main.jpg');
+        $channelHostnameUrlGenerator->generateForImage($channel, 'path/main.jpg', null)->willReturn('https://domain.org/media/image/path/main.jpg');
         $ecommerceOrderProduct->setImageUrl('https://domain.org/media/image/path/wine.png')->shouldNotBeCalled();
         $ecommerceOrderProduct->setImageUrl(null)->shouldNotBeCalled();
         $ecommerceOrderProduct->setImageUrl('https://domain.org/media/image/path/main.jpg')->shouldBeCalledOnce();
@@ -187,7 +184,7 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
         ProductInterface $product,
         EcommerceOrderProductInterface $ecommerceOrderProduct
     ): void {
-        $this->beConstructedWith($ecommerceOrderProductFactory, $channelHostnameUrlGenerator, 'en_US', 'https', '');
+        $this->beConstructedWith($ecommerceOrderProductFactory, $channelHostnameUrlGenerator, 'en_US', '');
         $product->getImagesByType('')->shouldNotBeCalled();
         $ecommerceOrderProduct->setImageUrl('https://domain.org/media/image/path/wine.png')->shouldBeCalledOnce();
         $ecommerceOrderProduct->setImageUrl(null)->shouldNotBeCalled();
@@ -203,7 +200,7 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
         EcommerceOrderProductInterface $ecommerceOrderProduct
     ): void {
         $order->getLocaleCode()->willReturn(null);
-        $channelHostnameUrlGenerator->generate($channel, 'sylius_shop_product_show', ['_locale' => 'fr_FR', 'slug' => 'wine-bottle'])->shouldBeCalledOnce()->willReturn('https://localhost/products/wine-bottle');
+        $channelHostnameUrlGenerator->generateForRoute($channel, 'sylius_shop_product_show', ['_locale' => 'fr_FR', 'slug' => 'wine-bottle'])->shouldBeCalledOnce()->willReturn('https://localhost/products/wine-bottle');
 
         $this->mapFromOrderItem($orderItem)->shouldReturn($ecommerceOrderProduct);
     }
@@ -217,7 +214,7 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
     ): void {
         $order->getLocaleCode()->willReturn(null);
         $channel->getDefaultLocale()->willReturn(null);
-        $channelHostnameUrlGenerator->generate($channel, 'sylius_shop_product_show', ['_locale' => 'en_US', 'slug' => 'wine-bottle'])->shouldBeCalledOnce()->willReturn('https://localhost/products/wine-bottle');
+        $channelHostnameUrlGenerator->generateForRoute($channel, 'sylius_shop_product_show', ['_locale' => 'en_US', 'slug' => 'wine-bottle'])->shouldBeCalledOnce()->willReturn('https://localhost/products/wine-bottle');
 
         $this->mapFromOrderItem($orderItem)->shouldReturn($ecommerceOrderProduct);
     }
@@ -232,7 +229,7 @@ class EcommerceOrderProductMapperSpec extends ObjectBehavior
     ): void {
         $order->getLocaleCode()->willReturn(null);
         $frenchLocale->getCode()->willReturn(null);
-        $channelHostnameUrlGenerator->generate($channel, 'sylius_shop_product_show', ['_locale' => 'en_US', 'slug' => 'wine-bottle'])->shouldBeCalledOnce()->willReturn('https://localhost/products/wine-bottle');
+        $channelHostnameUrlGenerator->generateForRoute($channel, 'sylius_shop_product_show', ['_locale' => 'en_US', 'slug' => 'wine-bottle'])->shouldBeCalledOnce()->willReturn('https://localhost/products/wine-bottle');
 
         $this->mapFromOrderItem($orderItem)->shouldReturn($ecommerceOrderProduct);
     }

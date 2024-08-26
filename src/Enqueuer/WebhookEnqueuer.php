@@ -27,7 +27,7 @@ final class WebhookEnqueuer implements WebhookEnqueuerInterface
         $activeCampaignListId = $channel->getActiveCampaignListId();
         Assert::notNull($activeCampaignListId, 'The channel ActiveCampaign list id should not be null.');
         $searchWebhooks = $this->activeCampaignWebhookClient->list([
-            'filters[url]' => $this->channelHostnameUrlGenerator->generate($channel, 'webgriffe_sylius_active_campaign_list_status_webhook'),
+            'filters[url]' => $this->channelHostnameUrlGenerator->generateForRoute($channel, 'webgriffe_sylius_active_campaign_list_status_webhook'),
             'filters[listid]' => (string) $activeCampaignListId,
         ])->getResourceResponseLists();
         if (count($searchWebhooks) > 0) {

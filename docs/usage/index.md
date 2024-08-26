@@ -191,7 +191,8 @@ But what if you need to export to ActiveCampaign only some Sylius Orders? Simply
 The EcommerceOrderProductMapper service set the product image url needed to show it in the ActiveCampaign admin
 dashboard but also for the email template. By default, the service will take the first image for the product, but you can
 specify a Sylius image type to use for this purpose (for example you could have a `main` type used to specify the first
-image of the product). Set this parameter in the `webgriffe_sylius_active_campaign_plugin.yaml` file:
+image of the product). You could also set the Liip imagine filter to apply to the image to be loaded more easily. Set 
+these parameters in the `webgriffe_sylius_active_campaign_plugin.yaml` file:
 
 ```yaml
 webgriffe_sylius_active_campaign:
@@ -199,6 +200,7 @@ webgriffe_sylius_active_campaign:
     mapper:
         ecommerce_order_product:
             image_type: 'main'
+            image_filter: 'sylius_medium'
 ```
 
 Before creating the resource on ActiveCampaign, the EcommerceOrderEnqueuer queries for a corresponding ecommerce order
