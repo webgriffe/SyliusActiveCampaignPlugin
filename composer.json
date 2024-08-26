@@ -88,6 +88,21 @@
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd",
             "security-checker security:check": "script"
-        }
+        },
+        "ecs": "vendor/bin/ecs check",
+        "phpstan": "vendor/bin/phpstan analyse",
+        "psalm": "vendor/bin/psalm",
+        "phpspec": "vendor/bin/phpspec run --ansi -f progress --no-interaction",
+        "unit": "vendor/bin/phpunit --colors=always",
+        "behat": "vendor/bin/behat --colors --strict -vvv --no-interaction || vendor/bin/behat --colors --strict -vvv --no-interaction --rerun",
+        "tests": [
+            "composer validate --ansi --strict",
+            "@ecs",
+            "@phpstan",
+            "@psalm",
+            "@phpspec",
+            "@unit",
+            "@behat"
+        ]
     }
 }

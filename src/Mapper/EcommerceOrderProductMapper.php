@@ -5,13 +5,10 @@ declare(strict_types=1);
 namespace Webgriffe\SyliusActiveCampaignPlugin\Mapper;
 
 use Sylius\Component\Core\Model\ChannelInterface;
-use Sylius\Component\Core\Model\ImageInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Core\Model\TaxonInterface;
-use Symfony\Component\Asset\UrlPackage;
-use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderProductFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Generator\ChannelHostnameUrlGeneratorInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderProductInterface;
@@ -23,8 +20,8 @@ final class EcommerceOrderProductMapper implements EcommerceOrderProductMapperIn
         private EcommerceOrderProductFactoryInterface $ecommerceOrderProductFactory,
         private ChannelHostnameUrlGeneratorInterface $channelHostnameUrlGenerator,
         private string $defaultLocale,
-        private string $scheme = 'http',
         private ?string $imageType = null,
+        private ?string $imageFilter = null,
     ) {
     }
 
@@ -59,35 +56,18 @@ final class EcommerceOrderProductMapper implements EcommerceOrderProductMapperIn
         return $ecommerceOrderProduct;
     }
 
-    private function getImageUrlFromPathAndChannel(string $path, ChannelInterface $channel): string
-    {
-        $hostname = $channel->getHostname();
-        Assert::notNull($hostname, 'The channel\'s hostname should not be null.');
-        // TODO: is there any better way to handle this? Especially the media/image directory
-        $urlPackage = new UrlPackage(
-            $this->scheme . '://' . $hostname . (str_ends_with($hostname, '/') ? '' : '/') . 'media/image',
-            new EmptyVersionStrategy(),
-        );
-
-        return $urlPackage->getUrl($path);
-    }
-
     private function getImageUrlFromProductAndChannel(ProductInterface $product, ChannelInterface $channel): ?string
     {
-        if ($this->imageType === null || $this->imageType === '') {
-            $firstImage = $product->getImages()->first();
-            if (!$firstImage instanceof ImageInterface || ($path = $firstImage->getPath()) === null) {
-                return null;
-            }
-
-            return $this->getImageUrlFromPathAndChannel($path, $channel);
-        }
-        $imageForType = $product->getImagesByType($this->imageType)->first();
-        if (!$imageForType instanceof ImageInterface || ($path = $imageForType->getPath()) === null) {
+        $productImagePath = $this->getProductImagePath($product);
+        if ($productImagePath === null) {
             return null;
         }
 
-        return $this->getImageUrlFromPathAndChannel($path, $channel);
+        return $this->channelHostnameUrlGenerator->generateForImage(
+            $channel,
+            $productImagePath,
+            $this->imageFilter,
+        );
     }
 
     private function getLocaleCodeFromOrder(OrderInterface $order): string
@@ -106,7 +86,7 @@ final class EcommerceOrderProductMapper implements EcommerceOrderProductMapperIn
 
     private function getProductUrl(ProductInterface $product, ChannelInterface $channel, string $localeCode): string
     {
-        return $this->channelHostnameUrlGenerator->generate(
+        return $this->channelHostnameUrlGenerator->generateForRoute(
             $channel,
             'sylius_shop_product_show',
             [
@@ -114,5 +94,24 @@ final class EcommerceOrderProductMapper implements EcommerceOrderProductMapperIn
                 'slug' => $product->getSlug(),
             ],
         );
+    }
+
+    private function getProductImagePath(?ProductInterface $product): ?string
+    {
+        if ($product === null) {
+            return null;
+        }
+        if ($this->imageType !== null && $this->imageType !== '') {
+            $images = $product->getImagesByType($this->imageType);
+            foreach ($images as $image) {
+                return $image->getPath();
+            }
+        }
+        $images = $product->getImages();
+        foreach ($images as $image) {
+            return $image->getPath();
+        }
+
+        return null;
     }
 }

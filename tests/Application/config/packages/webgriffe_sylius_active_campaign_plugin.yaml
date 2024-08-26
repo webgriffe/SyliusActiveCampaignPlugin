@@ -7,7 +7,8 @@ webgriffe_sylius_active_campaign:
         key: '%env(WEBGRIFFE_SYLIUS_ACTIVE_CAMPAIGN_PLUGIN_KEY)%'
     mapper:
         ecommerce_order_product:
-            image_type: 'main'
+            image_type: 'main' # Type of the product image to send to ActiveCampaign. If none is specified or the type does not exist on current product then the first image will be used.
+            image_filter: 'sylius_medium' # Liip filter to apply to the image. If none is specified then the original image will be used.
     resources:
         channel_customer:
             classes:

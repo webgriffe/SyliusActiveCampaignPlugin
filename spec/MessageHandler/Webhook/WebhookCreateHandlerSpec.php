@@ -29,7 +29,7 @@ class WebhookCreateHandlerSpec extends ObjectBehavior
         $channel->getId()->willReturn(1);
         $channel->getActiveCampaignListId()->willReturn(4);
 
-        $channelHostnameUrlGenerator->generate($channel, 'webgriffe_sylius_active_campaign_list_status_webhook')->willReturn('https://localhost/webhook');
+        $channelHostnameUrlGenerator->generateForRoute($channel, 'webgriffe_sylius_active_campaign_list_status_webhook')->willReturn('https://localhost/webhook');
 
         $channelRepository->find(1)->willReturn($channel);
 

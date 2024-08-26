@@ -55,7 +55,7 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
         ChannelHostnameUrlGeneratorInterface $channelHostnameUrlGenerator,
         LocaleInterface $frenchLocale
     ): void {
-        $channelHostnameUrlGenerator->generate($channel, 'sylius_shop_order_show', ['tokenValue' => 'sD4ew_w4s5T', '_locale' => 'it_IT'])->willReturn('https://localhost/order/sD4ew_w4s5T');
+        $channelHostnameUrlGenerator->generateForRoute($channel, 'sylius_shop_order_show', ['tokenValue' => 'sD4ew_w4s5T', '_locale' => 'it_IT'])->willReturn('https://localhost/order/sD4ew_w4s5T');
 
         $ecommerceOrderProductMapper->mapFromOrderItem($firstOrderItem)->willReturn($firstOrderProduct);
 
@@ -250,7 +250,7 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
         EcommerceOrderInterface $ecommerceOrder
     ): void {
         $order->getLocaleCode()->willReturn(null);
-        $channelHostnameUrlGenerator->generate($channel, 'sylius_shop_order_show', ['tokenValue' => 'sD4ew_w4s5T', '_locale' => 'fr_FR'])->shouldBeCalledOnce()->willReturn('https://localhost/order/sD4ew_w4s5T');
+        $channelHostnameUrlGenerator->generateForRoute($channel, 'sylius_shop_order_show', ['tokenValue' => 'sD4ew_w4s5T', '_locale' => 'fr_FR'])->shouldBeCalledOnce()->willReturn('https://localhost/order/sD4ew_w4s5T');
 
         $this->mapFromOrder($order, true)->shouldReturn($ecommerceOrder);
     }
@@ -263,7 +263,7 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
     ): void {
         $order->getLocaleCode()->willReturn(null);
         $channel->getDefaultLocale()->willReturn(null);
-        $channelHostnameUrlGenerator->generate($channel, 'sylius_shop_order_show', ['tokenValue' => 'sD4ew_w4s5T', '_locale' => 'en_US'])->shouldBeCalledOnce()->willReturn('https://localhost/order/sD4ew_w4s5T');
+        $channelHostnameUrlGenerator->generateForRoute($channel, 'sylius_shop_order_show', ['tokenValue' => 'sD4ew_w4s5T', '_locale' => 'en_US'])->shouldBeCalledOnce()->willReturn('https://localhost/order/sD4ew_w4s5T');
 
         $this->mapFromOrder($order, true)->shouldReturn($ecommerceOrder);
     }
@@ -277,7 +277,7 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
     ): void {
         $order->getLocaleCode()->willReturn(null);
         $frenchLocale->getCode()->willReturn(null);
-        $channelHostnameUrlGenerator->generate($channel, 'sylius_shop_order_show', ['tokenValue' => 'sD4ew_w4s5T', '_locale' => 'en_US'])->shouldBeCalledOnce()->willReturn('https://localhost/order/sD4ew_w4s5T');
+        $channelHostnameUrlGenerator->generateForRoute($channel, 'sylius_shop_order_show', ['tokenValue' => 'sD4ew_w4s5T', '_locale' => 'en_US'])->shouldBeCalledOnce()->willReturn('https://localhost/order/sD4ew_w4s5T');
 
         $this->mapFromOrder($order, true)->shouldReturn($ecommerceOrder);
     }
@@ -289,7 +289,7 @@ class EcommerceOrderMapperSpec extends ObjectBehavior
         EcommerceOrderFactoryInterface $ecommerceOrderFactory,
         ChannelHostnameUrlGeneratorInterface $channelHostnameUrlGenerator
     ): void {
-        $channelHostnameUrlGenerator->generate($channel, 'sylius_shop_cart_summary', ['_locale' => 'it_IT'])->shouldBeCalledOnce()->willReturn('https://localhost/cart');
+        $channelHostnameUrlGenerator->generateForRoute($channel, 'sylius_shop_cart_summary', ['_locale' => 'it_IT'])->shouldBeCalledOnce()->willReturn('https://localhost/cart');
         $ecommerceOrder->setOrderUrl('https://localhost/cart')->shouldBeCalledOnce();
         $order->getState()->willReturn(OrderInterface::STATE_CART);
         $ecommerceOrderFactory->createNew(
