@@ -8,7 +8,7 @@ services:
 
     #For development only
     mailhog:
-        image: mailhog/mailhog
+        image: axllent/mailpit
         labels:
             com.symfony.server.service-prefix: 'MAILER'
         ports:
