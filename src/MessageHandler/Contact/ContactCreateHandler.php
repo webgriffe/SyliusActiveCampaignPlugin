@@ -7,10 +7,12 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact;
 use InvalidArgumentException;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ContactResponse;
 
 final class ContactCreateHandler
 {
@@ -37,8 +39,20 @@ final class ContactCreateHandler
         if ($activeCampaignId !== null) {
             throw new InvalidArgumentException(sprintf('The Customer with id "%s" has been already created on ActiveCampaign on the contact with id "%s"', $customerId, $activeCampaignId));
         }
-        $createContactResponse = $this->activeCampaignContactClient->create($this->contactMapper->mapFromCustomer($customer));
-        $customer->setActiveCampaignId($createContactResponse->getResourceResponse()->getId());
+        try {
+            $createContactResponse = $this->activeCampaignContactClient->create($this->contactMapper->mapFromCustomer($customer));
+            $activeCampaignContactId = $createContactResponse->getResourceResponse()->getId();
+        } catch (UnprocessableEntityHttpException $e) {
+            // If validation fails try to check if contact already exists
+            $searchContactsForEmail = $this->activeCampaignContactClient->list(['email' => (string) $customer->getEmail()])->getResourceResponseLists();
+            if (count($searchContactsForEmail) < 1) {
+                throw $e;
+            }
+            /** @var ContactResponse $contact */
+            $contact = reset($searchContactsForEmail);
+            $activeCampaignContactId = $contact->getId();
+        }
+        $customer->setActiveCampaignId($activeCampaignContactId);
         $this->customerRepository->add($customer);
     }
 }

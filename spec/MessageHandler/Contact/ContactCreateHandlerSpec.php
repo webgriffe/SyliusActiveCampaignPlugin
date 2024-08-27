@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace spec\Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact;
 
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Customer\CustomerInterface;
 use InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
@@ -16,6 +17,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactCreateHan
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseInterface;
 
 class ContactCreateHandlerSpec extends ObjectBehavior
@@ -30,6 +32,7 @@ class ContactCreateHandlerSpec extends ObjectBehavior
         $contactMapper->mapFromCustomer($customer)->willReturn($contact);
 
         $customer->getActiveCampaignId()->willReturn(null);
+        $customer->getEmail()->willReturn('email');
 
         $customerRepository->find(12)->willReturn($customer);
 
@@ -86,6 +89,26 @@ class ContactCreateHandlerSpec extends ObjectBehavior
         $contactResponse->getId()->willReturn(3423);
         $createContactResponse->getResourceResponse()->willReturn($contactResponse);
         $activeCampaignContactClient->create($contact)->shouldBeCalledOnce()->willReturn($createContactResponse);
+        $customer->setActiveCampaignId(3423)->shouldBeCalledOnce();
+        $customerRepository->add($customer)->shouldBeCalledOnce();
+
+        $this->__invoke(new ContactCreate(12));
+    }
+
+    public function it_search_for_contact_id_if_validation_fails_due_to_duplicated_email(
+        ContactInterface $contact,
+        ActiveCampaignResourceClientInterface $activeCampaignContactClient,
+        CustomerInterface $customer,
+        CustomerRepositoryInterface $customerRepository,
+        ResourceResponseInterface $contactResponse,
+        ListResourcesResponseInterface $searchContactsForEmail,
+    ): void {
+        $contactResponse->getId()->willReturn(3423);
+        $activeCampaignContactClient->create($contact)->shouldBeCalledOnce()->willThrow(new UnprocessableEntityHttpException());
+        $activeCampaignContactClient->list(['email' => 'email'])->shouldBeCalledOnce()->willReturn($searchContactsForEmail);
+
+        $searchContactsForEmail->getResourceResponseLists()->willReturn([$contactResponse]);
+
         $customer->setActiveCampaignId(3423)->shouldBeCalledOnce();
         $customerRepository->add($customer)->shouldBeCalledOnce();
 

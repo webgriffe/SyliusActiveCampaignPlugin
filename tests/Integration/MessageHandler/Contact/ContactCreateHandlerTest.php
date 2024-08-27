@@ -34,7 +34,6 @@ final class ContactCreateHandlerTest extends KernelTestCase
             self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.mapper.contact'),
             self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.client_stub.active_campaign.contact'),
             $this->customerRepository,
-            self::getContainer()->get('messenger.default_bus'),
         );
     }
 
