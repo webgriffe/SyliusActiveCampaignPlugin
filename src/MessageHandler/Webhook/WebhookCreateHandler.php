@@ -53,6 +53,7 @@ final class WebhookCreateHandler
         if ($activeCampaignListId === null) {
             throw new InvalidArgumentException(sprintf('The Channel with id "%s" does not have an ActiveCampaign list id.', $channelId));
         }
+
         try {
             $this->activeCampaignWebhookClient->create($this->webhookMapper->map(
                 sprintf('Update Sylius newsletter subscription to list "%s"', $activeCampaignListId),

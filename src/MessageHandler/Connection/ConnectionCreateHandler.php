@@ -52,7 +52,8 @@ final class ConnectionCreateHandler
         if ($activeCampaignId !== null) {
             throw new InvalidArgumentException(sprintf('The Channel with id "%s" has been already created on ActiveCampaign on the connection with id "%s"', $channelId, $activeCampaignId));
         }
-        try{
+
+        try {
             $createConnectionResponse = $this->activeCampaignConnectionClient->create($this->connectionMapper->mapFromChannel($channel));
         } catch (\Throwable $e) {
             $this->logger?->error($e->getMessage(), $e->getTrace());

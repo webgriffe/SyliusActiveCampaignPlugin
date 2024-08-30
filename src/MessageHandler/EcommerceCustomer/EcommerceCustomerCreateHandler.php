@@ -76,6 +76,7 @@ final class EcommerceCustomerCreateHandler
 
             throw new InvalidArgumentException(sprintf('The Customer with id "%s" has been already created on ActiveCampaign on the EcommerceCustomer with id "%s"', $customerId, $activeCampaignId));
         }
+
         try {
             $response = $this->activeCampaignClient->create($this->ecommerceCustomerMapper->mapFromCustomerAndChannel($customer, $channel));
         } catch (\Throwable $e) {

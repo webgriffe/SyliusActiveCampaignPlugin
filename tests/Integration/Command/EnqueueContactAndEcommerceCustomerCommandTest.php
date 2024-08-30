@@ -189,7 +189,7 @@ final class EnqueueContactAndEcommerceCustomerCommandTest extends AbstractComman
         array $messages,
         CustomerInterface $customer,
         string $messageClass,
-        ChannelInterface $channel = null
+        ChannelInterface $channel = null,
     ): Envelope {
         $messages = array_filter($messages, static function (Envelope $envelope) use ($customer, $messageClass, $channel) {
             $message = $envelope->getMessage();

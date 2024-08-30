@@ -54,6 +54,7 @@ final class ContactCreateHandler
         if ($activeCampaignId !== null) {
             throw new InvalidArgumentException(sprintf('The Customer with id "%s" has been already created on ActiveCampaign on the contact with id "%s"', $customerId, $activeCampaignId));
         }
+
         try {
             $createContactResponse = $this->activeCampaignContactClient->create($this->contactMapper->mapFromCustomer($customer));
             $activeCampaignContactId = $createContactResponse->getResourceResponse()->getId();

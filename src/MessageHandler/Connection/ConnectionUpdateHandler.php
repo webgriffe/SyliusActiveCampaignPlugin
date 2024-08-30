@@ -52,6 +52,7 @@ final class ConnectionUpdateHandler
         if ($activeCampaignId !== $message->getActiveCampaignId()) {
             throw new InvalidArgumentException(sprintf('The Channel with id "%s" has an ActiveCampaign id that does not match. Expected "%s", given "%s".', $channelId, $message->getActiveCampaignId(), (string) $activeCampaignId));
         }
+
         try {
             $this->activeCampaignConnectionClient->update($message->getActiveCampaignId(), $this->connectionMapper->mapFromChannel($channel));
         } catch (\Throwable $e) {

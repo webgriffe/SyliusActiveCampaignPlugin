@@ -52,6 +52,7 @@ final class EcommerceOrderUpdateHandler
         if ($activeCampaignId !== $message->getActiveCampaignId()) {
             throw new InvalidArgumentException(sprintf('The Order with id "%s" has an ActiveCampaign id that does not match. Expected "%s", given "%s".', $orderId, $message->getActiveCampaignId(), (string) $activeCampaignId));
         }
+
         try {
             $this->activeCampaignEcommerceOrderClient->update($message->getActiveCampaignId(), $this->ecommerceOrderMapper->mapFromOrder($order, $message->isInRealTime()));
         } catch (\Throwable $e) {
