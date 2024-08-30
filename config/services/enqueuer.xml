@@ -7,6 +7,7 @@
             <argument type="service" id="webgriffe_sylius_active_campaign_plugin.command_bus"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.contact"/>
             <argument type="service" id="doctrine.orm.entity_manager"/>
+            <argument type="service" id="monolog.logger.webgriffe_sylius_active_campaign_plugin"/>
         </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.enqueuer.connection"
@@ -14,6 +15,7 @@
             <argument type="service" id="webgriffe_sylius_active_campaign_plugin.command_bus"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.connection"/>
             <argument type="service" id="doctrine.orm.entity_manager"/>
+            <argument type="service" id="monolog.logger.webgriffe_sylius_active_campaign_plugin"/>
         </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.enqueuer.ecommerce_customer"
@@ -22,6 +24,7 @@
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.ecommerce_customer"/>
             <argument type="service" id="doctrine.orm.entity_manager"/>
             <argument type="service" id="webgriffe_sylius_active_campaign.factory.channel_customer"/>
+            <argument type="service" id="monolog.logger.webgriffe_sylius_active_campaign_plugin"/>
         </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.enqueuer.ecommerce_order"
@@ -29,6 +32,7 @@
             <argument type="service" id="webgriffe_sylius_active_campaign_plugin.command_bus"/>
             <argument type="service" id="doctrine.orm.entity_manager"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.ecommerce_order"/>
+            <argument type="service" id="monolog.logger.webgriffe_sylius_active_campaign_plugin"/>
         </service>
 
         <service id="webgriffe.sylius_active_campaign_plugin.enqueuer.webhook"
@@ -36,6 +40,7 @@
             <argument type="service" id="webgriffe_sylius_active_campaign_plugin.command_bus"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.client.active_campaign.webhook"/>
             <argument type="service" id="webgriffe.sylius_active_campaign_plugin.generator.channel_hostname_url"/>
+            <argument type="service" id="monolog.logger.webgriffe_sylius_active_campaign_plugin"/>
         </service>
     </services>
 </container>

@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceCustomer;
 
 use Doctrine\ORM\EntityManagerInterface;
+use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
@@ -30,9 +32,22 @@ final class EcommerceCustomerCreateHandler
         private ChannelRepositoryInterface $channelRepository,
         private FactoryInterface $channelCustomerFactory,
         private EntityManagerInterface $entityManager,
+        private ?LoggerInterface $logger = null,
     ) {
+        if ($this->logger === null) {
+            trigger_deprecation(
+                'webgriffe/sylius-active-campaign-plugin',
+                'v0.12.2',
+                'The logger argument is mandatory.',
+            );
+        }
     }
 
+    /**
+     * @throws GuzzleException
+     * @throws \Throwable
+     * @throws \JsonException
+     */
     public function __invoke(EcommerceCustomerCreate $message): void
     {
         $channelId = $message->getChannelId();
@@ -61,7 +76,13 @@ final class EcommerceCustomerCreateHandler
 
             throw new InvalidArgumentException(sprintf('The Customer with id "%s" has been already created on ActiveCampaign on the EcommerceCustomer with id "%s"', $customerId, $activeCampaignId));
         }
-        $response = $this->activeCampaignClient->create($this->ecommerceCustomerMapper->mapFromCustomerAndChannel($customer, $channel));
+        try {
+            $response = $this->activeCampaignClient->create($this->ecommerceCustomerMapper->mapFromCustomerAndChannel($customer, $channel));
+        } catch (\Throwable $e) {
+            $this->logger?->error($e->getMessage(), $e->getTrace());
+
+            throw $e;
+        }
         $channelCustomer = $this->channelCustomerFactory->createNew();
         $channelCustomer->setCustomer($customer);
         $channelCustomer->setActiveCampaignId($response->getResourceResponse()->getId());

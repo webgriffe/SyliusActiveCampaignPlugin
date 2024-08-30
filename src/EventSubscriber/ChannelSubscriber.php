@@ -38,6 +38,10 @@ final class ChannelSubscriber implements EventSubscriberInterface
         if (!$channel instanceof ChannelInterface || !$channel instanceof ActiveCampaignAwareInterface) {
             return;
         }
+        $this->logger->debug(sprintf(
+            'Invoked connection enqueuing for channel "%s".',
+            (string) $channel->getId(),
+        ));
 
         try {
             $this->connectionEnqueuer->enqueue($channel);
@@ -49,9 +53,13 @@ final class ChannelSubscriber implements EventSubscriberInterface
     public function removeChannel(GenericEvent $event): void
     {
         $channel = $event->getSubject();
-        if (!$channel instanceof ActiveCampaignAwareInterface) {
+        if (!$channel instanceof ChannelInterface || !$channel instanceof ActiveCampaignAwareInterface) {
             return;
         }
+        $this->logger->debug(sprintf(
+            'Invoked connection removal for channel "%s".',
+            (string) $channel->getId(),
+        ));
         $activeCampaignId = $channel->getActiveCampaignId();
         if ($activeCampaignId === null) {
             return;

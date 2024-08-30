@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact;
 
+use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
@@ -30,6 +31,11 @@ final class ContactTagsAdderHandler
     ) {
     }
 
+    /**
+     * @throws \Throwable
+     * @throws GuzzleException
+     * @throws \JsonException
+     */
     public function __invoke(ContactTagsAdder $message): void
     {
         $customerId = $message->getCustomerId();
@@ -62,6 +68,10 @@ final class ContactTagsAdderHandler
                 $this->logger->info(sprintf('The tag with id "%s" already exists for the contact with id "%s".', $activeCampaignTagId, $activeCampaignContactId));
 
                 continue;
+            } catch (\Throwable $e) {
+                $this->logger->error($e->getMessage(), $e->getTrace());
+
+                throw $e;
             }
         }
     }

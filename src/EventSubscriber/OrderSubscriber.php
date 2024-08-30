@@ -46,10 +46,14 @@ final class OrderSubscriber implements EventSubscriberInterface
     public function enqueueContact(GenericEvent $event): void
     {
         $order = $event->getSubject();
-        if (!$order instanceof OrderInterface || !$order instanceof ActiveCampaignAwareInterface || $order->getCustomer() === null) {
+        if (!$order instanceof OrderInterface || !$order instanceof ActiveCampaignAwareInterface || null === $customer = $order->getCustomer()) {
             return;
         }
-        $customer = $order->getCustomer();
+        $this->logger->debug(sprintf(
+            'Invoked contact enqueuing for customer "%s" by order "%s".',
+            (string) $customer->getId(),
+            (string) $order->getId(),
+        ));
         if (!$customer instanceof CustomerInterface || !$customer instanceof CustomerActiveCampaignAwareInterface) {
             return;
         }
@@ -64,10 +68,14 @@ final class OrderSubscriber implements EventSubscriberInterface
     public function enqueueEcommerceCustomer(GenericEvent $event): void
     {
         $order = $event->getSubject();
-        if (!$order instanceof OrderInterface || !$order instanceof ActiveCampaignAwareInterface || $order->getCustomer() === null) {
+        if (!$order instanceof OrderInterface || !$order instanceof ActiveCampaignAwareInterface || null === $customer = $order->getCustomer()) {
             return;
         }
-        $customer = $order->getCustomer();
+        $this->logger->debug(sprintf(
+            'Invoked ecommerce customer enqueuing for customer "%s" by order "%s".',
+            (string) $customer->getId(),
+            (string) $order->getId(),
+        ));
         if (!$customer instanceof CustomerInterface || !$customer instanceof CustomerActiveCampaignAwareInterface) {
             return;
         }
@@ -94,6 +102,11 @@ final class OrderSubscriber implements EventSubscriberInterface
         if (!$customer instanceof CustomerInterface || !$customer instanceof CustomerActiveCampaignAwareInterface) {
             return;
         }
+        $this->logger->debug(sprintf(
+            'Invoked adding contact tags for customer "%s" by order "%s".',
+            (string) $customer->getId(),
+            (string) $order->getId(),
+        ));
         /** @var int|string|null $customerId */
         $customerId = $customer->getId();
         if ($customerId === null) {
@@ -117,6 +130,11 @@ final class OrderSubscriber implements EventSubscriberInterface
         if (!$customer instanceof CustomerInterface || !$customer instanceof CustomerActiveCampaignAwareInterface) {
             return;
         }
+        $this->logger->debug(sprintf(
+            'Invoked subscribing contact to lists for customer "%s" by order "%s".',
+            (string) $customer->getId(),
+            (string) $order->getId(),
+        ));
         /** @var int|string|null $customerId */
         $customerId = $customer->getId();
         if ($customerId === null) {
@@ -146,6 +164,10 @@ final class OrderSubscriber implements EventSubscriberInterface
         if (!$order instanceof OrderInterface || !$order instanceof ActiveCampaignAwareInterface || $order->getCustomer() === null) {
             return;
         }
+        $this->logger->debug(sprintf(
+            'Invoked ecommerce order enqueuing for order "%s".',
+            (string) $order->getId(),
+        ), ['is_in_real_time' => $isInRealTime]);
 
         try {
             $this->ecommerceOrderEnqueuer->enqueue($order, $isInRealTime);
@@ -156,14 +178,18 @@ final class OrderSubscriber implements EventSubscriberInterface
 
     public function removeOrder(GenericEvent $event): void
     {
-        $customer = $event->getSubject();
-        if (!$customer instanceof ActiveCampaignAwareInterface) {
+        $order = $event->getSubject();
+        if (!$order instanceof OrderInterface || !$order instanceof ActiveCampaignAwareInterface) {
             return;
         }
-        $activeCampaignId = $customer->getActiveCampaignId();
+        $activeCampaignId = $order->getActiveCampaignId();
         if ($activeCampaignId === null) {
             return;
         }
+        $this->logger->debug(sprintf(
+            'Invoked remove ecommerce order for order "%s".',
+            (string) $order->getId(),
+        ));
 
         try {
             $this->messageBus->dispatch(new EcommerceOrderRemove($activeCampaignId));

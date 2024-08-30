@@ -47,6 +47,10 @@ final class CustomerSubscriber implements EventSubscriberInterface
         if (!$customer instanceof CustomerInterface || !$customer instanceof CustomerActiveCampaignAwareInterface) {
             return;
         }
+        $this->logger->debug(sprintf(
+            'Invoked contact enqueuing for customer "%s".',
+            (string) $customer->getId(),
+        ));
 
         try {
             $this->contactEnqueuer->enqueue($customer);
@@ -61,6 +65,10 @@ final class CustomerSubscriber implements EventSubscriberInterface
         if (!$customer instanceof CustomerInterface || !$customer instanceof CustomerActiveCampaignAwareInterface) {
             return;
         }
+        $this->logger->debug(sprintf(
+            'Invoked ecommerce customer enqueuing for customer "%s".',
+            (string) $customer->getId(),
+        ));
         foreach ($this->customerChannelsResolver->resolve($customer) as $channel) {
             if (!$channel instanceof ActiveCampaignAwareInterface) {
                 return;
@@ -85,6 +93,10 @@ final class CustomerSubscriber implements EventSubscriberInterface
         if ($customerId === null) {
             return;
         }
+        $this->logger->debug(sprintf(
+            'Invoked adding contact tags for customer "%s".',
+            $customerId,
+        ));
 
         try {
             $this->messageBus->dispatch(new ContactTagsAdder($customerId));
@@ -104,6 +116,10 @@ final class CustomerSubscriber implements EventSubscriberInterface
         if ($customerId === null) {
             return;
         }
+        $this->logger->debug(sprintf(
+            'Invoked subscribing contact to lists for customer "%s".',
+            $customerId,
+        ));
 
         try {
             $this->messageBus->dispatch(new ContactListsSubscriber($customerId));
@@ -115,9 +131,13 @@ final class CustomerSubscriber implements EventSubscriberInterface
     public function removeContact(GenericEvent $event): void
     {
         $customer = $event->getSubject();
-        if (!$customer instanceof ActiveCampaignAwareInterface) {
+        if (!$customer instanceof CustomerInterface || !$customer instanceof ActiveCampaignAwareInterface) {
             return;
         }
+        $this->logger->debug(sprintf(
+            'Invoked remove contact for customer "%s".',
+            (string) $customer->getId(),
+        ));
         $activeCampaignId = $customer->getActiveCampaignId();
         if ($activeCampaignId === null) {
             return;
@@ -133,9 +153,13 @@ final class CustomerSubscriber implements EventSubscriberInterface
     public function removeEcommerceCustomer(GenericEvent $event): void
     {
         $customer = $event->getSubject();
-        if (!$customer instanceof CustomerActiveCampaignAwareInterface) {
+        if (!$customer instanceof CustomerInterface || !$customer instanceof CustomerActiveCampaignAwareInterface) {
             return;
         }
+        $this->logger->debug(sprintf(
+            'Invoked remove ecommerce customer for customer "%s".',
+            (string) $customer->getId(),
+        ));
         $activeCampaignId = $customer->getActiveCampaignId();
         if ($activeCampaignId === null) {
             return;

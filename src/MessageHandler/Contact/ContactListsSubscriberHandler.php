@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact;
 
+use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
@@ -30,6 +31,11 @@ final class ContactListsSubscriberHandler
     ) {
     }
 
+    /**
+     * @throws GuzzleException
+     * @throws \Throwable
+     * @throws \JsonException
+     */
     public function __invoke(ContactListsSubscriber $message): void
     {
         $customerId = $message->getCustomerId();
@@ -59,7 +65,12 @@ final class ContactListsSubscriberHandler
             try {
                 $listSubscriptionStatus = $this->listSubscriptionStatusResolver->resolve($customer, $channel);
             } catch (ListSubscriptionStatusResolverExceptionInterface $exception) {
-                $this->logger->info(sprintf('Unable to resolve for the customer "%s" the subscription status for the list "%s" of channel "%s".', (string) $customer->getEmail(), $activeCampaignListId, (string) $channel->getCode()));
+                $this->logger->info(sprintf(
+                    'Unable to resolve for the customer "%s" the subscription status for the list "%s" of channel "%s".',
+                    (string) $customer->getEmail(),
+                    $activeCampaignListId,
+                    (string) $channel->getCode(),
+                ));
 
                 continue;
             }
@@ -77,6 +88,10 @@ final class ContactListsSubscriberHandler
                 $this->logger->info(sprintf('The association with the list with id "%s" already exists for the contact with id "%s".', $activeCampaignListId, $activeCampaignContactId));
 
                 continue;
+            } catch (\Throwable $e) {
+                $this->logger->error($e->getMessage(), $e->getTrace());
+
+                throw $e;
             }
         }
     }

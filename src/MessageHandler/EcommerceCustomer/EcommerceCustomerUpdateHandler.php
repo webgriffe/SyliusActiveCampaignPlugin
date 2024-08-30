@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceCustomer;
 
+use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
@@ -22,9 +24,22 @@ final class EcommerceCustomerUpdateHandler
         private ActiveCampaignResourceClientInterface $activeCampaignClient,
         private CustomerRepositoryInterface $customerRepository,
         private ChannelRepositoryInterface $channelRepository,
+        private ?LoggerInterface $logger = null,
     ) {
+        if ($this->logger === null) {
+            trigger_deprecation(
+                'webgriffe/sylius-active-campaign-plugin',
+                'v0.12.2',
+                'The logger argument is mandatory.',
+            );
+        }
     }
 
+    /**
+     * @throws GuzzleException
+     * @throws \Throwable
+     * @throws \JsonException
+     */
     public function __invoke(EcommerceCustomerUpdate $message): void
     {
         $channelId = $message->getChannelId();
@@ -55,6 +70,12 @@ final class EcommerceCustomerUpdateHandler
         if ($activeCampaignId !== $message->getActiveCampaignId()) {
             throw new InvalidArgumentException(sprintf('The Customer with id "%s" has an ActiveCampaign id that does not match. Expected "%s", given "%s".', $customerId, $message->getActiveCampaignId(), (string) $activeCampaignId));
         }
-        $this->activeCampaignClient->update($message->getActiveCampaignId(), $this->ecommerceCustomerMapper->mapFromCustomerAndChannel($customer, $channel));
+        try {
+            $this->activeCampaignClient->update($message->getActiveCampaignId(), $this->ecommerceCustomerMapper->mapFromCustomerAndChannel($customer, $channel));
+        } catch (\Throwable $e) {
+            $this->logger?->error($e->getMessage(), $e->getTrace());
+
+            throw $e;
+        }
     }
 }

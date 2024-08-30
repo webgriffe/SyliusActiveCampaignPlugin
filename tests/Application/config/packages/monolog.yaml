@@ -1,0 +1,7 @@
+monolog:
+    handlers:
+        active_campaign:
+            type: stream
+            path: "%kernel.logs_dir%/active_campaign_%kernel.environment%.log"
+            level: debug
+            channels: ['webgriffe_sylius_active_campaign_plugin']

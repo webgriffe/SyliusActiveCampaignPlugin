@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact;
 
+use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -20,9 +22,22 @@ final class ContactCreateHandler
         private ContactMapperInterface $contactMapper,
         private ActiveCampaignResourceClientInterface $activeCampaignContactClient,
         private CustomerRepositoryInterface $customerRepository,
+        private ?LoggerInterface $logger = null,
     ) {
+        if ($this->logger === null) {
+            trigger_deprecation(
+                'webgriffe/sylius-active-campaign-plugin',
+                'v0.12.2',
+                'The logger argument is mandatory.',
+            );
+        }
     }
 
+    /**
+     * @throws \Throwable
+     * @throws GuzzleException
+     * @throws \JsonException
+     */
     public function __invoke(ContactCreate $message): void
     {
         $customerId = $message->getCustomerId();
@@ -51,6 +66,15 @@ final class ContactCreateHandler
             /** @var ContactResponse $contact */
             $contact = reset($searchContactsForEmail);
             $activeCampaignContactId = $contact->getId();
+            $this->logger?->warning(sprintf(
+                'Contact with email "%s" already exists on ActiveCampaign with id "%s". Why it has not been found before?',
+                (string) $customer->getEmail(),
+                $activeCampaignContactId,
+            ));
+        } catch (\Throwable $e) {
+            $this->logger?->error($e->getMessage(), $e->getTrace());
+
+            throw $e;
         }
         $customer->setActiveCampaignId($activeCampaignContactId);
         $this->customerRepository->add($customer);

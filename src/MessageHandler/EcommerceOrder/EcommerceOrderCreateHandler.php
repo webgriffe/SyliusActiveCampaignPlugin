@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceOrder;
 
+use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Repository\OrderRepositoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
@@ -18,9 +20,22 @@ final class EcommerceOrderCreateHandler
         private EcommerceOrderMapperInterface $ecommerceOrderMapper,
         private ActiveCampaignResourceClientInterface $activeCampaignEcommerceOrderClient,
         private OrderRepositoryInterface $orderRepository,
+        private ?LoggerInterface $logger = null,
     ) {
+        if ($this->logger === null) {
+            trigger_deprecation(
+                'webgriffe/sylius-active-campaign-plugin',
+                'v0.12.2',
+                'The logger argument is mandatory.',
+            );
+        }
     }
 
+    /**
+     * @throws GuzzleException
+     * @throws \Throwable
+     * @throws \JsonException
+     */
     public function __invoke(EcommerceOrderCreate $message): void
     {
         $orderId = $message->getOrderId();
@@ -37,7 +52,13 @@ final class EcommerceOrderCreateHandler
         if ($activeCampaignId !== null) {
             throw new InvalidArgumentException(sprintf('The Order with id "%s" has been already created on ActiveCampaign on the ecommerce order with id "%s"', $orderId, $activeCampaignId));
         }
-        $response = $this->activeCampaignEcommerceOrderClient->create($this->ecommerceOrderMapper->mapFromOrder($order, $message->isInRealTime()));
+        try {
+            $response = $this->activeCampaignEcommerceOrderClient->create($this->ecommerceOrderMapper->mapFromOrder($order, $message->isInRealTime()));
+        } catch (\Throwable $e) {
+            $this->logger?->error($e->getMessage(), $e->getTrace());
+
+            throw $e;
+        }
         $order->setActiveCampaignId($response->getResourceResponse()->getId());
         $this->orderRepository->add($order);
     }
