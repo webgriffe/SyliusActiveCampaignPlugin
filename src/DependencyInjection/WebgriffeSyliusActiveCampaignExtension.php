@@ -8,6 +8,7 @@ use Sylius\Bundle\ResourceBundle\DependencyInjection\Extension\AbstractResourceE
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
 final class WebgriffeSyliusActiveCampaignExtension extends AbstractResourceExtension
@@ -20,6 +21,7 @@ final class WebgriffeSyliusActiveCampaignExtension extends AbstractResourceExten
         $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
         $fileLocator = new FileLocator(__DIR__ . '/../../config');
         $loader = new XmlFileLoader($container, $fileLocator);
+        $loader2 = new PHPFileLoader($container, $fileLocator);
 
         $this->registerResources('webgriffe_sylius_active_campaign', $config['driver'], $config['resources'], $container);
 
@@ -27,6 +29,7 @@ final class WebgriffeSyliusActiveCampaignExtension extends AbstractResourceExten
         $container->setParameter('webgriffe_sylius_active_campaign.api_client.key', (string) $config['api_client']['key']);
 
         $loader->load('services.xml');
+        $loader2->load('services.php');
 
         $this->addMapperOptionsOnMappers($container, $config);
     }
