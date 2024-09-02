@@ -191,14 +191,22 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
             $serializedResource,
         ));
         if (($statusCode = $response->getStatusCode()) !== 200) {
-            if ($statusCode === 404) {
-                /** @var array{message: string} $errorResponse */
-                $errorResponse = json_decode($response->getBody()->getContents(), true, 512, \JSON_THROW_ON_ERROR);
+            switch ($statusCode) {
+                case 404:
+                    /** @var array{message: string} $errorResponse */
+                    $errorResponse = json_decode($response->getBody()->getContents(), true, 512, \JSON_THROW_ON_ERROR);
 
-                throw new NotFoundHttpException($errorResponse['message']);
+                    throw new NotFoundHttpException($errorResponse['message']);
+                case 422:
+                    /** @var array{errors: array{title: string, detail: string, code: string, source: array{pointer: string}}} $errorResponse */
+                    $errorResponse = json_decode($response->getBody()->getContents(), true, 512, \JSON_THROW_ON_ERROR);
+                    /** @var string[] $titles */
+                    $titles = array_column($errorResponse['errors'], 'title');
+
+                    throw new UnprocessableEntityHttpException(implode('; ', $titles));
+                default:
+                    throw new HttpException($statusCode, $response->getReasonPhrase(), null, $response->getHeaders());
             }
-
-            throw new HttpException($statusCode, $response->getReasonPhrase(), null, $response->getHeaders());
         }
 
         /** @var UpdateResourceResponseInterface $updateResourceResponse */
