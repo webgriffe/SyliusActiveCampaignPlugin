@@ -7,7 +7,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Updater;
 use InvalidArgumentException;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
-use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
+use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
 

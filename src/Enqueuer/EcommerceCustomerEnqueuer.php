@@ -6,7 +6,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Enqueuer;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use Sylius\Resource\Factory\FactoryInterface;
+use Sylius\Component\Resource\Factory\FactoryInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;
