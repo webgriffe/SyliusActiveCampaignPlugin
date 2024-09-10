@@ -77,12 +77,16 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
 
                     throw new NotFoundHttpException($errorResponse['message']);
                 case 422:
-                    /** @var array{errors: array{title: string, detail: string, code: string, source: array{pointer: string}}} $errorResponse */
+                    /** @var array{errors: array{title: string, detail: string, code: string, source: array{pointer: string}}|null} $errorResponse */
                     $errorResponse = json_decode($response->getBody()->getContents(), true, 512, \JSON_THROW_ON_ERROR);
-                    /** @var string[] $titles */
-                    $titles = array_column($errorResponse['errors'], 'title');
+                    $errorMessage = '';
+                    if (is_array($errorResponse['errors'])) {
+                        /** @var string[] $titles */
+                        $titles = array_column($errorResponse['errors'], 'title');
+                        $errorMessage = implode('; ', $titles);
+                    }
 
-                    throw new UnprocessableEntityHttpException(implode('; ', $titles));
+                    throw new UnprocessableEntityHttpException($errorMessage);
                 default:
                     throw new HttpException($statusCode, $response->getReasonPhrase(), null, $response->getHeaders());
             }
@@ -198,12 +202,16 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
 
                     throw new NotFoundHttpException($errorResponse['message']);
                 case 422:
-                    /** @var array{errors: array{title: string, detail: string, code: string, source: array{pointer: string}}} $errorResponse */
+                    /** @var array{errors: array{title: string, detail: string, code: string, source: array{pointer: string}}|null} $errorResponse */
                     $errorResponse = json_decode($response->getBody()->getContents(), true, 512, \JSON_THROW_ON_ERROR);
-                    /** @var string[] $titles */
-                    $titles = array_column($errorResponse['errors'], 'title');
+                    $errorMessage = '';
+                    if (is_array($errorResponse['errors'])) {
+                        /** @var string[] $titles */
+                        $titles = array_column($errorResponse['errors'], 'title');
+                        $errorMessage = implode('; ', $titles);
+                    }
 
-                    throw new UnprocessableEntityHttpException(implode('; ', $titles));
+                    throw new UnprocessableEntityHttpException($errorMessage);
                 default:
                     throw new HttpException($statusCode, $response->getReasonPhrase(), null, $response->getHeaders());
             }
