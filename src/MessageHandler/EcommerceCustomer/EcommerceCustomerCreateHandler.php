@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceCustomer;
 
+if (!interface_exists(\Sylius\Resource\Factory\FactoryInterface::class)) {
+    class_alias(\Sylius\Component\Resource\Factory\FactoryInterface::class, \Sylius\Resource\Factory\FactoryInterface::class);
+}
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
@@ -12,7 +15,7 @@ use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
-use Sylius\Component\Resource\Factory\FactoryInterface;
+use Sylius\Resource\Factory\FactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceCustomerMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;

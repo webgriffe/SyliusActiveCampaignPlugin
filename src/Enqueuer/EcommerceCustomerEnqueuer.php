@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Enqueuer;
 
+if (!interface_exists(\Sylius\Resource\Factory\FactoryInterface::class)) {
+    class_alias(\Sylius\Component\Resource\Factory\FactoryInterface::class, \Sylius\Resource\Factory\FactoryInterface::class);
+}
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use Sylius\Component\Resource\Factory\FactoryInterface;
+use Sylius\Resource\Factory\FactoryInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;

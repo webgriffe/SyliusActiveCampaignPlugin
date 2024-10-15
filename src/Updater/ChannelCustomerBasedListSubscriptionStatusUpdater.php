@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Updater;
 
+if (!interface_exists(\Sylius\Resource\Doctrine\Persistence\RepositoryInterface::class)) {
+    class_alias(\Sylius\Component\Resource\Repository\RepositoryInterface::class, \Sylius\Resource\Doctrine\Persistence\RepositoryInterface::class);
+}
 use InvalidArgumentException;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
-use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
 
