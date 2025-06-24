@@ -32,6 +32,7 @@ final class WebgriffeSyliusActiveCampaignExtension extends AbstractResourceExten
         $loader2->load('services.php');
 
         $this->addMapperOptionsOnMappers($container, $config);
+        $this->addSendUnpaidOrdersOnServices($container, $config);
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container): ConfigurationInterface
@@ -44,5 +45,20 @@ final class WebgriffeSyliusActiveCampaignExtension extends AbstractResourceExten
         $definition = $container->getDefinition('webgriffe.sylius_active_campaign_plugin.mapper.ecommerce_order_product');
         $definition->setArgument('$imageType', $config['mapper']['ecommerce_order_product']['image_type']);
         $definition->setArgument('$imageFilter', $config['mapper']['ecommerce_order_product']['image_filter']);
+    }
+
+    private function addSendUnpaidOrdersOnServices(ContainerBuilder $container, array $config): void
+    {
+        $definition = $container->getDefinition('webgriffe.sylius_active_campaign_plugin.enqueuer.ecommerce_order');
+        $definition->setArgument('$sendUnpaidOrders', $config['send_unpaid_orders']);
+
+        $definition = $container->getDefinition('webgriffe.sylius_active_campaign_plugin.event_subscriber.order');
+        $definition->setArgument('$sendUnpaidOrders', $config['send_unpaid_orders']);
+
+        $definition = $container->getDefinition('webgriffe.sylius_active_campaign_plugin.mapper.ecommerce_order');
+        $definition->setArgument('$sendUnpaidOrders', $config['send_unpaid_orders']);
+
+        $definition = $container->getDefinition('webgriffe.sylius_active_campaign_plugin.enqueuer.real_time_order');
+        $definition->setArgument('$sendUnpaidOrders', $config['send_unpaid_orders']);
     }
 }

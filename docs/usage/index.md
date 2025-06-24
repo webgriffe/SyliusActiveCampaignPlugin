@@ -185,6 +185,18 @@ customer with the same `email` and `connectionid` (the channel's code).
 The ActiveCampaign's Ecommerce Order is the equivalent of the Sylius Order. In addition, as done on Sylius, The
 Abandoned Cart is the same entity as the Ecommerce Order, so also the Abandoned Cart is related to the Sylius Order.
 
+Typically, after checkout, Sylius will transform the cart into an order indipendently if the order is paid or not. In 
+ActiveCampaign there is not the possibility to mark the order as paid or not. So, if you want to only have fully paid 
+orders on ActiveCampaign you should specify this in the `webgriffe_sylius_active_campaign_plugin.yaml` file:
+
+```yaml
+webgriffe_sylius_active_campaign:
+    ...
+    send_unpaid_orders: false
+```
+
+By default, the plugin will export all the Sylius Orders to ActiveCampaign independently if they are paid or not.
+
 But what if you need to export to ActiveCampaign only some Sylius Orders? Simply, just override the logic inside the
 `findAllToEnqueue` `OrderRepository`'s method. So, you can, for example, exports only orders by some customers.
 

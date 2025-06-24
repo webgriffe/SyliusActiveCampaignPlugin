@@ -7,6 +7,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Enqueuer;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\Component\Core\OrderPaymentStates;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderCreate;
@@ -18,11 +19,14 @@ use Webmozart\Assert\Assert;
 
 final class EcommerceOrderEnqueuer implements EcommerceOrderEnqueuerInterface
 {
+    private bool $sendUnpaidOrders = true;
+
     public function __construct(
         private MessageBusInterface $messageBus,
         private EntityManagerInterface $entityManager,
         private ActiveCampaignResourceClientInterface $activeCampaignEcommerceOrderClient,
         private ?LoggerInterface $logger = null,
+        bool $sendUnpaidOrders = null,
     ) {
         if ($this->logger === null) {
             trigger_deprecation(
@@ -30,6 +34,15 @@ final class EcommerceOrderEnqueuer implements EcommerceOrderEnqueuerInterface
                 'v0.12.2',
                 'The logger argument is mandatory.',
             );
+        }
+        if ($sendUnpaidOrders === null) {
+            trigger_deprecation(
+                'webgriffe/sylius-active-campaign-plugin',
+                'v0.13.0',
+                'The sendUnpaidOrders argument is mandatory.',
+            );
+        } else {
+            $this->sendUnpaidOrders = $sendUnpaidOrders;
         }
     }
 
@@ -72,7 +85,7 @@ final class EcommerceOrderEnqueuer implements EcommerceOrderEnqueuerInterface
         Assert::notNull($channelActiveCampaignId, 'The channel ActiveCampaign connection id should not be null');
         $ecommerceOrdersWithSameConnectionAndId = $this->activeCampaignEcommerceOrderClient->list([
             'filters[connectionid]' => (string) $channelActiveCampaignId,
-            'filters[' . ($order->getState() === OrderInterface::STATE_CART ? 'externalcheckoutid' : 'externalid') . ']' => (string) $orderId,
+            'filters[' . ($this->isOrderStillACart($order) ? 'externalcheckoutid' : 'externalid') . ']' => (string) $orderId,
         ])->getResourceResponseLists();
         if (count($ecommerceOrdersWithSameConnectionAndId) > 0) {
             /** @var EcommerceOrderResponse $ecommerceOrder */
@@ -115,5 +128,20 @@ final class EcommerceOrderEnqueuer implements EcommerceOrderEnqueuerInterface
         ));
 
         $this->messageBus->dispatch(new EcommerceOrderCreate($orderId, $isInRealTime));
+    }
+
+    /**
+     * @param ActiveCampaignAwareInterface&OrderInterface $order
+     */
+    public function isOrderStillACart($order): bool
+    {
+        if ($order->getState() === OrderInterface::STATE_CART) {
+            return true;
+        }
+        if ($this->sendUnpaidOrders) {
+            return false;
+        }
+
+        return $order->getPaymentState() !== OrderPaymentStates::STATE_PAID;
     }
 }
