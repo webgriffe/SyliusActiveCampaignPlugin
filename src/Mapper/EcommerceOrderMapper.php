@@ -10,6 +10,7 @@ use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderInterface as BaseOrderInterface;
 use Sylius\Component\Core\Model\ShipmentInterface;
+use Sylius\Component\Core\OrderPaymentStates;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\EcommerceOrderFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Generator\ChannelHostnameUrlGeneratorInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderDiscountInterface;
@@ -21,13 +22,25 @@ use Webmozart\Assert\Assert;
 
 final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
 {
+    private bool $sendUnpaidOrders = true;
+
     public function __construct(
         private EcommerceOrderFactoryInterface $ecommerceOrderFactory,
         private EcommerceOrderProductMapperInterface $ecommerceOrderProductMapper,
         private EcommerceOrderDiscountMapperInterface $ecommerceOrderDiscountMapper,
         private ChannelHostnameUrlGeneratorInterface $channelHostnameUrlGenerator,
         private string $defaultLocale,
+        bool $sendUnpaidOrders = null,
     ) {
+        if ($sendUnpaidOrders === null) {
+            trigger_deprecation(
+                'webgriffe/sylius-active-campaign-plugin',
+                'v0.13.0',
+                'The sendUnpaidOrders argument is mandatory.',
+            );
+        } else {
+            $this->sendUnpaidOrders = $sendUnpaidOrders;
+        }
     }
 
     public function mapFromOrder(BaseOrderInterface $order, bool $isInRealTime): EcommerceOrderInterface
@@ -60,10 +73,7 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
         $orderId = $order->getId();
         Assert::notNull($orderId, 'The order id should not be null.');
 
-        $isCart = false;
-        if ($order->getState() === BaseOrderInterface::STATE_CART) {
-            $isCart = true;
-        }
+        $isCart = $this->isOrderStillACart($order);
 
         $ecommerceOrder = $this->ecommerceOrderFactory->createNew(
             $customerEmail,
@@ -141,5 +151,17 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
                 '_locale' => $localeCode,
             ],
         );
+    }
+
+    public function isOrderStillACart(BaseOrderInterface $order): bool
+    {
+        if ($order->getState() === OrderInterface::STATE_CART) {
+            return true;
+        }
+        if ($this->sendUnpaidOrders) {
+            return false;
+        }
+
+        return $order->getPaymentState() !== OrderPaymentStates::STATE_PAID;
     }
 }

@@ -7,6 +7,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\EventSubscriber;
 use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\Component\Core\OrderPaymentStates;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -23,6 +24,8 @@ use Webgriffe\SyliusActiveCampaignPlugin\Resolver\CustomerChannelsResolverInterf
 
 final class OrderSubscriber implements EventSubscriberInterface
 {
+    private bool $sendUnpaidOrders = true;
+
     public function __construct(
         private MessageBusInterface $messageBus,
         private EcommerceOrderEnqueuerInterface $ecommerceOrderEnqueuer,
@@ -30,7 +33,17 @@ final class OrderSubscriber implements EventSubscriberInterface
         private ContactEnqueuerInterface $contactEnqueuer,
         private EcommerceCustomerEnqueuerInterface $ecommerceCustomerEnqueuer,
         private CustomerChannelsResolverInterface $customerChannelsResolver,
+        bool $sendUnpaidOrders = null,
     ) {
+        if ($sendUnpaidOrders === null) {
+            trigger_deprecation(
+                'webgriffe/sylius-active-campaign-plugin',
+                'v0.13.0',
+                'The sendUnpaidOrders argument is mandatory.',
+            );
+        } else {
+            $this->sendUnpaidOrders = $sendUnpaidOrders;
+        }
     }
 
     public static function getSubscribedEvents(): array
@@ -164,6 +177,9 @@ final class OrderSubscriber implements EventSubscriberInterface
         if (!$order instanceof OrderInterface || !$order instanceof ActiveCampaignAwareInterface || $order->getCustomer() === null) {
             return;
         }
+        if (!$this->shouldEnqueueOrder($order)) {
+            return;
+        }
         $this->logger->debug(sprintf(
             'Invoked ecommerce order enqueuing for order "%s".',
             (string) $order->getId(),
@@ -196,5 +212,14 @@ final class OrderSubscriber implements EventSubscriberInterface
         } catch (Throwable $throwable) {
             $this->logger->error($throwable->getMessage(), $throwable->getTrace());
         }
+    }
+
+    private function shouldEnqueueOrder(OrderInterface $order): bool
+    {
+        if ($this->sendUnpaidOrders) {
+            return true;
+        }
+
+        return $order->getPaymentState() === OrderPaymentStates::STATE_PAID;
     }
 }

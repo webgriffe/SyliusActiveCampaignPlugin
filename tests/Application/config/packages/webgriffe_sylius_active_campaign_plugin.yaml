@@ -13,3 +13,4 @@ webgriffe_sylius_active_campaign:
         channel_customer:
             classes:
                 model: Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Customer\ChannelCustomer
+    send_unpaid_orders: true

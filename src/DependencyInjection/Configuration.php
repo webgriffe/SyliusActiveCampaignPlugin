@@ -30,6 +30,7 @@ final class Configuration implements ConfigurationInterface
 
         $this->buildApiClientNode($rootNode);
         $this->buildMapperNode($rootNode);
+        $this->buildSendUnpaidOrdersNode($rootNode);
         $this->buildResourcesNode($rootNode);
 
         return $treeBuilder;
@@ -68,6 +69,18 @@ final class Configuration implements ConfigurationInterface
                                 ->end()
                             ->end()
                     ->end()
+            ->end()
+        ;
+    }
+
+    private function buildSendUnpaidOrdersNode(ArrayNodeDefinition $rootNode): void
+    {
+        $rootNode
+            ->children()
+                ->booleanNode('send_unpaid_orders')
+                    ->defaultTrue()
+                    ->info('If true, unpaid orders will be sent to ActiveCampaign.')
+                ->end()
             ->end()
         ;
     }
