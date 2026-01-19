@@ -1,4 +1,4 @@
-Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Customer\Customer:
+Tests\Webgriffe\SyliusActiveCampaignPlugin\Entity\Customer\Customer:
     customer_jim:
         email: 'jim@email.com'
         first_name: 'James'

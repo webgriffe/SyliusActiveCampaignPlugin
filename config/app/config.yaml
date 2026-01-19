@@ -36,30 +36,39 @@ framework:
 
                     - doctrine_transaction
 
-sylius_ui:
-    events:
-        sylius.admin.channel.update.form:
-            blocks:
-                active_campaign_form: '@WebgriffeSyliusActiveCampaignPlugin/Admin/Channel/_form.html.twig'
-        sylius.admin.channel.create.form:
-            blocks:
-                active_campaign_form: '@WebgriffeSyliusActiveCampaignPlugin/Admin/Channel/_form.html.twig'
-        sylius.shop.layout.javascripts:
-            blocks:
-                active_campaign_tracking: '@WebgriffeSyliusActiveCampaignPlugin/Shop/_active_campaign_tracking.html.twig'
+#TODO migrate to twgi_hooks
+#sylius_ui:
+#    events:
+#        sylius.admin.channel.update.form:
+#            blocks:
+#                active_campaign_form: '@WebgriffeSyliusActiveCampaignPlugin/Admin/Channel/_form.html.twig'
+#        sylius.admin.channel.create.form:
+#            blocks:
+#                active_campaign_form: '@WebgriffeSyliusActiveCampaignPlugin/Admin/Channel/_form.html.twig'
+#        sylius.shop.layout.javascripts:
+#            blocks:
+#                active_campaign_tracking: '@WebgriffeSyliusActiveCampaignPlugin/Shop/_active_campaign_tracking.html.twig'
+
 twig:
     globals:
         webgriffe_active_campaign_tracking_account_id: '%env(default::WEBGRIFFE_SYLIUS_ACTIVE_CAMPAIGN_ACCOUNT_ID)%'
 
 monolog:
     channels: ['webgriffe_sylius_active_campaign_plugin']
+    handlers:
+        active_campaign:
+            type: stream
+            path: "%kernel.logs_dir%/active_campaign_%kernel.environment%.log"
+            level: debug
+            channels: ['webgriffe_sylius_active_campaign_plugin']
 
-winzou_state_machine:
-    sylius_order_payment:
-        callbacks:
-            after:
-                webgriffe_sylius_active_campaign_plugin_enqueue_paid_order:
-                    on: [ "pay" ]
-                    do: [ "@webgriffe.sylius_active_campaign_plugin.enqueuer.real_time_order", "enqueue" ]
-                    args: [ "object" ]
-                    priority: 400
+#todo: migrate to symfony workflow
+#winzou_state_machine:
+#    sylius_order_payment:
+#        callbacks:
+#            after:
+#                webgriffe_sylius_active_campaign_plugin_enqueue_paid_order:
+#                    on: [ "pay" ]
+#                    do: [ "@webgriffe.sylius_active_campaign_plugin.enqueuer.real_time_order", "enqueue" ]
+#                    args: [ "object" ]
+#                    priority: 400

@@ -1,0 +1,4 @@
+services:
+    mysql:
+        ports:
+            - ${MYSQL_PORT:-33060}:3306

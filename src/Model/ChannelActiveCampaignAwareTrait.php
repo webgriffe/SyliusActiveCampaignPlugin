@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait ChannelActiveCampaignAwareTrait
 {
-    /** @ORM\Column(name="active_campaign_list_id", type="integer", nullable=true) */
+    #[ORM\Column(name: 'active_campaign_list_id', type: 'integer', nullable: true)]
     protected ?int $activeCampaignListId = null;
 
     public function getActiveCampaignListId(): ?int
