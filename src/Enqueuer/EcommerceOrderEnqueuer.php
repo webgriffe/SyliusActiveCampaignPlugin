@@ -26,7 +26,7 @@ final class EcommerceOrderEnqueuer implements EcommerceOrderEnqueuerInterface
         private EntityManagerInterface $entityManager,
         private ActiveCampaignResourceClientInterface $activeCampaignEcommerceOrderClient,
         private ?LoggerInterface $logger = null,
-        bool $sendUnpaidOrders = null,
+        ?bool $sendUnpaidOrders = null,
     ) {
         if ($this->logger === null) {
             trigger_deprecation(

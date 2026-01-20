@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace spec\Webgriffe\SyliusActiveCampaignPlugin\Resolver;
 
-use Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Channel\ChannelInterface;
-use Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Customer\CustomerInterface;
+use Tests\Webgriffe\SyliusActiveCampaignPlugin\Entity\Channel\ChannelInterface;
+use Tests\Webgriffe\SyliusActiveCampaignPlugin\Entity\Customer\CustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Exception\ChannelCustomerDoesNotExistException;
 use Webgriffe\SyliusActiveCampaignPlugin\Exception\ChannelListIdDoesNotExistException;
 use Webgriffe\SyliusActiveCampaignPlugin\Exception\CustomerListSubscriptionStatusNotDefinedException;
