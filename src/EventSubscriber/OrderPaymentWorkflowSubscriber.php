@@ -31,7 +31,6 @@ final class OrderPaymentWorkflowSubscriber implements EventSubscriberInterface
 
     public function onOrderPaymentPaid(CompletedEvent $event): void
     {
-        /** @var OrderInterface&ActiveCampaignAwareInterface $order */
         $order = $event->getSubject();
 
         if (!$order instanceof OrderInterface || !$order instanceof ActiveCampaignAwareInterface) {
