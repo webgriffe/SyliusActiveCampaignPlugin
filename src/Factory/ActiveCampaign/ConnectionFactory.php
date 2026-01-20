@@ -8,10 +8,13 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ConnectionInterfac
 
 final class ConnectionFactory extends AbstractFactory implements ConnectionFactoryInterface
 {
+    #[\Override]
     public function createNew(string $service, string $externalId, string $name): ConnectionInterface
     {
-        /** @var ConnectionInterface $connection */
-        $connection = new $this->targetClassFQCN(
+        /** @var class-string<ConnectionInterface> $class */
+        $class = $this->targetClassFQCN;
+
+        $connection = new $class(
             $service,
             $externalId,
             $name,

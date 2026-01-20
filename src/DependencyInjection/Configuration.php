@@ -16,12 +16,13 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
 
 final class Configuration implements ConfigurationInterface
 {
+    #[\Override]
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('webgriffe_sylius_active_campaign_plugin');
-        /** @var ArrayNodeDefinition $rootNode */
         $rootNode = $treeBuilder->getRootNode();
 
+        /** @psalm-suppress PossiblyNullReference, UndefinedInterfaceMethod */
         $rootNode
             ->children()
                 ->scalarNode('driver')->defaultValue(SyliusResourceBundle::DRIVER_DOCTRINE_ORM)->end()
@@ -38,13 +39,14 @@ final class Configuration implements ConfigurationInterface
 
     private function buildApiClientNode(ArrayNodeDefinition $rootNode): void
     {
+        /** @psalm-suppress PossiblyNullReference, UndefinedInterfaceMethod, MixedMethodCall */
         $rootNode
             ->children()
                 ->arrayNode('api_client')
                 ->addDefaultsIfNotSet()
                     ->children()
-                        ->scalarNode('base_url')->isRequired()->cannotBeEmpty()->defaultNull()->end()
-                        ->scalarNode('key')->isRequired()->cannotBeEmpty()->defaultNull()->end()
+                        ->scalarNode('base_url')->isRequired()->cannotBeEmpty()->end()
+                        ->scalarNode('key')->isRequired()->cannotBeEmpty()->end()
                     ->end()
             ->end()
         ;
@@ -52,6 +54,7 @@ final class Configuration implements ConfigurationInterface
 
     private function buildMapperNode(ArrayNodeDefinition $rootNode): void
     {
+        /** @psalm-suppress PossiblyNullReference, UndefinedInterfaceMethod, MixedMethodCall */
         $rootNode
             ->children()
                 ->arrayNode('mapper')
@@ -75,6 +78,7 @@ final class Configuration implements ConfigurationInterface
 
     private function buildSendUnpaidOrdersNode(ArrayNodeDefinition $rootNode): void
     {
+        /** @psalm-suppress PossiblyNullReference, UndefinedInterfaceMethod, MixedMethodCall */
         $rootNode
             ->children()
                 ->booleanNode('send_unpaid_orders')
@@ -87,6 +91,7 @@ final class Configuration implements ConfigurationInterface
 
     private function buildResourcesNode(ArrayNodeDefinition $rootNode): void
     {
+        /** @psalm-suppress PossiblyNullReference, UndefinedInterfaceMethod, MixedMethodCall */
         $rootNode
             ->children()
                 ->arrayNode('resources')

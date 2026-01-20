@@ -7,6 +7,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrd
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 
+/** @psalm-api */
 final class UpdateEcommerceOrderResponse implements UpdateResourceResponseInterface
 {
     public function __construct(
@@ -14,6 +15,7 @@ final class UpdateEcommerceOrderResponse implements UpdateResourceResponseInterf
     ) {
     }
 
+    #[\Override]
     public function getResourceResponse(): ResourceResponseInterface
     {
         return $this->ecommerceOrder;

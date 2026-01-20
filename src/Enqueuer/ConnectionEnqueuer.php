@@ -30,6 +30,7 @@ final class ConnectionEnqueuer implements ConnectionEnqueuerInterface
         }
     }
 
+    #[\Override]
     public function enqueue($channel): void
     {
         /** @var string|int|null $channelId */

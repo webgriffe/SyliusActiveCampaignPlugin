@@ -16,6 +16,7 @@ final class ConnectionMapper implements ConnectionMapperInterface
     ) {
     }
 
+    #[\Override]
     public function mapFromChannel(ChannelInterface $channel): ConnectionInterface
     {
         $channelCode = $channel->getCode();

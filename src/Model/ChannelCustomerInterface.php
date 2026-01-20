@@ -8,6 +8,7 @@ use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Resource\Model\ResourceInterface;
 
+/** @psalm-api */
 interface ChannelCustomerInterface extends ResourceInterface
 {
     public function getCustomer(): CustomerInterface;

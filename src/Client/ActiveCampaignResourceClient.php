@@ -50,6 +50,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
     ) {
     }
 
+    #[\Override]
     public function create(ResourceInterface $resource): CreateResourceResponseInterface
     {
         if ($this->createResourceResponseType === null) {
@@ -107,6 +108,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
         return $createResourceResponse;
     }
 
+    #[\Override]
     public function get(int $resourceId): RetrieveResourceResponseInterface
     {
         if ($this->retrieveResourceResponseType === null) {
@@ -142,6 +144,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
         return $retrieveResourceResponse;
     }
 
+    #[\Override]
     public function list(array $queryParams = []): ListResourcesResponseInterface
     {
         if ($this->listResourcesResponseType === null) {
@@ -177,6 +180,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
         return $listResourcesResponse;
     }
 
+    #[\Override]
     public function update(int $activeCampaignResourceId, ResourceInterface $resource): UpdateResourceResponseInterface
     {
         if ($this->updateResourceResponseType === null) {
@@ -232,6 +236,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
         return $updateResourceResponse;
     }
 
+    #[\Override]
     public function remove(int $activeCampaignResourceId): void
     {
         $response = $this->httpClient->send(new Request(

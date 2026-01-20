@@ -6,6 +6,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection;
 
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
 
+/** @psalm-api */
 final class ListConnectionsResponse implements ListResourcesResponseInterface
 {
     /**
@@ -17,6 +18,7 @@ final class ListConnectionsResponse implements ListResourcesResponseInterface
     }
 
     /** @return ConnectionResponse[] */
+    #[\Override]
     public function getResourceResponseLists(): array
     {
         return $this->connections;

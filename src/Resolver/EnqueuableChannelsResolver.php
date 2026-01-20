@@ -15,6 +15,7 @@ final class EnqueuableChannelsResolver implements CustomerChannelsResolverInterf
     {
     }
 
+    #[\Override]
     public function resolve(CustomerInterface $customer): array
     {
         return $this->channelRepository->findAllToEnqueue();

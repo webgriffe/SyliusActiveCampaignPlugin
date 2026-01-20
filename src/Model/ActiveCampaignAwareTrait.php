@@ -11,11 +11,13 @@ trait ActiveCampaignAwareTrait
     #[ORM\Column(name: 'active_campaign_id', type: 'integer', nullable: true)]
     protected ?int $activeCampaignId = null;
 
+    #[\Override]
     public function getActiveCampaignId(): ?int
     {
         return $this->activeCampaignId;
     }
 
+    #[\Override]
     public function setActiveCampaignId(?int $activeCampaignId): void
     {
         $this->activeCampaignId = $activeCampaignId;

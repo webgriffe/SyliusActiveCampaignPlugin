@@ -25,6 +25,7 @@ final class EcommerceOrderProductMapper implements EcommerceOrderProductMapperIn
     ) {
     }
 
+    #[\Override]
     public function mapFromOrderItem(OrderItemInterface $orderItem): EcommerceOrderProductInterface
     {
         $order = $orderItem->getOrder();

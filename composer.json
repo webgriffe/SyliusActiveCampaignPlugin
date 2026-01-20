@@ -98,7 +98,7 @@
         ],
         "ecs": "ecs",
         "phpstan": "phpstan analyse",
-        "psalm": "psalm",
+        "psalm": "psalm --no-cache",
         "phpunit": "phpunit",
         "phpspec": "phpspec run",
         "behat": "behat --strict -vvv --no-interaction || behat --strict -vvv --no-interaction --rerun",

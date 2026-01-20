@@ -49,6 +49,7 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
         parent::__construct($this->name);
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -58,11 +59,13 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
         ;
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
     }
 
+    #[\Override]
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
         if ($input->getOption(self::ALL_OPTION_CODE) === true || $input->getArgument(self::CUSTOMER_ID_ARGUMENT_CODE) !== null) {
@@ -89,6 +92,7 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
         }
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!$this->lock()) {
@@ -101,6 +105,7 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
 
         /** @var string|int $customerId */
         $customerId = $input->getArgument(self::CUSTOMER_ID_ARGUMENT_CODE);
+        /** @psalm-suppress RedundantCast */
         $exportAll = (bool) $input->getOption(self::ALL_OPTION_CODE);
 
         $this->validateInputData($customerId, $exportAll);

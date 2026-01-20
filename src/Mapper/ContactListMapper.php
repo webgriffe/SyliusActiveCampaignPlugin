@@ -14,6 +14,7 @@ final class ContactListMapper implements ContactListMapperInterface
     ) {
     }
 
+    #[\Override]
     public function mapFromListContactStatusAndSourceId(int $listId, int $contactId, int $status, ?int $sourceId = null): ContactListInterface
     {
         $contactList = $this->contactListFactory->createNew($listId, $contactId, $status);

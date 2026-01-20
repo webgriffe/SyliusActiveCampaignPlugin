@@ -10,6 +10,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Exception\CustomerListSubscriptionStatu
 
 final class ChannelCustomerBasedListSubscriptionStatusResolver implements ListSubscriptionStatusResolverInterface
 {
+    #[\Override]
     public function resolve($customer, $channel): int
     {
         $listId = $channel->getActiveCampaignListId();

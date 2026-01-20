@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign;
 
+/** @psalm-api */
 interface FieldValueInterface
 {
     public function getField(): string;

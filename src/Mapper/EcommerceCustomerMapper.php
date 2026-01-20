@@ -17,6 +17,7 @@ final class EcommerceCustomerMapper implements EcommerceCustomerMapperInterface
     ) {
     }
 
+    #[\Override]
     public function mapFromCustomerAndChannel(CustomerInterface $customer, $channel): EcommerceCustomerInterface
     {
         $connectionId = $channel->getActiveCampaignId();

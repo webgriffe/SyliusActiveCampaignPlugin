@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign;
 
+/** @psalm-api */
 interface ContactListInterface extends ResourceInterface
 {
-    public const UNSUBSCRIBED_STATUS_CODE = 2;
+    public const int UNSUBSCRIBED_STATUS_CODE = 2;
 
-    public const UNCONFIRMED_STATUS_CODE = 0;
+    public const int UNCONFIRMED_STATUS_CODE = 0;
 
-    public const SUBSCRIBED_STATUS_CODE = 1;
+    public const int SUBSCRIBED_STATUS_CODE = 1;
 
-    public const BOUNCED_STATUS_CODE = 3;
+    public const int BOUNCED_STATUS_CODE = 3;
 
     public function getListId(): int;
 

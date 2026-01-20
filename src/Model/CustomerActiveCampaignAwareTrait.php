@@ -21,11 +21,13 @@ trait CustomerActiveCampaignAwareTrait
     }
 
     /** @return Collection<array-key, ChannelCustomerInterface> */
+    #[\Override]
     public function getChannelCustomers(): Collection
     {
         return $this->channelCustomers;
     }
 
+    #[\Override]
     public function getChannelCustomerByChannel(ChannelInterface $channel): ?ChannelCustomerInterface
     {
         foreach ($this->getChannelCustomers() as $channelCustomer) {
@@ -37,6 +39,7 @@ trait CustomerActiveCampaignAwareTrait
         return null;
     }
 
+    #[\Override]
     public function addChannelCustomer(ChannelCustomerInterface $channelCustomer): void
     {
         if ($this->channelCustomers->contains($channelCustomer)) {
@@ -45,6 +48,7 @@ trait CustomerActiveCampaignAwareTrait
         $this->channelCustomers->add($channelCustomer);
     }
 
+    #[\Override]
     public function removeChannelCustomer(ChannelCustomerInterface $channelCustomer): void
     {
         if (!$this->channelCustomers->contains($channelCustomer)) {

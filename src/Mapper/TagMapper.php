@@ -14,6 +14,7 @@ final class TagMapper implements TagMapperInterface
     ) {
     }
 
+    #[\Override]
     public function mapFromTagAndTagType(string $tag, string $tagType = TagInterface::CONTACT_TAG_TYPE): TagInterface
     {
         return $this->tagFactory->createNew($tag, $tagType);

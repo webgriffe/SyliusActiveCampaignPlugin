@@ -8,11 +8,12 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderDisc
 
 final class EcommerceOrderDiscountFactory extends AbstractFactory implements EcommerceOrderDiscountFactoryInterface
 {
+    #[\Override]
     public function createNew(): EcommerceOrderDiscountInterface
     {
-        /** @var EcommerceOrderDiscountInterface $ecommerceOrderDiscount */
-        $ecommerceOrderDiscount = new $this->targetClassFQCN();
+        /** @var class-string<EcommerceOrderDiscountInterface> $class */
+        $class = $this->targetClassFQCN;
 
-        return $ecommerceOrderDiscount;
+        return new $class();
     }
 }

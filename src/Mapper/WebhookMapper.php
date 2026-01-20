@@ -14,6 +14,7 @@ final class WebhookMapper implements WebhookMapperInterface
     ) {
     }
 
+    #[\Override]
     public function map(string $name, string $url, array $events = [], array $sources = [], ?int $listId = null): WebhookInterface
     {
         $webhook = $this->webhookFactory->createNewFromNameAndUrl($name, $url);

@@ -8,6 +8,7 @@ use Sylius\Component\Core\Model\CustomerInterface;
 
 final class ContactTagsResolver implements ContactTagsResolverInterface
 {
+    #[\Override]
     public function resolve(CustomerInterface $customer): array
     {
         return [];

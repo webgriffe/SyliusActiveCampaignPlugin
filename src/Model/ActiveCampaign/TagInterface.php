@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign;
 
+/** @psalm-api */
 interface TagInterface extends ResourceInterface
 {
-    public const TEMPLATE_TAG_TYPE = 'template';
+    public const string TEMPLATE_TAG_TYPE = 'template';
 
-    public const CONTACT_TAG_TYPE = 'contact';
+    public const string CONTACT_TAG_TYPE = 'contact';
 
     public function getTag(): string;
 

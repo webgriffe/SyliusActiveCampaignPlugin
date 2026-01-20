@@ -18,6 +18,7 @@ final class EcommerceOrderDiscountMapper implements EcommerceOrderDiscountMapper
     ) {
     }
 
+    #[\Override]
     public function mapFromPromotion(OrderInterface $order, PromotionInterface $promotion): EcommerceOrderDiscountInterface
     {
         $ecommerceOrderDiscount = $this->ecommerceOrderDiscountFactory->createNew();

@@ -18,6 +18,7 @@ final class OrderPaymentWorkflowSubscriber implements EventSubscriberInterface
     ) {
     }
 
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [

@@ -6,6 +6,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrd
 
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
 
+/** @psalm-api */
 final class ListEcommerceOrdersResponse implements ListResourcesResponseInterface
 {
     /** @param EcommerceOrderResponse[] $ecommerceOrders */
@@ -14,6 +15,7 @@ final class ListEcommerceOrdersResponse implements ListResourcesResponseInterfac
     ) {
     }
 
+    #[\Override]
     public function getResourceResponseLists(): array
     {
         return $this->ecommerceOrders;

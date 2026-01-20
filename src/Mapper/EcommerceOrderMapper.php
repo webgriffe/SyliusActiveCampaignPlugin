@@ -43,6 +43,7 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
         }
     }
 
+    #[\Override]
     public function mapFromOrder(BaseOrderInterface $order, bool $isInRealTime): EcommerceOrderInterface
     {
         /** @var CustomerInterface|(CustomerInterface&CustomerActiveCampaignAwareInterface)|null $customer */

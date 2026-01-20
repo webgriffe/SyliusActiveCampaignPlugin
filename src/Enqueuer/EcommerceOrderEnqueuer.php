@@ -46,6 +46,7 @@ final class EcommerceOrderEnqueuer implements EcommerceOrderEnqueuerInterface
         }
     }
 
+    #[\Override]
     public function enqueue($order, bool $isInRealTime = true): void
     {
         /** @var string|int|null $orderId */

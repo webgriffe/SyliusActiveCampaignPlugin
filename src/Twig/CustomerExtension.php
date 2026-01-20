@@ -15,6 +15,7 @@ final class CustomerExtension extends AbstractExtension
     ) {
     }
 
+    #[\Override]
     public function getFunctions(): array
     {
         return [

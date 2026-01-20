@@ -6,6 +6,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Webhook;
 
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
 
+/** @psalm-api */
 final class ListWebhooksResponse implements ListResourcesResponseInterface
 {
     /** @param WebhookResponse[] $webhooks */
@@ -15,6 +16,7 @@ final class ListWebhooksResponse implements ListResourcesResponseInterface
     }
 
     /** @return WebhookResponse[] */
+    #[\Override]
     public function getResourceResponseLists(): array
     {
         return $this->webhooks;

@@ -6,6 +6,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ContactTag;
 
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseInterface;
 
+/** @psalm-api */
 final class ContactTagResponse implements ResourceResponseInterface
 {
     public function __construct(
@@ -13,6 +14,7 @@ final class ContactTagResponse implements ResourceResponseInterface
     ) {
     }
 
+    #[\Override]
     public function getId(): int
     {
         return $this->id;

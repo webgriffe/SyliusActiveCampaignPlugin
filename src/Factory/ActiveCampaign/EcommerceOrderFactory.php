@@ -9,10 +9,13 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderInte
 
 final class EcommerceOrderFactory extends AbstractFactory implements EcommerceOrderFactoryInterface
 {
+    #[\Override]
     public function createNew(string $email, string $connectionId, string $customerId, string $currency, int $totalPrice, DateTimeInterface $createdAt, ?string $externalId = null, ?string $externalCheckoutId = null, ?DateTimeInterface $abandonedDate = null): EcommerceOrderInterface
     {
-        /** @var EcommerceOrderInterface $ecommerceOrder */
-        $ecommerceOrder = new $this->targetClassFQCN(
+        /** @var class-string<EcommerceOrderInterface> $class */
+        $class = $this->targetClassFQCN;
+
+        return new $class(
             $email,
             $connectionId,
             $customerId,
@@ -23,7 +26,5 @@ final class EcommerceOrderFactory extends AbstractFactory implements EcommerceOr
             $externalCheckoutId,
             $abandonedDate,
         );
-
-        return $ecommerceOrder;
     }
 }

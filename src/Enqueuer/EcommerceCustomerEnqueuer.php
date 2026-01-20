@@ -39,6 +39,7 @@ final class EcommerceCustomerEnqueuer implements EcommerceCustomerEnqueuerInterf
         }
     }
 
+    #[\Override]
     public function enqueue($customer, $channel): void
     {
         /** @var string|int|null $customerId */

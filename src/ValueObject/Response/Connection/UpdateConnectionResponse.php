@@ -7,6 +7,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 
+/** @psalm-api */
 final class UpdateConnectionResponse implements UpdateResourceResponseInterface
 {
     public function __construct(
@@ -14,6 +15,7 @@ final class UpdateConnectionResponse implements UpdateResourceResponseInterface
     ) {
     }
 
+    #[\Override]
     public function getResourceResponse(): ResourceResponseInterface
     {
         return $this->connection;

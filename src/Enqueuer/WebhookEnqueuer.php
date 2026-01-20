@@ -28,6 +28,7 @@ final class WebhookEnqueuer implements WebhookEnqueuerInterface
         }
     }
 
+    #[\Override]
     public function enqueue($channel): void
     {
         /** @var string|int|null $channelId */

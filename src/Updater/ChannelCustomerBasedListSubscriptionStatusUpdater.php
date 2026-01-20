@@ -24,6 +24,7 @@ final class ChannelCustomerBasedListSubscriptionStatusUpdater implements ListSub
     ) {
     }
 
+    #[\Override]
     public function update(CustomerInterface $customer, ChannelInterface $channel, int $listSubscriptionStatus): void
     {
         if (!$customer instanceof CustomerActiveCampaignAwareInterface) {

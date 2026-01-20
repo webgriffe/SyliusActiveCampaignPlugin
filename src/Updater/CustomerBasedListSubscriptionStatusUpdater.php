@@ -16,6 +16,7 @@ final class CustomerBasedListSubscriptionStatusUpdater implements ListSubscripti
     ) {
     }
 
+    #[\Override]
     public function update(CustomerInterface $customer, ChannelInterface $channel, int $listSubscriptionStatus): void
     {
         $customer->setSubscribedToNewsletter($listSubscriptionStatus === ContactListInterface::SUBSCRIBED_STATUS_CODE);

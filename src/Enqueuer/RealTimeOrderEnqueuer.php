@@ -17,6 +17,7 @@ final class RealTimeOrderEnqueuer implements RealTimeOrderEnqueuerInterface
     ) {
     }
 
+    #[\Override]
     public function enqueue($order): void
     {
         if ($order->getState() === OrderInterface::STATE_CART || $order->getState() === OrderInterface::STATE_CANCELLED) {

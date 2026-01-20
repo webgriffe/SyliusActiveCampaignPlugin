@@ -19,6 +19,7 @@ final class ChannelHostnameUrlGenerator implements ChannelHostnameUrlGeneratorIn
     ) {
     }
 
+    #[\Override]
     public function generateForRoute(ChannelInterface $channel, string $routeName, array $parameters = []): string
     {
         $channelRequestContext = $this->urlGenerator->getContext();
@@ -34,6 +35,7 @@ final class ChannelHostnameUrlGenerator implements ChannelHostnameUrlGeneratorIn
         return $url;
     }
 
+    #[\Override]
     public function generateForImage(ChannelInterface $channel, string $imagePath, ?string $imageFilter = null): string
     {
         if ($imageFilter !== null) {

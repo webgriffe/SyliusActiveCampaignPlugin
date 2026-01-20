@@ -30,6 +30,7 @@ final class ContactEnqueuer implements ContactEnqueuerInterface
         }
     }
 
+    #[\Override]
     public function enqueue($customer): void
     {
         /** @var string|int|null $customerId */
