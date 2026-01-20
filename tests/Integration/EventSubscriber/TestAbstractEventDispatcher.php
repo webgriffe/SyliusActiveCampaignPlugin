@@ -8,7 +8,7 @@ use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-abstract class AbstractEventDispatcherTest extends KernelTestCase
+abstract class TestAbstractEventDispatcher extends KernelTestCase
 {
     protected EventDispatcherInterface $eventDispatcher;
 

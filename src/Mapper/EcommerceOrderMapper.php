@@ -30,7 +30,7 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
         private EcommerceOrderDiscountMapperInterface $ecommerceOrderDiscountMapper,
         private ChannelHostnameUrlGeneratorInterface $channelHostnameUrlGenerator,
         private string $defaultLocale,
-        bool $sendUnpaidOrders = null,
+        ?bool $sendUnpaidOrders = null,
     ) {
         if ($sendUnpaidOrders === null) {
             trigger_deprecation(

@@ -28,6 +28,7 @@ final class WebhookControllerTest extends KernelTestCase
 
         $this->webhookController = self::getContainer()->get('webgriffe.sylius_active_campaign_plugin.controller.webhook');
         $this->customerRepository = self::getContainer()->get('sylius.repository.customer');
+        /** @var \Fidry\AliceDataFixtures\Loader\PurgerLoader $fixtureLoader */
         $fixtureLoader = self::getContainer()->get('fidry_alice_data_fixtures.loader.doctrine');
         $fixtureLoader->load([
             self::FIXTURE_BASE_DIR . '/customers.yaml',
@@ -54,6 +55,7 @@ final class WebhookControllerTest extends KernelTestCase
         ]));
 
         /** @var InMemoryTransport $transport */
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
@@ -81,6 +83,7 @@ final class WebhookControllerTest extends KernelTestCase
         ]));
 
         /** @var InMemoryTransport $transport */
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
@@ -110,6 +113,7 @@ final class WebhookControllerTest extends KernelTestCase
         ]));
 
         /** @var InMemoryTransport $transport */
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();

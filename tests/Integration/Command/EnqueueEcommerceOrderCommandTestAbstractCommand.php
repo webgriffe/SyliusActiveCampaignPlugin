@@ -15,7 +15,7 @@ use Webmozart\Assert\Assert;
 
 // TODO: This test should be improved with testing an already existing order in ActiveCampaign, but there is the need to found a way to "force"
 // id on alice data fixture.
-final class EnqueueEcommerceOrderCommandTest extends AbstractCommandTest
+final class EnqueueEcommerceOrderCommandTestAbstractCommand extends TestAbstractCommand
 {
     private const FIXTURE_BASE_DIR = __DIR__ . '/../../DataFixtures/ORM/resources/Command/EnqueueEcommerceOrderCommandTest';
 
@@ -26,6 +26,7 @@ final class EnqueueEcommerceOrderCommandTest extends AbstractCommandTest
         parent::setUp();
         $this->orderRepository = self::getContainer()->get('sylius.repository.order');
 
+        /** @var \Fidry\AliceDataFixtures\Loader\PurgerLoader $fixtureLoader */
         $fixtureLoader = self::getContainer()->get('fidry_alice_data_fixtures.loader.doctrine');
         $fixtureLoader->load([
             self::FIXTURE_BASE_DIR . '/channels.yaml',
@@ -42,6 +43,7 @@ final class EnqueueEcommerceOrderCommandTest extends AbstractCommandTest
         ], []);
         self::assertEquals(0, $commandTester->getStatusCode());
 
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
@@ -60,6 +62,7 @@ final class EnqueueEcommerceOrderCommandTest extends AbstractCommandTest
         ]);
         self::assertEquals(0, $commandTester->getStatusCode());
 
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
@@ -79,6 +82,7 @@ final class EnqueueEcommerceOrderCommandTest extends AbstractCommandTest
         $order0001 = $this->orderRepository->findOneBy(['number' => '0001']);
         $order0002 = $this->orderRepository->findOneBy(['number' => '0002']);
         $order0003 = $this->orderRepository->findOneBy(['number' => '0003']);
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();

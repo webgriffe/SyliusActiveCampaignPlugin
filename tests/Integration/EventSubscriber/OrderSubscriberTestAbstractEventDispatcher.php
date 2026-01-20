@@ -17,7 +17,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderCr
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderRemove;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderUpdate;
 
-final class OrderSubscriberTest extends AbstractEventDispatcherTest
+final class OrderSubscriberTestAbstractEventDispatcher extends TestAbstractEventDispatcher
 {
     private const FIXTURE_BASE_DIR = __DIR__ . '/../../DataFixtures/ORM/resources/EventSubscriber/OrderSubscriberTest';
 
@@ -28,6 +28,7 @@ final class OrderSubscriberTest extends AbstractEventDispatcherTest
         parent::setUp();
         $this->orderRepository = self::getContainer()->get('sylius.repository.order');
 
+        /** @var \Fidry\AliceDataFixtures\Loader\PurgerLoader $fixtureLoader */
         $fixtureLoader = self::getContainer()->get('fidry_alice_data_fixtures.loader.doctrine');
         $fixtureLoader->load([
             self::FIXTURE_BASE_DIR . '/channels.yaml',
@@ -41,6 +42,7 @@ final class OrderSubscriberTest extends AbstractEventDispatcherTest
         $order = $this->orderRepository->findOneBy(['number' => '0001']);
         $this->eventDispatcher->dispatch(new ResourceControllerEvent($order), 'sylius.order.post_create');
         /** @var InMemoryTransport $transport */
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
@@ -74,6 +76,7 @@ final class OrderSubscriberTest extends AbstractEventDispatcherTest
         $order = $this->orderRepository->findOneBy(['number' => '0002']);
         $this->eventDispatcher->dispatch(new ResourceControllerEvent($order), 'sylius.order.post_update');
         /** @var InMemoryTransport $transport */
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
@@ -108,6 +111,7 @@ final class OrderSubscriberTest extends AbstractEventDispatcherTest
         $order = $this->orderRepository->findOneBy(['number' => '0002']);
         $this->eventDispatcher->dispatch(new ResourceControllerEvent($order), 'sylius.order.post_delete');
         /** @var InMemoryTransport $transport */
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
@@ -122,6 +126,7 @@ final class OrderSubscriberTest extends AbstractEventDispatcherTest
         $newOrder = $this->orderRepository->findOneBy(['number' => '0001']);
         $this->eventDispatcher->dispatch(new ResourceControllerEvent($newOrder), 'sylius.order.post_complete');
         /** @var InMemoryTransport $transport */
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
@@ -155,6 +160,7 @@ final class OrderSubscriberTest extends AbstractEventDispatcherTest
         $oldOrder = $this->orderRepository->findOneBy(['number' => '0002']);
         $this->eventDispatcher->dispatch(new ResourceControllerEvent($oldOrder), 'sylius.order.post_complete');
         /** @var InMemoryTransport $transport */
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();

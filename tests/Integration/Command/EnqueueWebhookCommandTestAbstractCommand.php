@@ -8,38 +8,39 @@ use Fidry\AliceDataFixtures\Persistence\PurgeMode;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Symfony\Component\Messenger\Envelope;
-use Symfony\Component\Messenger\Transport\InMemory\InMemoryTransport;
-use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\ActiveCampaignConnectionClientStub;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionCreate;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionUpdate;
-use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\ConnectionResponse;
+use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\ActiveCampaignWebhookClientStub;
+use Tests\Webgriffe\SyliusActiveCampaignPlugin\Stub\HttpClientStub;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Webhook\WebhookCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Webhook\WebhookResponse;
 use Webmozart\Assert\Assert;
 
-final class EnqueueConnectionCommandTest extends AbstractCommandTest
+final class EnqueueWebhookCommandTestAbstractCommand extends TestAbstractCommand
 {
-    private const FIXTURE_BASE_DIR = __DIR__ . '/../../DataFixtures/ORM/resources/Command/EnqueueConnectionCommandTest';
+    private const FIXTURE_BASE_DIR = __DIR__ . '/../../DataFixtures/ORM/resources/Command/EnqueueWebhookCommandTest';
 
     private ChannelRepositoryInterface $channelRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
-        ActiveCampaignConnectionClientStub::$activeCampaignResources = [
+        HttpClientStub::$responseStatusCode = 201;
+        ActiveCampaignWebhookClientStub::$activeCampaignResources = [
             [
-                'service' => 'sylius',
-                'externalid' => 'other_shop',
-                'connection' => new ConnectionResponse(132),
+                'url' => 'https://other.com/webhook/activecampaign/list-status',
+                'listid' => '43',
+                'webhook' => new WebhookResponse(45),
             ],
         ];
         $this->channelRepository = self::getContainer()->get('sylius.repository.channel');
 
+        /** @var \Fidry\AliceDataFixtures\Loader\PurgerLoader $fixtureLoader */
         $fixtureLoader = self::getContainer()->get('fidry_alice_data_fixtures.loader.doctrine');
         $fixtureLoader->load([
             self::FIXTURE_BASE_DIR . '/channels.yaml',
         ], [], [], PurgeMode::createDeleteMode());
     }
 
-    public function test_that_it_enqueues_connection(): void
+    public function test_that_it_enqueues_webhook(): void
     {
         $channel = $this->channelRepository->findOneBy(['code' => 'fashion_shop']);
         self::assertNotNull($channel->getId());
@@ -48,16 +49,17 @@ final class EnqueueConnectionCommandTest extends AbstractCommandTest
         ], []);
         self::assertEquals(0, $commandTester->getStatusCode());
 
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
         $this->assertCount(1, $messages);
         $message = $messages[0];
-        $this->assertInstanceOf(ConnectionCreate::class, $message->getMessage());
+        $this->assertInstanceOf(WebhookCreate::class, $message->getMessage());
         $this->assertEquals($channel->getId(), $message->getMessage()->getChannelId());
     }
 
-    public function test_that_it_enqueues_connection_interactively(): void
+    public function test_that_it_enqueues_webhook_interactively(): void
     {
         $channel = $this->channelRepository->findOneBy(['code' => 'fashion_shop']);
         self::assertNotNull($channel->getId());
@@ -66,16 +68,17 @@ final class EnqueueConnectionCommandTest extends AbstractCommandTest
         ]);
         self::assertEquals(0, $commandTester->getStatusCode());
 
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
         $this->assertCount(1, $messages);
         $message = $messages[0];
-        $this->assertInstanceOf(ConnectionCreate::class, $message->getMessage());
+        $this->assertInstanceOf(WebhookCreate::class, $message->getMessage());
         $this->assertEquals($channel->getId(), $message->getMessage()->getChannelId());
     }
 
-    public function test_that_it_enqueues_all_contacts(): void
+    public function test_that_it_enqueues_all_webhooks(): void
     {
         $commandTester = $this->executeCommand([
             '--all' => true,
@@ -85,29 +88,27 @@ final class EnqueueConnectionCommandTest extends AbstractCommandTest
         $fashionChannel = $this->channelRepository->findOneBy(['code' => 'fashion_shop']);
         $digitalChannel = $this->channelRepository->findOneBy(['code' => 'digital_shop']);
         $otherChannel = $this->channelRepository->findOneBy(['code' => 'other_shop']);
-        /** @var InMemoryTransport $transport */
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
         $this->assertCount(3, $messages);
         $message = self::getMessageFromChannel($messages, $fashionChannel);
-        $this->assertInstanceOf(ConnectionCreate::class, $message->getMessage());
+        $this->assertInstanceOf(WebhookCreate::class, $message->getMessage());
         $this->assertEquals($fashionChannel->getId(), $message->getMessage()->getChannelId());
 
         $message = self::getMessageFromChannel($messages, $digitalChannel);
-        $this->assertInstanceOf(ConnectionUpdate::class, $message->getMessage());
+        $this->assertInstanceOf(WebhookCreate::class, $message->getMessage());
         $this->assertEquals($digitalChannel->getId(), $message->getMessage()->getChannelId());
-        $this->assertEquals(12, $message->getMessage()->getActiveCampaignId());
 
         $message = self::getMessageFromChannel($messages, $otherChannel);
-        $this->assertInstanceOf(ConnectionUpdate::class, $message->getMessage());
+        $this->assertInstanceOf(WebhookCreate::class, $message->getMessage());
         $this->assertEquals($otherChannel->getId(), $message->getMessage()->getChannelId());
-        $this->assertEquals(132, $message->getMessage()->getActiveCampaignId());
     }
 
     protected function getCommandDefinition(): string
     {
-        return 'webgriffe.sylius_active_campaign_plugin.command.enqueue_connection';
+        return 'webgriffe.sylius_active_campaign_plugin.command.enqueue_webhook';
     }
 
     private static function getMessageFromChannel(array $messages, ChannelInterface $fashionChannel): Envelope

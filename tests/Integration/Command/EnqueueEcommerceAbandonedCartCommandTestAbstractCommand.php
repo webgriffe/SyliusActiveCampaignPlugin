@@ -14,7 +14,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderCreate;
 
-final class EnqueueEcommerceAbandonedCartCommandTest extends AbstractCommandTest
+final class EnqueueEcommerceAbandonedCartCommandTestAbstractCommand extends TestAbstractCommand
 {
     private const FIXTURE_BASE_DIR = __DIR__ . '/../../DataFixtures/ORM/resources/Command/EnqueueEcommerceAbandonedCartCommandTest';
 
@@ -28,6 +28,7 @@ final class EnqueueEcommerceAbandonedCartCommandTest extends AbstractCommandTest
         $this->orderRepository = self::getContainer()->get('sylius.repository.order');
         $this->customerRepository = self::getContainer()->get('sylius.repository.customer');
 
+        /** @var \Fidry\AliceDataFixtures\Loader\PurgerLoader $fixtureLoader */
         $fixtureLoader = self::getContainer()->get('fidry_alice_data_fixtures.loader.doctrine');
         $fixtureLoader->load([
             self::FIXTURE_BASE_DIR . '/channels.yaml',
@@ -43,6 +44,7 @@ final class EnqueueEcommerceAbandonedCartCommandTest extends AbstractCommandTest
 
         $customerBob = $this->customerRepository->findOneBy(['email' => 'bob@email.com']);
         $bobCart = $this->orderRepository->findOneBy(['customer' => $customerBob->getId()]);
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();

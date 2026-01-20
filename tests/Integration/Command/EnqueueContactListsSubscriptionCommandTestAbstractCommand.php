@@ -9,7 +9,7 @@ use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Symfony\Component\Messenger\Envelope;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactListsSubscriber;
 
-final class EnqueueContactListsSubscriptionCommandTest extends AbstractCommandTest
+final class EnqueueContactListsSubscriptionCommandTestAbstractCommand extends TestAbstractCommand
 {
     private const FIXTURE_BASE_DIR = __DIR__ . '/../../DataFixtures/ORM/resources/Command/EnqueueContactListsSubscriptionCommandTest';
 
@@ -20,6 +20,7 @@ final class EnqueueContactListsSubscriptionCommandTest extends AbstractCommandTe
         parent::setUp();
         $this->customerRepository = self::getContainer()->get('sylius.repository.customer');
 
+        /** @var \Fidry\AliceDataFixtures\Loader\PurgerLoader $fixtureLoader */
         $fixtureLoader = self::getContainer()->get('fidry_alice_data_fixtures.loader.doctrine');
         $fixtureLoader->load([
             self::FIXTURE_BASE_DIR . '/customers.yaml',
@@ -37,6 +38,7 @@ final class EnqueueContactListsSubscriptionCommandTest extends AbstractCommandTe
 
         self::assertEquals(0, $commandTester->getStatusCode());
 
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
@@ -56,6 +58,7 @@ final class EnqueueContactListsSubscriptionCommandTest extends AbstractCommandTe
         ]);
 
         self::assertEquals(0, $commandTester->getStatusCode());
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
@@ -76,6 +79,7 @@ final class EnqueueContactListsSubscriptionCommandTest extends AbstractCommandTe
         $customerJim = $this->customerRepository->findOneBy(['email' => 'jim@email.com']);
         $customerBob = $this->customerRepository->findOneBy(['email' => 'bob@email.com']);
         $customerSam = $this->customerRepository->findOneBy(['email' => 'sam@email.com']);
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();

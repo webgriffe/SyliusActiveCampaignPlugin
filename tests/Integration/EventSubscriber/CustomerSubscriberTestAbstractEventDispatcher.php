@@ -23,7 +23,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCust
 use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
 use Webmozart\Assert\Assert;
 
-final class CustomerSubscriberTest extends AbstractEventDispatcherTest
+final class CustomerSubscriberTestAbstractEventDispatcher extends TestAbstractEventDispatcher
 {
     private const FIXTURE_BASE_DIR = __DIR__ . '/../../DataFixtures/ORM/resources/EventSubscriber/CustomerSubscriberTest';
 
@@ -37,6 +37,7 @@ final class CustomerSubscriberTest extends AbstractEventDispatcherTest
         $this->customerRepository = self::getContainer()->get('sylius.repository.customer');
         $this->channelRepository = self::getContainer()->get('sylius.repository.channel');
 
+        /** @var \Fidry\AliceDataFixtures\Loader\PurgerLoader $fixtureLoader */
         $fixtureLoader = self::getContainer()->get('fidry_alice_data_fixtures.loader.doctrine');
         $fixtureLoader->load([
             self::FIXTURE_BASE_DIR . '/channels.yaml',
@@ -51,6 +52,7 @@ final class CustomerSubscriberTest extends AbstractEventDispatcherTest
         $digitalChannel = $this->channelRepository->findOneBy(['code' => 'digital_shop']);
         $this->eventDispatcher->dispatch(new ResourceControllerEvent($customerJim), 'sylius.customer.post_create');
         /** @var InMemoryTransport $transport */
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
@@ -82,6 +84,7 @@ final class CustomerSubscriberTest extends AbstractEventDispatcherTest
         $digitalChannel = $this->channelRepository->findOneBy(['code' => 'digital_shop']);
         $this->eventDispatcher->dispatch(new ResourceControllerEvent($customerBob), 'sylius.customer.post_update');
         /** @var InMemoryTransport $transport */
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
@@ -112,6 +115,7 @@ final class CustomerSubscriberTest extends AbstractEventDispatcherTest
         $customer = $this->customerRepository->findOneBy(['email' => 'sam@email.com']);
         $this->eventDispatcher->dispatch(new ResourceControllerEvent($customer), 'sylius.customer.post_delete');
         /** @var InMemoryTransport $transport */
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
@@ -131,7 +135,7 @@ final class CustomerSubscriberTest extends AbstractEventDispatcherTest
         array $messages,
         CustomerInterface $customer,
         string $messageClass,
-        ChannelInterface $channel = null,
+        ?ChannelInterface $channel = null,
     ): Envelope {
         $messages = array_filter($messages, static function (Envelope $envelope) use ($customer, $messageClass, $channel) {
             $message = $envelope->getMessage();

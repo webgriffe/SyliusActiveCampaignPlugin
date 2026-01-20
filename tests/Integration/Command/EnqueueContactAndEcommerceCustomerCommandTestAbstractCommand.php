@@ -20,7 +20,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ContactRes
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\EcommerceCustomerResponse;
 use Webmozart\Assert\Assert;
 
-final class EnqueueContactAndEcommerceCustomerCommandTest extends AbstractCommandTest
+final class EnqueueContactAndEcommerceCustomerCommandTestAbstractCommand extends TestAbstractCommand
 {
     private const FIXTURE_BASE_DIR = __DIR__ . '/../../DataFixtures/ORM/resources/Command/EnqueueContactAndEcommerceCustomerCommandTest';
 
@@ -49,6 +49,7 @@ final class EnqueueContactAndEcommerceCustomerCommandTest extends AbstractComman
         $this->customerRepository = self::getContainer()->get('sylius.repository.customer');
         $this->channelRepository = self::getContainer()->get('sylius.repository.channel');
 
+        /** @var \Fidry\AliceDataFixtures\Loader\PurgerLoader $fixtureLoader */
         $fixtureLoader = self::getContainer()->get('fidry_alice_data_fixtures.loader.doctrine');
         $fixtureLoader->load([
             self::FIXTURE_BASE_DIR . '/channels.yaml',
@@ -69,6 +70,7 @@ final class EnqueueContactAndEcommerceCustomerCommandTest extends AbstractComman
 
         self::assertEquals(0, $commandTester->getStatusCode());
 
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
@@ -98,6 +100,7 @@ final class EnqueueContactAndEcommerceCustomerCommandTest extends AbstractComman
         ]);
 
         self::assertEquals(0, $commandTester->getStatusCode());
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
@@ -128,6 +131,7 @@ final class EnqueueContactAndEcommerceCustomerCommandTest extends AbstractComman
         $customerSam = $this->customerRepository->findOneBy(['email' => 'sam@email.com']);
         $fashionShopChannel = $this->channelRepository->findOneBy(['code' => 'fashion_shop']);
         $digitalShopChannel = $this->channelRepository->findOneBy(['code' => 'digital_shop']);
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
@@ -189,7 +193,7 @@ final class EnqueueContactAndEcommerceCustomerCommandTest extends AbstractComman
         array $messages,
         CustomerInterface $customer,
         string $messageClass,
-        ChannelInterface $channel = null,
+        ?ChannelInterface $channel = null,
     ): Envelope {
         $messages = array_filter($messages, static function (Envelope $envelope) use ($customer, $messageClass, $channel) {
             $message = $envelope->getMessage();

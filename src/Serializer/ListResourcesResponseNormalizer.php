@@ -15,7 +15,7 @@ final class ListResourcesResponseNormalizer implements DenormalizerInterface
     ) {
     }
 
-    public function denormalize($data, string $type, string $format = null, array $context = [])
+    public function denormalize($data, string $type, ?string $format = null, array $context = [])
     {
         Assert::isArray($data);
         unset($context['type']);
@@ -29,7 +29,7 @@ final class ListResourcesResponseNormalizer implements DenormalizerInterface
         return new $type($this->denormalizer->denormalize($data[$listResourcesKey], $fqcnResource . '[]', $format, $context));
     }
 
-    public function supportsDenormalization($data, string $type, string $format = null, array $context = []): bool
+    public function supportsDenormalization($data, string $type, ?string $format = null, array $context = []): bool
     {
         return is_array($data) &&
             array_key_exists('type', $context) &&

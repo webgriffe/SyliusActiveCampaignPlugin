@@ -13,7 +13,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionRemove;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionUpdate;
 
-final class ChannelSubscriberTest extends AbstractEventDispatcherTest
+final class ChannelSubscriberTestAbstractEventDispatcher extends TestAbstractEventDispatcher
 {
     private const FIXTURE_BASE_DIR = __DIR__ . '/../../DataFixtures/ORM/resources/EventSubscriber/ChannelSubscriberTest';
 
@@ -24,6 +24,7 @@ final class ChannelSubscriberTest extends AbstractEventDispatcherTest
         parent::setUp();
         $this->channelRepository = self::getContainer()->get('sylius.repository.channel');
 
+        /** @var \Fidry\AliceDataFixtures\Loader\PurgerLoader $fixtureLoader */
         $fixtureLoader = self::getContainer()->get('fidry_alice_data_fixtures.loader.doctrine');
         $fixtureLoader->load([
             self::FIXTURE_BASE_DIR . '/channels.yaml',
@@ -35,6 +36,7 @@ final class ChannelSubscriberTest extends AbstractEventDispatcherTest
         $channel = $this->channelRepository->findOneBy(['code' => 'fashion_shop']);
         $this->eventDispatcher->dispatch(new ResourceControllerEvent($channel), 'sylius.channel.post_create');
         /** @var InMemoryTransport $transport */
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
@@ -51,6 +53,7 @@ final class ChannelSubscriberTest extends AbstractEventDispatcherTest
         $this->channelRepository->add($channel);
         $this->eventDispatcher->dispatch(new ResourceControllerEvent($channel), 'sylius.channel.post_update');
         /** @var InMemoryTransport $transport */
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
@@ -66,6 +69,7 @@ final class ChannelSubscriberTest extends AbstractEventDispatcherTest
         $channel = $this->channelRepository->findOneBy(['code' => 'digital_shop']);
         $this->eventDispatcher->dispatch(new ResourceControllerEvent($channel), 'sylius.channel.post_delete');
         /** @var InMemoryTransport $transport */
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();

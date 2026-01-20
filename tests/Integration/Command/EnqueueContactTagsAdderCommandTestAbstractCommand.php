@@ -7,11 +7,11 @@ namespace Tests\Webgriffe\SyliusActiveCampaignPlugin\Integration\Command;
 use Fidry\AliceDataFixtures\Persistence\PurgeMode;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Symfony\Component\Messenger\Envelope;
-use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactListsUpdater;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactTagsAdder;
 
-final class UpdateContactListsSubscriptionCommandTest extends AbstractCommandTest
+final class EnqueueContactTagsAdderCommandTestAbstractCommand extends TestAbstractCommand
 {
-    private const FIXTURE_BASE_DIR = __DIR__ . '/../../DataFixtures/ORM/resources/Command/UpdateContactListsSubscriptionCommandTest';
+    private const FIXTURE_BASE_DIR = __DIR__ . '/../../DataFixtures/ORM/resources/Command/EnqueueContactTagsAdderCommandTest';
 
     private CustomerRepositoryInterface $customerRepository;
 
@@ -20,13 +20,14 @@ final class UpdateContactListsSubscriptionCommandTest extends AbstractCommandTes
         parent::setUp();
         $this->customerRepository = self::getContainer()->get('sylius.repository.customer');
 
+        /** @var \Fidry\AliceDataFixtures\Loader\PurgerLoader $fixtureLoader */
         $fixtureLoader = self::getContainer()->get('fidry_alice_data_fixtures.loader.doctrine');
         $fixtureLoader->load([
             self::FIXTURE_BASE_DIR . '/customers.yaml',
         ], [], [], PurgeMode::createDeleteMode());
     }
 
-    public function test_that_it_updates_contact_lists_subscription(): void
+    public function test_that_it_enqueues_contact_tags_adder(): void
     {
         $customer = $this->customerRepository->findOneBy(['email' => 'jim@email.com']);
         self::assertNotNull($customer->getId());
@@ -37,16 +38,17 @@ final class UpdateContactListsSubscriptionCommandTest extends AbstractCommandTes
 
         self::assertEquals(0, $commandTester->getStatusCode());
 
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
         $this->assertCount(1, $messages);
         $message = $messages[0];
-        $this->assertInstanceOf(ContactListsUpdater::class, $message->getMessage());
+        $this->assertInstanceOf(ContactTagsAdder::class, $message->getMessage());
         $this->assertEquals($customer->getId(), $message->getMessage()->getCustomerId());
     }
 
-    public function test_that_it_updates_contact_lists_subscription_interactively(): void
+    public function test_that_it_enqueues_contact_tags_adder_interactively(): void
     {
         $customer = $this->customerRepository->findOneBy(['email' => 'jim@email.com']);
         self::assertNotNull($customer->getId());
@@ -56,16 +58,17 @@ final class UpdateContactListsSubscriptionCommandTest extends AbstractCommandTes
         ]);
 
         self::assertEquals(0, $commandTester->getStatusCode());
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
         $this->assertCount(1, $messages);
         $message = $messages[0];
-        $this->assertInstanceOf(ContactListsUpdater::class, $message->getMessage());
+        $this->assertInstanceOf(ContactTagsAdder::class, $message->getMessage());
         $this->assertEquals($customer->getId(), $message->getMessage()->getCustomerId());
     }
 
-    public function test_that_it_updates_all_contacts_lists_subscription(): void
+    public function test_that_it_enqueues_all_contacts_tags_adder(): void
     {
         $commandTester = $this->executeCommand([
             '--all' => true,
@@ -76,24 +79,25 @@ final class UpdateContactListsSubscriptionCommandTest extends AbstractCommandTes
         $customerJim = $this->customerRepository->findOneBy(['email' => 'jim@email.com']);
         $customerBob = $this->customerRepository->findOneBy(['email' => 'bob@email.com']);
         $customerSam = $this->customerRepository->findOneBy(['email' => 'sam@email.com']);
+        /** @var \Symfony\Component\Messenger\Transport\TransportInterface $transport */
         $transport = self::getContainer()->get('messenger.transport.main');
         /** @var Envelope[] $messages */
         $messages = $transport->get();
         $this->assertCount(3, $messages);
 
         $message = $messages[0];
-        $this->assertInstanceOf(ContactListsUpdater::class, $message->getMessage());
+        $this->assertInstanceOf(ContactTagsAdder::class, $message->getMessage());
         $this->assertEquals($customerJim->getId(), $message->getMessage()->getCustomerId());
         $message = $messages[1];
-        $this->assertInstanceOf(ContactListsUpdater::class, $message->getMessage());
+        $this->assertInstanceOf(ContactTagsAdder::class, $message->getMessage());
         $this->assertEquals($customerBob->getId(), $message->getMessage()->getCustomerId());
         $message = $messages[2];
-        $this->assertInstanceOf(ContactListsUpdater::class, $message->getMessage());
+        $this->assertInstanceOf(ContactTagsAdder::class, $message->getMessage());
         $this->assertEquals($customerSam->getId(), $message->getMessage()->getCustomerId());
     }
 
     protected function getCommandDefinition(): string
     {
-        return 'webgriffe.sylius_active_campaign_plugin.command.update_contact_lists_subscription';
+        return 'webgriffe.sylius_active_campaign_plugin.command.enqueue_contact_tags_adder';
     }
 }
