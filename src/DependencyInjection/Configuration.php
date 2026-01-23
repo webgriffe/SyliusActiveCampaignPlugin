@@ -22,7 +22,7 @@ final class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder('webgriffe_sylius_active_campaign_plugin');
         $rootNode = $treeBuilder->getRootNode();
 
-        /** @psalm-suppress PossiblyNullReference, UndefinedInterfaceMethod */
+        /** @psalm-suppress PossiblyNullReference, UndefinedInterfaceMethod, UnusedMethodCall */
         $rootNode
             ->children()
                 ->scalarNode('driver')->defaultValue(SyliusResourceBundle::DRIVER_DOCTRINE_ORM)->end()
@@ -39,7 +39,7 @@ final class Configuration implements ConfigurationInterface
 
     private function buildApiClientNode(ArrayNodeDefinition $rootNode): void
     {
-        /** @psalm-suppress PossiblyNullReference, UndefinedInterfaceMethod, MixedMethodCall */
+        /** @psalm-suppress PossiblyNullReference, UndefinedInterfaceMethod, MixedMethodCall, UnusedMethodCall */
         $rootNode
             ->children()
                 ->arrayNode('api_client')
@@ -54,7 +54,7 @@ final class Configuration implements ConfigurationInterface
 
     private function buildMapperNode(ArrayNodeDefinition $rootNode): void
     {
-        /** @psalm-suppress PossiblyNullReference, UndefinedInterfaceMethod, MixedMethodCall */
+        /** @psalm-suppress PossiblyNullReference, UndefinedInterfaceMethod, MixedMethodCall, UnusedMethodCall */
         $rootNode
             ->children()
                 ->arrayNode('mapper')
@@ -78,7 +78,7 @@ final class Configuration implements ConfigurationInterface
 
     private function buildSendUnpaidOrdersNode(ArrayNodeDefinition $rootNode): void
     {
-        /** @psalm-suppress PossiblyNullReference, UndefinedInterfaceMethod, MixedMethodCall */
+        /** @psalm-suppress PossiblyNullReference, UndefinedInterfaceMethod, MixedMethodCall, UnusedMethodCall */
         $rootNode
             ->children()
                 ->booleanNode('send_unpaid_orders')
@@ -91,7 +91,7 @@ final class Configuration implements ConfigurationInterface
 
     private function buildResourcesNode(ArrayNodeDefinition $rootNode): void
     {
-        /** @psalm-suppress PossiblyNullReference, UndefinedInterfaceMethod, MixedMethodCall */
+        /** @psalm-suppress PossiblyNullReference, UndefinedInterfaceMethod, MixedMethodCall, UnusedMethodCall */
         $rootNode
             ->children()
                 ->arrayNode('resources')

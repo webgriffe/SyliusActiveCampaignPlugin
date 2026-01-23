@@ -86,8 +86,8 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
         /** @var mixed|null $customerId */
         $customerId = $input->getArgument(self::CUSTOMER_ID_ARGUMENT_CODE);
         if (null === $customerId) {
-            /** @var mixed $customerId */
-            $customerId = $this->io->ask('Customer id', null, [$this, 'validateCustomerId']);
+            /** @var int $customerId */
+            $customerId = $this->io->ask('Customer id', null, fn ($customerId) => $this->validateCustomerId($customerId));
             $input->setArgument(self::CUSTOMER_ID_ARGUMENT_CODE, $customerId);
         }
     }
@@ -182,18 +182,13 @@ final class EnqueueContactAndEcommerceCustomerCommand extends Command
         $this->validateCustomerId($customerId);
     }
 
-    /**
-     * @param string|int|null $customerId
-     *
-     * @return string|int
-     */
-    public function validateCustomerId($customerId)
+    public function validateCustomerId(mixed $customerId): int
     {
-        if ($customerId === null || $customerId === '') {
+        if ($customerId === '' || !is_numeric($customerId)) {
             throw new InvalidArgumentException('The Customer id can not be empty.');
         }
 
-        return $customerId;
+        return (int) $customerId;
     }
 
     private function getCommandHelp(): string

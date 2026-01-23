@@ -81,8 +81,8 @@ final class EnqueueConnectionCommand extends Command
         /** @var mixed|null $channelId */
         $channelId = $input->getArgument(self::CHANNEL_ID_ARGUMENT_CODE);
         if (null === $channelId) {
-            /** @var mixed $channelId */
-            $channelId = $this->io->ask('Channel id', null, [$this, 'validateChannelId']);
+            /** @var int $channelId */
+            $channelId = $this->io->ask('Channel id', null, fn ($channelId) => $this->validateChannelId($channelId));
             $input->setArgument(self::CHANNEL_ID_ARGUMENT_CODE, $channelId);
         }
     }
@@ -162,18 +162,13 @@ final class EnqueueConnectionCommand extends Command
         $this->validateChannelId($customerId);
     }
 
-    /**
-     * @param string|int|null $channelId
-     *
-     * @return string|int
-     */
-    public function validateChannelId($channelId)
+    public function validateChannelId(mixed $channelId): int
     {
-        if ($channelId === null || $channelId === '') {
+        if ($channelId === '' || !is_numeric($channelId)) {
             throw new InvalidArgumentException('The Channel id can not be empty.');
         }
 
-        return $channelId;
+        return (int) $channelId;
     }
 
     private function getCommandHelp(): string

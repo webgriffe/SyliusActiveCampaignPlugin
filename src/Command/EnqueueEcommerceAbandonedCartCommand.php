@@ -65,7 +65,7 @@ final class EnqueueEcommerceAbandonedCartCommand extends Command
     }
 
     #[\Override]
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!$this->lock()) {
             $this->io->error('The command is already running in another process.');

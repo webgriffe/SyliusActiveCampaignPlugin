@@ -17,7 +17,7 @@ final class ListResourcesResponseNormalizer implements DenormalizerInterface
     }
 
     #[\Override]
-    public function denormalize(mixed $data, string $type, ?string $format = null, array $context = [])
+    public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed
     {
         Assert::classExists($type);
         Assert::isArray($data);
@@ -34,6 +34,9 @@ final class ListResourcesResponseNormalizer implements DenormalizerInterface
         return new $type($this->denormalizer->denormalize($data[$listResourcesKey], $fqcnResource . '[]', $format, $context));
     }
 
+    /**
+     * @psalm-suppress MethodSignatureMismatch
+     */
     #[\Override]
     public function supportsDenormalization($data, string $type, ?string $format = null, array $context = []): bool
     {
@@ -41,5 +44,13 @@ final class ListResourcesResponseNormalizer implements DenormalizerInterface
             array_key_exists('type', $context) &&
             $context['type'] === ListResourcesResponseInterface::class
         ;
+    }
+
+    #[\Override]
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            ListResourcesResponseInterface::class => false,
+        ];
     }
 }
