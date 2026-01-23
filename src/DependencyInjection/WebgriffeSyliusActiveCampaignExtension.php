@@ -11,7 +11,6 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Webmozart\Assert\Assert;
 
 final class WebgriffeSyliusActiveCampaignExtension extends AbstractResourceExtension implements PrependExtensionInterface
@@ -26,8 +25,7 @@ final class WebgriffeSyliusActiveCampaignExtension extends AbstractResourceExten
     {
         $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
         $fileLocator = new FileLocator(__DIR__ . '/../../config');
-        $loader = new XmlFileLoader($container, $fileLocator);
-        $loader2 = new PHPFileLoader($container, $fileLocator);
+        $loader = new PhpFileLoader($container, $fileLocator);
 
         $driver = $config['driver'];
         Assert::string($driver);
@@ -44,8 +42,7 @@ final class WebgriffeSyliusActiveCampaignExtension extends AbstractResourceExten
         Assert::string($key);
         $container->setParameter('webgriffe_sylius_active_campaign.api_client.key', $key);
 
-        $loader->load('services.xml');
-        $loader2->load('services.php');
+        $loader->load('services.php');
 
         $this->addMapperOptionsOnMappers($container, $config);
         $this->addSendUnpaidOrdersOnServices($container, $config);
