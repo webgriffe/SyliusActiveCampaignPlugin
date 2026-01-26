@@ -7,16 +7,23 @@ parent: Contributing
 
 # Opening Sylius in the plugin
 
-- Using `test` environment:
+After following the setup steps in the main contributing guide, you can access the Sylius test application running the plugin at:
 
-    ```bash
-    (cd tests/Application && APP_ENV=test bin/console sylius:fixtures:load)
-    (cd tests/Application && APP_ENV=test bin/console server:run -d public)
-    ```
+http://localhost:8080/
 
-- Using `dev` environment:
+## Running the local server
 
-    ```bash
-    (cd tests/Application && APP_ENV=dev bin/console sylius:fixtures:load)
-    (cd tests/Application && APP_ENV=dev bin/console server:run -d public)
-    ```
+To start the local server and install SSL certificates (only once needed):
+
+```bash
+symfony server:ca:install
+symfony server:start -d
+```
+
+The test application will be available at http://localhost:8080/.
+
+If you need to customize services, create a `compose.override.yml` and start Docker:
+
+```bash
+docker-compose up -d
+```
