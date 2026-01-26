@@ -10,7 +10,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "sylius/sylius": "^2.2",
+        "sylius/sylius": "^2.0",
         "symfony/lock": "^6.4 || ^7.1",
         "webmozart/assert": "^1.9"
     },
