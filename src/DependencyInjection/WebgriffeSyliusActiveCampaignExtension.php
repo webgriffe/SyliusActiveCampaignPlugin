@@ -24,24 +24,23 @@ final class WebgriffeSyliusActiveCampaignExtension extends AbstractResourceExten
     public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
-        $fileLocator = new FileLocator(__DIR__ . '/../../config');
-        $loader = new PhpFileLoader($container, $fileLocator);
 
-        $driver = $config['driver'];
-        Assert::string($driver);
-        $resources = $config['resources'];
-        Assert::isArray($resources);
+        $driver = $config['driver'] ?? null;
+        Assert::string($driver, 'Driver must be configured');
+        $resources = $config['resources'] ?? null;
+        Assert::isArray($resources, 'Resources must be configured as array');
         $this->registerResources('webgriffe_sylius_active_campaign', $driver, $resources, $container);
 
         /** @psalm-suppress MixedArrayAccess */
-        $baseUrl = $config['api_client']['base_url'];
-        Assert::string($baseUrl);
+        $baseUrl = $config['api_client']['base_url'] ?? null;
+        Assert::string($baseUrl, 'You must configure the Active Campaign API base URL. Take a look at the documentation for more details.');
         $container->setParameter('webgriffe_sylius_active_campaign.api_client.base_url', $baseUrl);
         /** @psalm-suppress MixedArrayAccess */
         $key = $config['api_client']['key'] ?? null;
-        Assert::string($key);
+        Assert::string($key, 'You must configure the Active Campaign API key. Take a look at the documentation for more details.');
         $container->setParameter('webgriffe_sylius_active_campaign.api_client.key', $key);
 
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
         $loader->load('services.php');
 
         $this->addMapperOptionsOnMappers($container, $config);
