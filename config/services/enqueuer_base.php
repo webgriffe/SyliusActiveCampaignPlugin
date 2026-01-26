@@ -17,7 +17,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set('webgriffe.sylius_active_campaign_plugin.enqueuer.contact', ContactEnqueuer::class)
         ->args([
             service('webgriffe_sylius_active_campaign_plugin.command_bus'),
-            service('webgriffe_sylius_active_campaign_plugin.client.active_campaign.contact'),
+            service('webgriffe.sylius_active_campaign_plugin.client.active_campaign.contact'),
             service('doctrine.orm.entity_manager'),
             service('monolog.logger.webgriffe_sylius_active_campaign_plugin'),
         ])
@@ -26,7 +26,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set('webgriffe.sylius_active_campaign_plugin.enqueuer.connection', ConnectionEnqueuer::class)
         ->args([
             service('webgriffe_sylius_active_campaign_plugin.command_bus'),
-            service('webgriffe_sylius_active_campaign_plugin.client.active_campaign.connection'),
+            service('webgriffe.sylius_active_campaign_plugin.client.active_campaign.connection'),
             service('doctrine.orm.entity_manager'),
             service('monolog.logger.webgriffe_sylius_active_campaign_plugin'),
         ])
@@ -55,7 +55,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ->args([
             service('webgriffe_sylius_active_campaign_plugin.command_bus'),
             service('webgriffe.sylius_active_campaign_plugin.client.active_campaign.webhook'),
-            service('webgriffe_sylius_active_campaign_plugin.generator.channel_hostname_url'),
+            service('webgriffe.sylius_active_campaign_plugin.generator.channel_hostname_url'),
             service('monolog.logger.webgriffe_sylius_active_campaign_plugin'),
         ])
     ;
