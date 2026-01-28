@@ -16,7 +16,7 @@ nav_order: 2
 3. Configure your ActiveCampaign API connection parameters by creating the `config/packages/webgriffe_sylius_active_campaign_plugin.yaml` file with the following content:
     ```yaml
     imports:
-        - { resource: "@WebgriffeSyliusActiveCampaignPlugin/config/app/config.yaml" }
+        - { resource: "@WebgriffeSyliusActiveCampaignPlugin/config/config.yaml" }
 
     webgriffe_sylius_active_campaign:
         api_client:
