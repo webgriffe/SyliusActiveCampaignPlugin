@@ -1,0 +1,10 @@
+sylius_twig_hooks:
+    hooks:
+        'sylius_admin.channel.update.content.form.sections':
+            activeCampaign:
+                template: '@WebgriffeSyliusActiveCampaignPlugin/admin/shared/form/channel/activeCampaign.html.twig'
+                priority: -100
+        'sylius_admin.channel.create.content.form.sections':
+            activeCampaign:
+                template: '@WebgriffeSyliusActiveCampaignPlugin/admin/shared/form/channel/activeCampaign.html.twig'
+                priority: -100

@@ -1,0 +1,6 @@
+sylius_twig_hooks:
+    hooks:
+        'sylius_shop.base#javascripts':
+            activeCampaign:
+                template: '@WebgriffeSyliusActiveCampaignPlugin/shop/activeCampaignTracking.html.twig'
+                priority: -100
