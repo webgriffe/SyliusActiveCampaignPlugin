@@ -8,14 +8,15 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\WebhookInterface;
 
 final class WebhookFactory extends AbstractFactory implements WebhookFactoryInterface
 {
+    #[\Override]
     public function createNewFromNameAndUrl(string $name, string $url): WebhookInterface
     {
-        /** @var WebhookInterface $webhook */
-        $webhook = new $this->targetClassFQCN(
+        /** @var class-string<WebhookInterface> $class */
+        $class = $this->targetClassFQCN;
+
+        return new $class(
             $name,
             $url,
         );
-
-        return $webhook;
     }
 }

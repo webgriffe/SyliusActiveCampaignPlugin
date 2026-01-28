@@ -44,6 +44,7 @@ final class EnqueueWebhookCommand extends Command
         parent::__construct($this->name);
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -53,11 +54,13 @@ final class EnqueueWebhookCommand extends Command
         ;
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
     }
 
+    #[\Override]
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
         if ($input->getOption(self::ALL_OPTION_CODE) === true || $input->getArgument(self::CHANNEL_ID_ARGUMENT_CODE) !== null) {
@@ -78,12 +81,13 @@ final class EnqueueWebhookCommand extends Command
         /** @var mixed|null $channelId */
         $channelId = $input->getArgument(self::CHANNEL_ID_ARGUMENT_CODE);
         if (null === $channelId) {
-            /** @var mixed $channelId */
-            $channelId = $this->io->ask('Channel id', null, [$this, 'validateChannelId']);
+            /** @var int $channelId */
+            $channelId = $this->io->ask('Channel id', null, fn ($channelId) => $this->validateChannelId($channelId));
             $input->setArgument(self::CHANNEL_ID_ARGUMENT_CODE, $channelId);
         }
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!$this->lock()) {
@@ -96,6 +100,7 @@ final class EnqueueWebhookCommand extends Command
 
         /** @var string|int $channelId */
         $channelId = $input->getArgument(self::CHANNEL_ID_ARGUMENT_CODE);
+        /** @psalm-suppress RedundantCast */
         $exportAll = (bool) $input->getOption(self::ALL_OPTION_CODE);
 
         $this->validateInputData($channelId, $exportAll);
@@ -161,18 +166,13 @@ final class EnqueueWebhookCommand extends Command
         $this->validateChannelId($customerId);
     }
 
-    /**
-     * @param string|int|null $channelId
-     *
-     * @return string|int
-     */
-    public function validateChannelId($channelId)
+    public function validateChannelId(mixed $channelId): int
     {
-        if ($channelId === null || $channelId === '') {
+        if ($channelId === '' || !is_numeric($channelId)) {
             throw new InvalidArgumentException('The Channel id can not be empty.');
         }
 
-        return $channelId;
+        return (int) $channelId;
     }
 
     private function getCommandHelp(): string

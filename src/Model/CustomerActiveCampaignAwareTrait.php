@@ -11,24 +11,23 @@ use Sylius\Component\Core\Model\ChannelInterface;
 
 trait CustomerActiveCampaignAwareTrait
 {
-    /**
-     * @var Collection<ChannelCustomerInterface>|ChannelCustomerInterface[]
-     *
-     * @ORM\OneToMany(targetEntity="Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface", mappedBy="customer")
-     */
-    protected $channelCustomers;
+    /** @var Collection<array-key, ChannelCustomerInterface> */
+    #[ORM\OneToMany(targetEntity: ChannelCustomerInterface::class, mappedBy: 'customer')]
+    protected Collection $channelCustomers;
 
     private function channelCustomersInitializers(): void
     {
         $this->channelCustomers = new ArrayCollection();
     }
 
-    /** @return Collection<ChannelCustomerInterface>|ChannelCustomerInterface[] */
-    public function getChannelCustomers()
+    /** @return Collection<array-key, ChannelCustomerInterface> */
+    #[\Override]
+    public function getChannelCustomers(): Collection
     {
         return $this->channelCustomers;
     }
 
+    #[\Override]
     public function getChannelCustomerByChannel(ChannelInterface $channel): ?ChannelCustomerInterface
     {
         foreach ($this->getChannelCustomers() as $channelCustomer) {
@@ -40,6 +39,7 @@ trait CustomerActiveCampaignAwareTrait
         return null;
     }
 
+    #[\Override]
     public function addChannelCustomer(ChannelCustomerInterface $channelCustomer): void
     {
         if ($this->channelCustomers->contains($channelCustomer)) {
@@ -48,6 +48,7 @@ trait CustomerActiveCampaignAwareTrait
         $this->channelCustomers->add($channelCustomer);
     }
 
+    #[\Override]
     public function removeChannelCustomer(ChannelCustomerInterface $channelCustomer): void
     {
         if (!$this->channelCustomers->contains($channelCustomer)) {

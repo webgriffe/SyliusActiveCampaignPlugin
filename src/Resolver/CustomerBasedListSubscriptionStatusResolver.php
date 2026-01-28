@@ -9,6 +9,7 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactListInterfa
 
 final class CustomerBasedListSubscriptionStatusResolver implements ListSubscriptionStatusResolverInterface
 {
+    #[\Override]
     public function resolve($customer, $channel): int
     {
         $listId = $channel->getActiveCampaignListId();

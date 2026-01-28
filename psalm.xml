@@ -4,8 +4,8 @@
     resolveFromConfigFile="true"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
-    allowStringToStandInForClass="true"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+    phpVersion="8.4"
 >
     <projectFiles>
         <directory name="src" />
@@ -13,36 +13,10 @@
             <directory name="vendor" />
         </ignoreFiles>
     </projectFiles>
-    <issueHandlers>
-        <MixedMethodCall>
-            <errorLevel type="suppress">
-                <file name="src/DependencyInjection/Configuration.php" />
-            </errorLevel>
-        </MixedMethodCall>
-        <PossiblyNullReference>
-            <errorLevel type="suppress">
-                <file name="src/DependencyInjection/Configuration.php" />
-            </errorLevel>
-        </PossiblyNullReference>
-        <PossiblyUndefinedMethod>
-            <errorLevel type="suppress">
-                <file name="src/DependencyInjection/Configuration.php" />
-            </errorLevel>
-        </PossiblyUndefinedMethod>
-        <MixedArrayAccess>
-            <errorLevel type="suppress">
-                <file name="src/DependencyInjection/WebgriffeSyliusActiveCampaignExtension.php" />
-            </errorLevel>
-        </MixedArrayAccess>
-        <MixedArgument>
-            <errorLevel type="suppress">
-                <file name="src/DependencyInjection/WebgriffeSyliusActiveCampaignExtension.php" />
-            </errorLevel>
-        </MixedArgument>
-        <UnusedMethodCall>
-            <errorLevel type="suppress">
-                <file name="src/DependencyInjection/Configuration.php" />
-            </errorLevel>
-        </UnusedMethodCall>
-    </issueHandlers>
+    <plugins>
+        <pluginClass class="Psalm\SymfonyPsalmPlugin\Plugin">
+            <containerXml>var/cache/dev/Sylius_TestApplication_KernelDevDebugContainer.xml</containerXml>
+            <containerXml>var/cache/test/Sylius_TestApplication_KernelTestDebugContainer.xml</containerXml>
+        </pluginClass>
+    </plugins>
 </psalm>

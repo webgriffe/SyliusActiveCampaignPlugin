@@ -30,7 +30,7 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
         private EcommerceOrderDiscountMapperInterface $ecommerceOrderDiscountMapper,
         private ChannelHostnameUrlGeneratorInterface $channelHostnameUrlGenerator,
         private string $defaultLocale,
-        bool $sendUnpaidOrders = null,
+        ?bool $sendUnpaidOrders = null,
     ) {
         if ($sendUnpaidOrders === null) {
             trigger_deprecation(
@@ -43,6 +43,7 @@ final class EcommerceOrderMapper implements EcommerceOrderMapperInterface
         }
     }
 
+    #[\Override]
     public function mapFromOrder(BaseOrderInterface $order, bool $isInRealTime): EcommerceOrderInterface
     {
         /** @var CustomerInterface|(CustomerInterface&CustomerActiveCampaignAwareInterface)|null $customer */

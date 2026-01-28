@@ -50,6 +50,7 @@ final class EnqueueEcommerceAbandonedCartCommand extends Command
         parent::__construct($this->name);
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -57,12 +58,14 @@ final class EnqueueEcommerceAbandonedCartCommand extends Command
         ;
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    #[\Override]
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!$this->lock()) {
             $this->io->error('The command is already running in another process.');

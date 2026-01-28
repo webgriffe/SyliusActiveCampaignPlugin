@@ -33,7 +33,7 @@ final class OrderSubscriber implements EventSubscriberInterface
         private ContactEnqueuerInterface $contactEnqueuer,
         private EcommerceCustomerEnqueuerInterface $ecommerceCustomerEnqueuer,
         private CustomerChannelsResolverInterface $customerChannelsResolver,
-        bool $sendUnpaidOrders = null,
+        ?bool $sendUnpaidOrders = null,
     ) {
         if ($sendUnpaidOrders === null) {
             trigger_deprecation(
@@ -46,6 +46,7 @@ final class OrderSubscriber implements EventSubscriberInterface
         }
     }
 
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [

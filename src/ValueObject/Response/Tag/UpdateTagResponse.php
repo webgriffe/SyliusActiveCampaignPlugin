@@ -7,6 +7,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Tag;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 
+/** @psalm-api */
 final class UpdateTagResponse implements UpdateResourceResponseInterface
 {
     public function __construct(
@@ -14,6 +15,7 @@ final class UpdateTagResponse implements UpdateResourceResponseInterface
     ) {
     }
 
+    #[\Override]
     public function getResourceResponse(): ResourceResponseInterface
     {
         return $this->tag;

@@ -24,6 +24,7 @@ final class EcommerceOrderCreateHandlerTest extends KernelTestCase
         parent::setUp();
         $this->orderRepository = self::getContainer()->get('sylius.repository.order');
 
+        /** @var \Fidry\AliceDataFixtures\Loader\PurgerLoader $fixtureLoader */
         $fixtureLoader = self::getContainer()->get('fidry_alice_data_fixtures.loader.doctrine');
         $fixtureLoader->load([
             self::FIXTURE_BASE_DIR . '/channels.yaml',

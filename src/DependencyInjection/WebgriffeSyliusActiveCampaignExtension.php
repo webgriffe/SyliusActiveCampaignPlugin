@@ -4,47 +4,90 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\DependencyInjection;
 
+use Sylius\Bundle\CoreBundle\DependencyInjection\PrependDoctrineMigrationsTrait;
 use Sylius\Bundle\ResourceBundle\DependencyInjection\Extension\AbstractResourceExtension;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Webmozart\Assert\Assert;
 
-final class WebgriffeSyliusActiveCampaignExtension extends AbstractResourceExtension
+final class WebgriffeSyliusActiveCampaignExtension extends AbstractResourceExtension implements PrependExtensionInterface
 {
+    use PrependDoctrineMigrationsTrait;
+
     /**
      * @psalm-suppress UnusedVariable
      */
+    #[\Override]
     public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
-        $fileLocator = new FileLocator(__DIR__ . '/../../config');
-        $loader = new XmlFileLoader($container, $fileLocator);
-        $loader2 = new PHPFileLoader($container, $fileLocator);
 
-        $this->registerResources('webgriffe_sylius_active_campaign', $config['driver'], $config['resources'], $container);
+        $driver = $config['driver'] ?? null;
+        Assert::string($driver, 'Driver must be configured');
+        $resources = $config['resources'] ?? null;
+        Assert::isArray($resources, 'Resources must be configured as array');
+        $this->registerResources('webgriffe_sylius_active_campaign', $driver, $resources, $container);
 
-        $container->setParameter('webgriffe_sylius_active_campaign.api_client.base_url', (string) $config['api_client']['base_url']);
-        $container->setParameter('webgriffe_sylius_active_campaign.api_client.key', (string) $config['api_client']['key']);
+        /** @psalm-suppress MixedArrayAccess */
+        $baseUrl = $config['api_client']['base_url'] ?? null;
+        Assert::string($baseUrl, 'You must configure the Active Campaign API base URL. Take a look at the documentation for more details.');
+        $container->setParameter('webgriffe_sylius_active_campaign.api_client.base_url', $baseUrl);
+        /** @psalm-suppress MixedArrayAccess */
+        $key = $config['api_client']['key'] ?? null;
+        Assert::string($key, 'You must configure the Active Campaign API key. Take a look at the documentation for more details.');
+        $container->setParameter('webgriffe_sylius_active_campaign.api_client.key', $key);
 
-        $loader->load('services.xml');
-        $loader2->load('services.php');
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
+        $loader->load('services.php');
 
         $this->addMapperOptionsOnMappers($container, $config);
         $this->addSendUnpaidOrdersOnServices($container, $config);
     }
 
+    #[\Override]
+    public function prepend(ContainerBuilder $container): void
+    {
+        $this->prependDoctrineMigrations($container);
+    }
+
+    #[\Override]
     public function getConfiguration(array $config, ContainerBuilder $container): ConfigurationInterface
     {
         return new Configuration();
     }
 
+    #[\Override]
+    protected function getMigrationsNamespace(): string
+    {
+        return 'Webgriffe\SyliusActiveCampaignPlugin\Migrations';
+    }
+
+    #[\Override]
+    protected function getMigrationsDirectory(): string
+    {
+        return '@WebgriffeSyliusActiveCampaignPlugin/src/Migrations';
+    }
+
+    #[\Override]
+    protected function getNamespacesOfMigrationsExecutedBefore(): array
+    {
+        return ['Sylius\Bundle\CoreBundle\Migrations'];
+    }
+
     private function addMapperOptionsOnMappers(ContainerBuilder $container, array $config): void
     {
         $definition = $container->getDefinition('webgriffe.sylius_active_campaign_plugin.mapper.ecommerce_order_product');
-        $definition->setArgument('$imageType', $config['mapper']['ecommerce_order_product']['image_type']);
-        $definition->setArgument('$imageFilter', $config['mapper']['ecommerce_order_product']['image_filter']);
+        /** @psalm-suppress MixedArrayAccess */
+        $imageType = $config['mapper']['ecommerce_order_product']['image_type'] ?? null;
+        Assert::nullOrString($imageType);
+        $definition->setArgument('$imageType', $imageType);
+        /** @psalm-suppress MixedArrayAccess */
+        $imageFilter = $config['mapper']['ecommerce_order_product']['image_filter'] ?? null;
+        Assert::nullOrString($imageFilter);
+        $definition->setArgument('$imageFilter', $imageFilter);
     }
 
     private function addSendUnpaidOrdersOnServices(ContainerBuilder $container, array $config): void

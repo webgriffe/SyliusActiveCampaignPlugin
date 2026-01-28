@@ -42,6 +42,7 @@ final class EnqueueContactListsSubscriptionCommand extends Command
         parent::__construct($this->name);
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -51,11 +52,13 @@ final class EnqueueContactListsSubscriptionCommand extends Command
         ;
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
     }
 
+    #[\Override]
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
         if ($input->getOption(self::ALL_OPTION_CODE) === true || $input->getArgument(self::CUSTOMER_ID_ARGUMENT_CODE) !== null) {
@@ -76,12 +79,13 @@ final class EnqueueContactListsSubscriptionCommand extends Command
         /** @var mixed|null $customerId */
         $customerId = $input->getArgument(self::CUSTOMER_ID_ARGUMENT_CODE);
         if (null === $customerId) {
-            /** @var mixed $customerId */
-            $customerId = $this->io->ask('Customer id', null, [$this, 'validateCustomerId']);
+            /** @var int $customerId */
+            $customerId = $this->io->ask('Customer id', null, fn ($customerId) => $this->validateCustomerId($customerId));
             $input->setArgument(self::CUSTOMER_ID_ARGUMENT_CODE, $customerId);
         }
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!$this->lock()) {
@@ -94,6 +98,7 @@ final class EnqueueContactListsSubscriptionCommand extends Command
 
         /** @var string|int $customerId */
         $customerId = $input->getArgument(self::CUSTOMER_ID_ARGUMENT_CODE);
+        /** @psalm-suppress RedundantCast */
         $exportAll = (bool) $input->getOption(self::ALL_OPTION_CODE);
 
         $this->validateInputData($customerId, $exportAll);
@@ -150,18 +155,13 @@ final class EnqueueContactListsSubscriptionCommand extends Command
         $this->validateCustomerId($customerId);
     }
 
-    /**
-     * @param string|int|null $customerId
-     *
-     * @return string|int
-     */
-    public function validateCustomerId($customerId)
+    public function validateCustomerId(mixed $customerId): int
     {
-        if ($customerId === null || $customerId === '') {
+        if ($customerId === '' || !is_numeric($customerId)) {
             throw new InvalidArgumentException('The Customer id can not be empty.');
         }
 
-        return $customerId;
+        return (int) $customerId;
     }
 
     private function getCommandHelp(): string

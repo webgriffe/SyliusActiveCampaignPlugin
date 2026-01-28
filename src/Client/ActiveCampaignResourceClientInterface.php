@@ -17,6 +17,9 @@ use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesRespo
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\RetrieveResourceResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\UpdateResourceResponseInterface;
 
+/**
+ * @psalm-api
+ */
 interface ActiveCampaignResourceClientInterface
 {
     /**

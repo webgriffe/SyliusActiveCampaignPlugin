@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign;
 
+/** @psalm-api */
 interface EcommerceCustomerInterface extends ResourceInterface
 {
-    public const MARKETING_NOT_OPTED_IN = '0';
+    public const string MARKETING_NOT_OPTED_IN = '0';
 
-    public const MARKETING_OPTED_IN = '1';
+    public const string MARKETING_OPTED_IN = '1';
 
     public function getEmail(): string;
 

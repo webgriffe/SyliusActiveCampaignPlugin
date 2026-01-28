@@ -44,6 +44,7 @@ final class EnqueueEcommerceOrderCommand extends Command
         parent::__construct($this->name);
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -53,11 +54,13 @@ final class EnqueueEcommerceOrderCommand extends Command
         ;
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
     }
 
+    #[\Override]
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
         if ($input->getOption(self::ALL_OPTION_CODE) === true || $input->getArgument(self::ORDER_ID_ARGUMENT_CODE) !== null) {
@@ -78,12 +81,13 @@ final class EnqueueEcommerceOrderCommand extends Command
         /** @var mixed|null $orderId */
         $orderId = $input->getArgument(self::ORDER_ID_ARGUMENT_CODE);
         if (null === $orderId) {
-            /** @var mixed $orderId */
-            $orderId = $this->io->ask('Order id', null, [$this, 'validateOrderId']);
+            /** @var int $orderId */
+            $orderId = $this->io->ask('Order id', null, fn ($orderId) => $this->validateOrderId($orderId));
             $input->setArgument(self::ORDER_ID_ARGUMENT_CODE, $orderId);
         }
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!$this->lock()) {
@@ -96,6 +100,7 @@ final class EnqueueEcommerceOrderCommand extends Command
 
         /** @var string|int $orderId */
         $orderId = $input->getArgument(self::ORDER_ID_ARGUMENT_CODE);
+        /** @psalm-suppress RedundantCast */
         $exportAll = (bool) $input->getOption(self::ALL_OPTION_CODE);
 
         $this->validateInputData($orderId, $exportAll);
@@ -158,18 +163,13 @@ final class EnqueueEcommerceOrderCommand extends Command
         $this->validateOrderId($orderId);
     }
 
-    /**
-     * @param string|int|null $orderId
-     *
-     * @return string|int
-     */
-    public function validateOrderId($orderId)
+    public function validateOrderId(mixed $orderId): int
     {
-        if ($orderId === null || $orderId === '') {
+        if ($orderId === '' || !is_numeric($orderId)) {
             throw new InvalidArgumentException('The Order id can not be empty.');
         }
 
-        return $orderId;
+        return (int) $orderId;
     }
 
     private function getCommandHelp(): string

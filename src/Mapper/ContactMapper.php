@@ -21,6 +21,7 @@ final class ContactMapper implements ContactMapperInterface
     ) {
     }
 
+    #[\Override]
     public function mapFromCustomer(CustomerInterface $customer): ContactInterface
     {
         $customerEmail = $customer->getEmail();

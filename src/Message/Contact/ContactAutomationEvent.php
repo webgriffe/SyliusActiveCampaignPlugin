@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Message\Contact;
 
+/** @psalm-api */
 final class ContactAutomationEvent
 {
     /** @param string|int $customerId */

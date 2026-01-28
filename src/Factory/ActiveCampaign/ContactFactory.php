@@ -8,11 +8,12 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 
 final class ContactFactory extends AbstractFactory implements ContactFactoryInterface
 {
+    #[\Override]
     public function createNewFromEmail(string $email): ContactInterface
     {
-        /** @var ContactInterface $contact */
-        $contact = new $this->targetClassFQCN($email);
+        /** @var class-string<ContactInterface> $class */
+        $class = $this->targetClassFQCN;
 
-        return $contact;
+        return new $class($email);
     }
 }

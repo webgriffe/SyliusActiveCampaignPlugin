@@ -1,4 +1,4 @@
-Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Customer\Customer:
+Tests\Webgriffe\SyliusActiveCampaignPlugin\Entity\Customer\Customer:
     customer_jim:
         email: 'jim@email.com'
         first_name: 'James'
@@ -17,7 +17,7 @@ Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Customer\Customer:
         first_name: 'Samuel'
         last_name: 'Freud'
 
-Tests\Webgriffe\SyliusActiveCampaignPlugin\App\Entity\Customer\ChannelCustomer:
+Tests\Webgriffe\SyliusActiveCampaignPlugin\Entity\Customer\ChannelCustomer:
     customer_bob_fashion_shop:
         channel: "@fashion_shop"
         customer: "@customer_bob"

@@ -9,8 +9,12 @@ use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
+/**
+ * @psalm-suppress MissingTemplateParam
+ */
 final class ChannelTypeExtension extends AbstractTypeExtension
 {
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -20,6 +24,7 @@ final class ChannelTypeExtension extends AbstractTypeExtension
         ;
     }
 
+    #[\Override]
     public static function getExtendedTypes(): iterable
     {
         return [ChannelType::class];

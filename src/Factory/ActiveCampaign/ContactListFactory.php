@@ -8,11 +8,12 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactListInterfa
 
 final class ContactListFactory extends AbstractFactory implements ContactListFactoryInterface
 {
+    #[\Override]
     public function createNew(int $listId, int $contactId, int $status): ContactListInterface
     {
-        /** @var ContactListInterface $contactList */
-        $contactList = new $this->targetClassFQCN($listId, $contactId, $status);
+        /** @var class-string<ContactListInterface> $class */
+        $class = $this->targetClassFQCN;
 
-        return $contactList;
+        return new $class($listId, $contactId, $status);
     }
 }

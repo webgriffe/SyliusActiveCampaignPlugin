@@ -7,6 +7,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Model;
 use Doctrine\Common\Collections\Collection;
 use Sylius\Component\Core\Model\ChannelInterface;
 
+/** @psalm-api */
 interface CustomerActiveCampaignAwareInterface extends ActiveCampaignAwareInterface
 {
     /** @return Collection<array-key, ChannelCustomerInterface>|ChannelCustomerInterface[] */

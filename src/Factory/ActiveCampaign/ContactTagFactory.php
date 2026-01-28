@@ -8,11 +8,12 @@ use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactTagInterfac
 
 final class ContactTagFactory extends AbstractFactory implements ContactTagFactoryInterface
 {
+    #[\Override]
     public function createNew(int $contactId, int $tagId): ContactTagInterface
     {
-        /** @var ContactTagInterface $contactTag */
-        $contactTag = new $this->targetClassFQCN($contactId, $tagId);
+        /** @var class-string<ContactTagInterface> $class */
+        $class = $this->targetClassFQCN;
 
-        return $contactTag;
+        return new $class($contactId, $tagId);
     }
 }

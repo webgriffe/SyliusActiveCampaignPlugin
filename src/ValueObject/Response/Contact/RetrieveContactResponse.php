@@ -6,6 +6,7 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact;
 
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseInterface;
 
+/** @psalm-api */
 final class RetrieveContactResponse implements RetrieveContactResponseInterface
 {
     /** @var array<array-key, array{contact: string, list: string, status: string, id: string}> */
@@ -30,11 +31,13 @@ final class RetrieveContactResponse implements RetrieveContactResponseInterface
         }
     }
 
+    #[\Override]
     public function getResourceResponse(): ResourceResponseInterface
     {
         return $this->contact;
     }
 
+    #[\Override]
     public function getContactLists(): array
     {
         return $this->contactLists;

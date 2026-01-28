@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign;
 
+/** @psalm-api */
 interface EcommerceOrderDiscountInterface
 {
-    public const ORDER_DISCOUNT_TYPE = 'order';
+    public const string ORDER_DISCOUNT_TYPE = 'order';
 
-    public const SHIPPING_DISCOUNT_TYPE = 'shipping';
+    public const string SHIPPING_DISCOUNT_TYPE = 'shipping';
 
     public function getName(): ?string;
 

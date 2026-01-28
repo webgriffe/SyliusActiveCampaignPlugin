@@ -6,8 +6,9 @@ namespace Webgriffe\SyliusActiveCampaignPlugin\Model;
 
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
-use Sylius\Component\Resource\Model\ResourceInterface;
+use Sylius\Resource\Model\ResourceInterface;
 
+/** @psalm-api */
 interface ChannelCustomerInterface extends ResourceInterface
 {
     public function getCustomer(): CustomerInterface;
