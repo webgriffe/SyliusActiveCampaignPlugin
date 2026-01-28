@@ -82,11 +82,11 @@ final class WebgriffeSyliusActiveCampaignExtension extends AbstractResourceExten
         $definition = $container->getDefinition('webgriffe.sylius_active_campaign_plugin.mapper.ecommerce_order_product');
         /** @psalm-suppress MixedArrayAccess */
         $imageType = $config['mapper']['ecommerce_order_product']['image_type'] ?? null;
-        Assert::string($imageType);
+        Assert::nullOrString($imageType);
         $definition->setArgument('$imageType', $imageType);
         /** @psalm-suppress MixedArrayAccess */
         $imageFilter = $config['mapper']['ecommerce_order_product']['image_filter'] ?? null;
-        Assert::string($imageFilter);
+        Assert::nullOrString($imageFilter);
         $definition->setArgument('$imageFilter', $imageFilter);
     }
 
