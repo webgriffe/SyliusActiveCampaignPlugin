@@ -3,6 +3,8 @@ imports:
     - { resource: "services_test.php" }
 
 doctrine:
+    dbal:
+        schema_filter: '~^(?!messenger_messages)~'
     orm:
         entity_managers:
             default:
