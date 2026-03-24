@@ -16,5 +16,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             service('sylius.repository.customer'),
             service('webgriffe_sylius_active_campaign_plugin.command_bus'),
         ])
+        ->tag('controller.service_arguments')
+        ->call('setContainer', [service('service_container')])
     ;
 };
