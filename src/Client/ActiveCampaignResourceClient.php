@@ -76,7 +76,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
                     /** @var array{message: string} $errorResponse */
                     $errorResponse = json_decode($response->getBody()->getContents(), true, 512, \JSON_THROW_ON_ERROR);
 
-                    throw new NotFoundHttpException($errorResponse['message']);
+                    throw new NotFoundHttpException(sprintf('[%s] %s | payload: %s', $this->resourceName, $errorResponse['message'], $serializedResource));
                 case 422:
                     /** @var array{errors?: array{title: string, detail: string, code: string, source: array{pointer: string}}|null} $errorResponse */
                     $errorResponse = json_decode($response->getBody()->getContents(), true, 512, \JSON_THROW_ON_ERROR);
@@ -88,7 +88,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
                         $errorMessage = 'Errors key does not exists on response "' . json_encode($errorResponse, \JSON_THROW_ON_ERROR) . '"';
                     }
 
-                    throw new UnprocessableEntityHttpException($errorMessage);
+                    throw new UnprocessableEntityHttpException(sprintf('[%s] %s | payload: %s', $this->resourceName, $errorMessage, $serializedResource));
                 default:
                     throw new HttpException($statusCode, $response->getReasonPhrase(), null, $response->getHeaders());
             }
@@ -124,7 +124,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
                 /** @var array{message: string} $errorResponse */
                 $errorResponse = json_decode($response->getBody()->getContents(), true, 512, \JSON_THROW_ON_ERROR);
 
-                throw new NotFoundHttpException($errorResponse['message']);
+                throw new NotFoundHttpException(sprintf('[%s #%d] %s', $this->resourceName, $resourceId, $errorResponse['message']));
             }
 
             throw new HttpException($statusCode, $response->getReasonPhrase(), null, $response->getHeaders());
@@ -205,7 +205,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
                     /** @var array{message: string} $errorResponse */
                     $errorResponse = json_decode($response->getBody()->getContents(), true, 512, \JSON_THROW_ON_ERROR);
 
-                    throw new NotFoundHttpException($errorResponse['message']);
+                    throw new NotFoundHttpException(sprintf('[%s #%d] %s | payload: %s', $this->resourceName, $activeCampaignResourceId, $errorResponse['message'], $serializedResource));
                 case 422:
                     /** @var array{errors?: array{title: string, detail: string, code: string, source: array{pointer: string}}|null} $errorResponse */
                     $errorResponse = json_decode($response->getBody()->getContents(), true, 512, \JSON_THROW_ON_ERROR);
@@ -217,7 +217,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
                         $errorMessage = 'Errors key does not exists on response "' . json_encode($errorResponse, \JSON_THROW_ON_ERROR) . '"';
                     }
 
-                    throw new UnprocessableEntityHttpException($errorMessage);
+                    throw new UnprocessableEntityHttpException(sprintf('[%s #%d] %s | payload: %s', $this->resourceName, $activeCampaignResourceId, $errorMessage, $serializedResource));
                 default:
                     throw new HttpException($statusCode, $response->getReasonPhrase(), null, $response->getHeaders());
             }
@@ -252,7 +252,7 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
             /** @var array{message: string} $errorResponse */
             $errorResponse = json_decode($response->getBody()->getContents(), true, 512, \JSON_THROW_ON_ERROR);
 
-            throw new NotFoundHttpException($errorResponse['message']);
+            throw new NotFoundHttpException(sprintf('[%s #%d] %s', $this->resourceName, $activeCampaignResourceId, $errorResponse['message']));
         }
 
         throw new HttpException($statusCode, $response->getReasonPhrase(), null, $response->getHeaders());
