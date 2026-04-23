@@ -63,7 +63,7 @@ final class ContactTagsAdderHandler
             try {
                 $this->activeCampaignContactTagClient->create($this->contactTagFactory->createNew($activeCampaignContactId, $activeCampaignTagId));
             } catch (NotFoundHttpException) {
-                $this->logger->warning(sprintf(
+                $this->logger->error(sprintf(
                     'Contact with ActiveCampaign id "%s" (customer id "%s") was not found on ActiveCampaign while adding tag "%s". The contact may have been deleted on ActiveCampaign side.',
                     $activeCampaignContactId,
                     $customerId,

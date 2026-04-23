@@ -9,6 +9,7 @@ use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Repository\OrderRepositoryInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderUpdate;
@@ -55,6 +56,12 @@ final class EcommerceOrderUpdateHandler
 
         try {
             $this->activeCampaignEcommerceOrderClient->update($message->getActiveCampaignId(), $this->ecommerceOrderMapper->mapFromOrder($order, $message->isInRealTime()));
+        } catch (NotFoundHttpException) {
+            $this->logger?->error(sprintf(
+                'EcommerceOrder with ActiveCampaign id "%s" (order id "%s") was not found on ActiveCampaign during update. The resource may have been deleted on ActiveCampaign side.',
+                $message->getActiveCampaignId(),
+                $orderId,
+            ));
         } catch (\Throwable $e) {
             $this->logger?->error($e->getMessage(), $e->getTrace());
 

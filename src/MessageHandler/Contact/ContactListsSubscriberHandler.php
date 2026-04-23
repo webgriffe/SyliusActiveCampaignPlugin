@@ -10,6 +10,7 @@ use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Exception\ListSubscriptionStatusResolverExceptionInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactListMapperInterface;
@@ -81,6 +82,15 @@ final class ContactListsSubscriberHandler
                     $activeCampaignContactId,
                     $listSubscriptionStatus,
                 ));
+            } catch (NotFoundHttpException) {
+                $this->logger->error(sprintf(
+                    'Contact with ActiveCampaign id "%s" (customer id "%s") was not found on ActiveCampaign while subscribing to list "%s". The contact may have been deleted on ActiveCampaign side.',
+                    $activeCampaignContactId,
+                    $customerId,
+                    $activeCampaignListId,
+                ));
+
+                return;
             } catch (HttpException $httpException) {
                 if ($httpException->getStatusCode() !== 200) {
                     throw $httpException;

@@ -11,6 +11,7 @@ use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceCustomerMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerUpdate;
@@ -73,6 +74,12 @@ final class EcommerceCustomerUpdateHandler
 
         try {
             $this->activeCampaignClient->update($message->getActiveCampaignId(), $this->ecommerceCustomerMapper->mapFromCustomerAndChannel($customer, $channel));
+        } catch (NotFoundHttpException) {
+            $this->logger?->error(sprintf(
+                'EcommerceCustomer with ActiveCampaign id "%s" (customer id "%s") was not found on ActiveCampaign during update. The resource may have been deleted on ActiveCampaign side.',
+                $message->getActiveCampaignId(),
+                $customerId,
+            ));
         } catch (\Throwable $e) {
             $this->logger?->error($e->getMessage(), $e->getTrace());
 
