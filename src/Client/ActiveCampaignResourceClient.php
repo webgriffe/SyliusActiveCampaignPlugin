@@ -78,13 +78,14 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
 
                     throw new NotFoundHttpException($errorResponse['message']);
                 case 422:
-                    /** @var array{errors: array{title: string, detail: string, code: string, source: array{pointer: string}}|null} $errorResponse */
+                    /** @var array{errors?: array{title: string, detail: string, code: string, source: array{pointer: string}}|null} $errorResponse */
                     $errorResponse = json_decode($response->getBody()->getContents(), true, 512, \JSON_THROW_ON_ERROR);
-                    $errorMessage = '';
-                    if (is_array($errorResponse['errors'])) {
+                    if (array_key_exists('errors', $errorResponse) && is_array($errorResponse['errors'])) {
                         /** @var string[] $titles */
                         $titles = array_column($errorResponse['errors'], 'title');
                         $errorMessage = implode('; ', $titles);
+                    } else {
+                        $errorMessage = 'Errors key does not exists on response "' . json_encode($errorResponse, \JSON_THROW_ON_ERROR) . '"';
                     }
 
                     throw new UnprocessableEntityHttpException($errorMessage);
@@ -206,13 +207,14 @@ final class ActiveCampaignResourceClient implements ActiveCampaignResourceClient
 
                     throw new NotFoundHttpException($errorResponse['message']);
                 case 422:
-                    /** @var array{errors: array{title: string, detail: string, code: string, source: array{pointer: string}}|null} $errorResponse */
+                    /** @var array{errors?: array{title: string, detail: string, code: string, source: array{pointer: string}}|null} $errorResponse */
                     $errorResponse = json_decode($response->getBody()->getContents(), true, 512, \JSON_THROW_ON_ERROR);
-                    $errorMessage = '';
-                    if (is_array($errorResponse['errors'])) {
+                    if (array_key_exists('errors', $errorResponse) && is_array($errorResponse['errors'])) {
                         /** @var string[] $titles */
                         $titles = array_column($errorResponse['errors'], 'title');
                         $errorMessage = implode('; ', $titles);
+                    } else {
+                        $errorMessage = 'Errors key does not exists on response "' . json_encode($errorResponse, \JSON_THROW_ON_ERROR) . '"';
                     }
 
                     throw new UnprocessableEntityHttpException($errorMessage);
