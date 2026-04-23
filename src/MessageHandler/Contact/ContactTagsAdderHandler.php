@@ -10,6 +10,7 @@ use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Factory\ActiveCampaign\ContactTagFactoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\TagMapperInterface;
@@ -61,6 +62,15 @@ final class ContactTagsAdderHandler
         foreach ($activeCampaignTagIds as $activeCampaignTagId) {
             try {
                 $this->activeCampaignContactTagClient->create($this->contactTagFactory->createNew($activeCampaignContactId, $activeCampaignTagId));
+            } catch (NotFoundHttpException) {
+                $this->logger->warning(sprintf(
+                    'Contact with ActiveCampaign id "%s" (customer id "%s") was not found on ActiveCampaign while adding tag "%s". The contact may have been deleted on ActiveCampaign side.',
+                    $activeCampaignContactId,
+                    $customerId,
+                    $activeCampaignTagId,
+                ));
+
+                return;
             } catch (HttpException $httpException) {
                 if ($httpException->getStatusCode() !== 200) {
                     throw $httpException;
