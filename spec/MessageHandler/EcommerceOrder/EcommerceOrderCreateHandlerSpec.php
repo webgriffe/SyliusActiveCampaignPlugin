@@ -6,15 +6,19 @@ namespace spec\Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceOrde
 
 use Sylius\Component\Core\OrderPaymentStates;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Tests\Webgriffe\SyliusActiveCampaignPlugin\Entity\Channel\ChannelInterface;
 use Tests\Webgriffe\SyliusActiveCampaignPlugin\Entity\Order\OrderInterface;
 use InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
 use Sylius\Component\Core\Model\OrderInterface as SyliusOrderInterface;
 use Sylius\Component\Core\Repository\OrderRepositoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceOrder\EcommerceOrderCreateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
@@ -32,6 +36,7 @@ class EcommerceOrderCreateHandlerSpec extends ObjectBehavior
         OrderInterface $order,
         EcommerceOrderInterface $ecommerceOrder,
         ChannelInterface $channel,
+        MessageBusInterface $messageBus,
     ): void {
         $ecommerceOrderMapper->mapFromOrder($order, true)->willReturn($ecommerceOrder);
 
@@ -44,7 +49,7 @@ class EcommerceOrderCreateHandlerSpec extends ObjectBehavior
 
         $orderRepository->find(54)->willReturn($order);
 
-        $this->beConstructedWith($ecommerceOrderMapper, $activeCampaignEcommerceOrderClient, $orderRepository);
+        $this->beConstructedWith($ecommerceOrderMapper, $activeCampaignEcommerceOrderClient, $orderRepository, null, $messageBus);
     }
 
     public function it_is_initializable(): void
@@ -94,19 +99,19 @@ class EcommerceOrderCreateHandlerSpec extends ObjectBehavior
         OrderInterface $order,
         OrderRepositoryInterface $orderRepository,
         ListResourcesResponseInterface $searchOrdersResponse,
+        MessageBusInterface $messageBus,
     ): void {
-        $order->getTokenValue()->willReturn('TOKEN123');
         $existingOrderResponse = new EcommerceOrderResponse(777);
         $activeCampaignEcommerceOrderClient->create($ecommerceOrder)->shouldBeCalledOnce()->willThrow(new UnprocessableEntityHttpException());
         $activeCampaignEcommerceOrderClient->list([
-            'filters[connectionid]' => 321,
-            'filters[externalid]' => 54,
+            'filters[connectionid]' => '321',
+            'filters[externalid]' => '54',
         ])->shouldBeCalledOnce()->willReturn($searchOrdersResponse);
         $searchOrdersResponse->getResourceResponseLists()->willReturn([$existingOrderResponse]);
 
         $order->setActiveCampaignId(777)->shouldBeCalledOnce();
         $orderRepository->add($order)->shouldBeCalledOnce();
-        $activeCampaignEcommerceOrderClient->update(777, $ecommerceOrder)->shouldBeCalledOnce();
+        $messageBus->dispatch(Argument::type(EcommerceOrderUpdate::class))->shouldBeCalledOnce()->willReturn(new Envelope(new EcommerceOrderUpdate(54, 777, true)));
 
         $this->__invoke(new EcommerceOrderCreate(54, true));
     }

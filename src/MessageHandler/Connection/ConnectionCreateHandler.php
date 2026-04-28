@@ -10,9 +10,11 @@ use Psr\Log\LoggerInterface;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ConnectionMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\ConnectionResponse;
 
@@ -23,6 +25,7 @@ final class ConnectionCreateHandler
         private ActiveCampaignResourceClientInterface $activeCampaignConnectionClient,
         private ChannelRepositoryInterface $channelRepository,
         private ?LoggerInterface $logger = null,
+        private ?MessageBusInterface $messageBus = null,
     ) {
         if ($this->logger === null) {
             trigger_deprecation(
@@ -89,7 +92,7 @@ final class ConnectionCreateHandler
         $channel->setActiveCampaignId($activeCampaignConnectionId);
         $this->channelRepository->add($channel);
         if ($linkedExistingConnection) {
-            $this->activeCampaignConnectionClient->update($activeCampaignConnectionId, $this->connectionMapper->mapFromChannel($channel));
+            $this->messageBus?->dispatch(new ConnectionUpdate($message->getChannelId(), $activeCampaignConnectionId));
         }
     }
 }

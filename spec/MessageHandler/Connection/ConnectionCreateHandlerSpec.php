@@ -7,12 +7,16 @@ namespace spec\Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Connection;
 use Tests\Webgriffe\SyliusActiveCampaignPlugin\Entity\Channel\ChannelInterface;
 use InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
 use Sylius\Component\Core\Model\ChannelInterface as SyliusChannelInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ConnectionMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Connection\ConnectionCreateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ConnectionInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
@@ -28,7 +32,8 @@ class ConnectionCreateHandlerSpec extends ObjectBehavior
         ActiveCampaignResourceClientInterface $activeCampaignConnectionClient,
         ChannelRepositoryInterface $channelRepository,
         ChannelInterface $channel,
-        ConnectionInterface $connection
+        ConnectionInterface $connection,
+        MessageBusInterface $messageBus,
     ): void {
         $connectionMapper->mapFromChannel($channel)->willReturn($connection);
 
@@ -36,7 +41,7 @@ class ConnectionCreateHandlerSpec extends ObjectBehavior
 
         $channelRepository->find(1)->willReturn($channel);
 
-        $this->beConstructedWith($connectionMapper, $activeCampaignConnectionClient, $channelRepository);
+        $this->beConstructedWith($connectionMapper, $activeCampaignConnectionClient, $channelRepository, null, $messageBus);
     }
 
     public function it_is_initializable(): void
@@ -86,6 +91,7 @@ class ConnectionCreateHandlerSpec extends ObjectBehavior
         ChannelInterface $channel,
         ChannelRepositoryInterface $channelRepository,
         ListResourcesResponseInterface $searchConnectionsResponse,
+        MessageBusInterface $messageBus,
     ): void {
         $channel->getCode()->willReturn('CHANNEL_CODE');
         $existingConnectionResponse = new ConnectionResponse(55);
@@ -98,7 +104,7 @@ class ConnectionCreateHandlerSpec extends ObjectBehavior
 
         $channel->setActiveCampaignId(55)->shouldBeCalledOnce();
         $channelRepository->add($channel)->shouldBeCalledOnce();
-        $activeCampaignConnectionClient->update(55, $connection)->shouldBeCalledOnce();
+        $messageBus->dispatch(Argument::type(ConnectionUpdate::class))->shouldBeCalledOnce()->willReturn(new Envelope(new ConnectionUpdate(1, 55)));
 
         $this->__invoke(new ConnectionCreate(1));
     }

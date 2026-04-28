@@ -16,9 +16,12 @@ use Sylius\Component\Core\Model\CustomerInterface as SyliusCustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceCustomerMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceCustomer\EcommerceCustomerCreateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceCustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
@@ -39,7 +42,8 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
         EcommerceCustomerInterface $ecommerceCustomer,
         FactoryInterface $channelCustomerFactory,
         ChannelCustomerInterface $channelCustomer,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        MessageBusInterface $messageBus,
     ): void {
         $ecommerceCustomerMapper->mapFromCustomerAndChannel($customer, $channel)->willReturn($ecommerceCustomer);
 
@@ -52,7 +56,7 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
 
         $channelCustomerFactory->createNew()->willReturn($channelCustomer);
 
-        $this->beConstructedWith($ecommerceCustomerMapper, $activeCampaignClient, $customerRepository, $channelRepository, $channelCustomerFactory, $entityManager);
+        $this->beConstructedWith($ecommerceCustomerMapper, $activeCampaignClient, $customerRepository, $channelRepository, $channelCustomerFactory, $entityManager, null, $messageBus);
     }
 
     public function it_is_initializable(): void
@@ -131,6 +135,7 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
         ChannelCustomerInterface $channelCustomer,
         ChannelInterface $channel,
         EntityManagerInterface $entityManager,
+        MessageBusInterface $messageBus,
     ): void {
         $activeCampaignClient->create($ecommerceCustomer)->shouldBeCalledOnce()->willThrow(new UnprocessableEntityHttpException('duplicate'));
         $customer->getEmail()->willReturn('test@example.com');
@@ -149,7 +154,7 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
         $customer->addChannelCustomer($channelCustomer)->shouldBeCalledOnce();
         $entityManager->persist($channelCustomer)->shouldBeCalledOnce();
         $customerRepository->add($customer)->shouldBeCalledOnce();
-        $activeCampaignClient->update(9999, $ecommerceCustomer)->shouldBeCalledOnce();
+        $messageBus->dispatch(Argument::type(EcommerceCustomerUpdate::class))->shouldBeCalledOnce()->willReturn(new Envelope(new EcommerceCustomerUpdate(12, 9999, 1)));
 
         $this->__invoke(new EcommerceCustomerCreate(12, 1));
     }

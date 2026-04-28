@@ -11,9 +11,11 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\OrderPaymentStates;
 use Sylius\Component\Core\Repository\OrderRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\EcommerceOrderResponse;
 use Webmozart\Assert\Assert;
@@ -25,6 +27,7 @@ final class EcommerceOrderCreateHandler
         private ActiveCampaignResourceClientInterface $activeCampaignEcommerceOrderClient,
         private OrderRepositoryInterface $orderRepository,
         private ?LoggerInterface $logger = null,
+        private ?MessageBusInterface $messageBus = null,
     ) {
         if ($this->logger === null) {
             trigger_deprecation(
@@ -93,7 +96,7 @@ final class EcommerceOrderCreateHandler
         $order->setActiveCampaignId($activeCampaignOrderId);
         $this->orderRepository->add($order);
         if ($linkedExistingOrder) {
-            $this->activeCampaignEcommerceOrderClient->update($activeCampaignOrderId, $this->ecommerceOrderMapper->mapFromOrder($order, $message->isInRealTime()));
+            $this->messageBus?->dispatch(new EcommerceOrderUpdate($message->getOrderId(), $activeCampaignOrderId, $message->isInRealTime()));
         }
     }
 

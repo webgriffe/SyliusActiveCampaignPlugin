@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace spec\Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact;
 
+use Prophecy\Argument;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Tests\Webgriffe\SyliusActiveCampaignPlugin\Entity\Customer\CustomerInterface;
 use InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
@@ -13,6 +16,7 @@ use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Contact\ContactCreateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ContactInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
@@ -27,7 +31,8 @@ class ContactCreateHandlerSpec extends ObjectBehavior
         ContactInterface $contact,
         CustomerInterface $customer,
         ActiveCampaignResourceClientInterface $activeCampaignContactClient,
-        CustomerRepositoryInterface $customerRepository
+        CustomerRepositoryInterface $customerRepository,
+        MessageBusInterface $messageBus,
     ): void {
         $contactMapper->mapFromCustomer($customer)->willReturn($contact);
 
@@ -36,7 +41,7 @@ class ContactCreateHandlerSpec extends ObjectBehavior
 
         $customerRepository->find(12)->willReturn($customer);
 
-        $this->beConstructedWith($contactMapper, $activeCampaignContactClient, $customerRepository);
+        $this->beConstructedWith($contactMapper, $activeCampaignContactClient, $customerRepository, null, $messageBus);
     }
 
     public function it_is_initializable(): void
@@ -104,6 +109,7 @@ class ContactCreateHandlerSpec extends ObjectBehavior
         CustomerRepositoryInterface $customerRepository,
         ResourceResponseInterface $contactResponse,
         ListResourcesResponseInterface $searchContactsForEmail,
+        MessageBusInterface $messageBus,
     ): void {
         $contactResponse->getId()->willReturn(3423);
         $activeCampaignContactClient->create($contact)->shouldBeCalledOnce()->willThrow(new UnprocessableEntityHttpException());
@@ -113,7 +119,7 @@ class ContactCreateHandlerSpec extends ObjectBehavior
 
         $customer->setActiveCampaignId(3423)->shouldBeCalledOnce();
         $customerRepository->add($customer)->shouldBeCalledOnce();
-        $activeCampaignContactClient->update(3423, $contact)->shouldBeCalledOnce();
+        $messageBus->dispatch(Argument::type(ContactUpdate::class))->shouldBeCalledOnce()->willReturn(new Envelope(new ContactUpdate(12, 3423)));
 
         $this->__invoke(new ContactCreate(12));
     }

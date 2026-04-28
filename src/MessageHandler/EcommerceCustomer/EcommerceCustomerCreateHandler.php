@@ -17,9 +17,11 @@ use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Sylius\Resource\Factory\FactoryInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceCustomerMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
@@ -38,6 +40,7 @@ final class EcommerceCustomerCreateHandler
         private FactoryInterface $channelCustomerFactory,
         private EntityManagerInterface $entityManager,
         private ?LoggerInterface $logger = null,
+        private ?MessageBusInterface $messageBus = null,
     ) {
         if ($this->logger === null) {
             trigger_deprecation(
@@ -121,7 +124,7 @@ final class EcommerceCustomerCreateHandler
         $customer->addChannelCustomer($channelCustomer);
         $this->customerRepository->add($customer);
         if ($linkedExistingEcommerceCustomer) {
-            $this->activeCampaignClient->update($activeCampaignEcommerceCustomerId, $this->ecommerceCustomerMapper->mapFromCustomerAndChannel($customer, $channel));
+            $this->messageBus?->dispatch(new EcommerceCustomerUpdate($message->getCustomerId(), $activeCampaignEcommerceCustomerId, $message->getChannelId()));
         }
     }
 }

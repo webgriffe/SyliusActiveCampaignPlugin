@@ -31,6 +31,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             service('webgriffe.sylius_active_campaign_plugin.client.active_campaign.contact'),
             service('sylius.repository.customer'),
             service('monolog.logger.webgriffe_sylius_active_campaign_plugin'),
+            service('webgriffe_sylius_active_campaign_plugin.command_bus'),
         ])
         ->tag('messenger.message_handler')
     ;
@@ -94,6 +95,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             service('webgriffe.sylius_active_campaign_plugin.client.active_campaign.connection'),
             service('sylius.repository.channel'),
             service('monolog.logger.webgriffe_sylius_active_campaign_plugin'),
+            service('webgriffe_sylius_active_campaign_plugin.command_bus'),
         ])
         ->tag('messenger.message_handler')
     ;
@@ -125,6 +127,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             service('webgriffe_sylius_active_campaign.factory.channel_customer'),
             service('doctrine.orm.entity_manager'),
             service('monolog.logger.webgriffe_sylius_active_campaign_plugin'),
+            service('webgriffe_sylius_active_campaign_plugin.command_bus'),
         ])
         ->tag('messenger.message_handler')
     ;
@@ -154,6 +157,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             service('webgriffe.sylius_active_campaign_plugin.client.active_campaign.ecommerce_order'),
             service('sylius.repository.order'),
             service('monolog.logger.webgriffe_sylius_active_campaign_plugin'),
+            service('webgriffe_sylius_active_campaign_plugin.command_bus'),
         ])
         ->tag('messenger.message_handler')
     ;

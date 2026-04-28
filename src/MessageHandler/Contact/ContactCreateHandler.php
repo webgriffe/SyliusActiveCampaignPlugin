@@ -10,9 +10,11 @@ use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactCreate;
+use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactUpdate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Contact\ContactResponse;
 
@@ -23,6 +25,7 @@ final class ContactCreateHandler
         private ActiveCampaignResourceClientInterface $activeCampaignContactClient,
         private CustomerRepositoryInterface $customerRepository,
         private ?LoggerInterface $logger = null,
+        private ?MessageBusInterface $messageBus = null,
     ) {
         if ($this->logger === null) {
             trigger_deprecation(
@@ -89,7 +92,7 @@ final class ContactCreateHandler
         $customer->setActiveCampaignId($activeCampaignContactId);
         $this->customerRepository->add($customer);
         if ($linkedExistingContact) {
-            $this->activeCampaignContactClient->update($activeCampaignContactId, $this->contactMapper->mapFromCustomer($customer));
+            $this->messageBus?->dispatch(new ContactUpdate($message->getCustomerId(), $activeCampaignContactId));
         }
     }
 }
