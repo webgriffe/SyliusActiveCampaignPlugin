@@ -15,14 +15,16 @@ use Sylius\Component\Core\Model\ChannelInterface as SyliusChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface as SyliusCustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceCustomerMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceCustomer\EcommerceCustomerCreateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceCustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
-use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\EcommerceCustomerResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseInterface;
 
 final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
@@ -104,18 +106,51 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
         );
     }
 
-    public function it_throws_if_customer_has_been_already_exported_to_active_campaign(
-        CustomerActiveCampaignAwareInterface $customer,
+    public function it_logs_warning_and_returns_if_customer_has_been_already_exported_to_active_campaign(
+        ActiveCampaignResourceClientInterface $activeCampaignClient,
+        CustomerRepositoryInterface $customerRepository,
+        CustomerInterface $customer,
         ChannelInterface $channel,
-        ChannelCustomerInterface $channelCustomer
+        ChannelCustomerInterface $channelCustomer,
     ): void {
         $customer->getChannelCustomerByChannel($channel)->willReturn($channelCustomer);
         $channelCustomer->getActiveCampaignId()->willReturn(321);
 
-        $this->shouldThrow(new InvalidArgumentException('The Customer with id "12" has been already created on ActiveCampaign on the EcommerceCustomer with id "321"'))->during(
-            '__invoke',
-            [new EcommerceCustomerCreate(12, 1)]
-        );
+        $activeCampaignClient->create(\Prophecy\Argument::any())->shouldNotBeCalled();
+        $customerRepository->add(\Prophecy\Argument::any())->shouldNotBeCalled();
+
+        $this->__invoke(new EcommerceCustomerCreate(12, 1));
+    }
+
+    public function it_links_existing_ecommerce_customer_on_active_campaign_when_creation_returns_unprocessable_entity(
+        ActiveCampaignResourceClientInterface $activeCampaignClient,
+        CustomerInterface $customer,
+        CustomerRepositoryInterface $customerRepository,
+        EcommerceCustomerInterface $ecommerceCustomer,
+        ListResourcesResponseInterface $listEcommerceCustomersResponse,
+        ChannelCustomerInterface $channelCustomer,
+        ChannelInterface $channel,
+        EntityManagerInterface $entityManager,
+    ): void {
+        $activeCampaignClient->create($ecommerceCustomer)->shouldBeCalledOnce()->willThrow(new UnprocessableEntityHttpException('duplicate'));
+        $customer->getEmail()->willReturn('test@example.com');
+
+        $existingEcomCustomer = new EcommerceCustomerResponse(9999);
+        $listEcommerceCustomersResponse->getResourceResponseLists()->willReturn([$existingEcomCustomer]);
+        $activeCampaignClient->list([
+            'filters[email]' => 'test@example.com',
+            'filters[connectionid]' => 567,
+        ])->shouldBeCalledOnce()->willReturn($listEcommerceCustomersResponse);
+
+        $channelCustomer->setCustomer($customer)->shouldBeCalledOnce();
+        $channelCustomer->setActiveCampaignId(9999)->shouldBeCalledOnce();
+        $channelCustomer->setChannel($channel)->shouldBeCalledOnce();
+
+        $customer->addChannelCustomer($channelCustomer)->shouldBeCalledOnce();
+        $entityManager->persist($channelCustomer)->shouldBeCalledOnce();
+        $customerRepository->add($customer)->shouldBeCalledOnce();
+
+        $this->__invoke(new EcommerceCustomerCreate(12, 1));
     }
 
     public function it_creates_ecommerce_customer_on_active_campaign(

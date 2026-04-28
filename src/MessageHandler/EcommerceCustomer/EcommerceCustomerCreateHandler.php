@@ -16,12 +16,14 @@ use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Sylius\Resource\Factory\FactoryInterface;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceCustomerMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceCustomer\EcommerceCustomerCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ChannelCustomerInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\CustomerActiveCampaignAwareInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceCustomer\EcommerceCustomerResponse;
 
 final class EcommerceCustomerCreateHandler
 {
@@ -76,12 +78,34 @@ final class EcommerceCustomerCreateHandler
         $channelCustomer = $customer->getChannelCustomerByChannel($channel);
         if ($channelCustomer !== null) {
             $activeCampaignId = $channelCustomer->getActiveCampaignId();
+            $this->logger?->warning(sprintf(
+                'The Customer with id "%s" has been already created on ActiveCampaign on the EcommerceCustomer with id "%s". Skipping creation.',
+                $customerId,
+                $activeCampaignId,
+            ));
 
-            throw new InvalidArgumentException(sprintf('The Customer with id "%s" has been already created on ActiveCampaign on the EcommerceCustomer with id "%s"', $customerId, $activeCampaignId));
+            return;
         }
 
         try {
             $response = $this->activeCampaignClient->create($this->ecommerceCustomerMapper->mapFromCustomerAndChannel($customer, $channel));
+            $activeCampaignEcommerceCustomerId = $response->getResourceResponse()->getId();
+        } catch (UnprocessableEntityHttpException $e) {
+            $searchEcommerceCustomers = $this->activeCampaignClient->list([
+                'filters[email]' => (string) $customer->getEmail(),
+                'filters[connectionid]' => (string) $channel->getActiveCampaignId(),
+            ])->getResourceResponseLists();
+            if (count($searchEcommerceCustomers) < 1) {
+                throw $e;
+            }
+            /** @var EcommerceCustomerResponse $ecommerceCustomer */
+            $ecommerceCustomer = reset($searchEcommerceCustomers);
+            $activeCampaignEcommerceCustomerId = $ecommerceCustomer->getId();
+            $this->logger?->warning(sprintf(
+                'EcommerceCustomer with email "%s" already exists on ActiveCampaign with id "%s". Why it has not been found before?',
+                (string) $customer->getEmail(),
+                $activeCampaignEcommerceCustomerId,
+            ));
         } catch (\Throwable $e) {
             $this->logger?->error($e->getMessage(), $e->getTrace());
 
@@ -89,7 +113,7 @@ final class EcommerceCustomerCreateHandler
         }
         $channelCustomer = $this->channelCustomerFactory->createNew();
         $channelCustomer->setCustomer($customer);
-        $channelCustomer->setActiveCampaignId($response->getResourceResponse()->getId());
+        $channelCustomer->setActiveCampaignId($activeCampaignEcommerceCustomerId);
         $channelCustomer->setChannel($channel);
         $this->entityManager->persist($channelCustomer);
         $customer->addChannelCustomer($channelCustomer);
