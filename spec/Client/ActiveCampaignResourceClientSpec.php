@@ -95,7 +95,7 @@ final class ActiveCampaignResourceClientSpec extends ObjectBehavior
         $response->getBody()->willReturn($stream);
         $stream->getContents()->willReturn('{"message":"No Result found for Subscriber with id 1"}');
 
-        $this->shouldThrow(new NotFoundHttpException('No Result found for Subscriber with id 1'))->during('create', [$contact]);
+        $this->shouldThrow(new NotFoundHttpException('[contact] No Result found for Subscriber with id 1 | payload: {"contact":{"email":"johndoe@example.com","firstName":"John","lastName":"Doe","phone":"7223224241","fieldValues":[{"field":"1","value":"The Value for First Field"},{"field":"6","value":"2008-01-20"}]}}'))->during('create', [$contact]);
     }
 
     public function it_throws_while_creating_a_resource_when_the_response_is_not_processable(
@@ -107,7 +107,7 @@ final class ActiveCampaignResourceClientSpec extends ObjectBehavior
         $response->getBody()->willReturn($stream);
         $stream->getContents()->willReturn('{"errors":[{"title":"Email address already exists in the system","detail":"","code":"duplicate","source":{"pointer":"/data/attributes/email"}}]}');
 
-        $this->shouldThrow(new UnprocessableEntityHttpException('Email address already exists in the system'))->during('create', [$contact]);
+        $this->shouldThrow(new UnprocessableEntityHttpException('[contact] Email address already exists in the system | payload: {"contact":{"email":"johndoe@example.com","firstName":"John","lastName":"Doe","phone":"7223224241","fieldValues":[{"field":"1","value":"The Value for First Field"},{"field":"6","value":"2008-01-20"}]}}'))->during('create', [$contact]);
     }
 
     public function it_throws_while_creating_a_resource_when_the_response_is_not_recognized(
@@ -153,7 +153,7 @@ final class ActiveCampaignResourceClientSpec extends ObjectBehavior
         $response->getHeaders()->willReturn([]);
         $stream->getContents()->willReturn('{"message":"No Result found for Subscriber with id 1"}');
 
-        $this->shouldThrow(new NotFoundHttpException('No Result found for Subscriber with id 1'))->during('get', [1]);
+        $this->shouldThrow(new NotFoundHttpException('[contact #1] No Result found for Subscriber with id 1'))->during('get', [1]);
     }
 
     public function it_throws_while_retrieving_a_resource_when_the_response_is_not_recognized(
@@ -245,7 +245,7 @@ final class ActiveCampaignResourceClientSpec extends ObjectBehavior
         $response->getBody()->willReturn($stream);
         $stream->getContents()->willReturn('{"message":"No Result found for Subscriber with id 1"}');
 
-        $this->shouldThrow(new NotFoundHttpException('No Result found for Subscriber with id 1'))->during('update', [1, $contact]);
+        $this->shouldThrow(new NotFoundHttpException('[contact #1] No Result found for Subscriber with id 1 | payload: {"contact":{"email":"johndoe@example.com","firstName":"John","lastName":"Doe","phone":"7223224241","fieldValues":[{"field":"1","value":"The Value for First Field"},{"field":"6","value":"2008-01-20"}]}}'))->during('update', [1, $contact]);
     }
 
     public function it_throws_while_updating_a_resource_when_the_response_is_not_recognized(
@@ -278,7 +278,7 @@ final class ActiveCampaignResourceClientSpec extends ObjectBehavior
         $response->getBody()->willReturn($stream);
         $stream->getContents()->willReturn('{"message":"No Result found for Subscriber with id 1"}');
 
-        $this->shouldThrow(new NotFoundHttpException('No Result found for Subscriber with id 1'))->during('remove', [1]);
+        $this->shouldThrow(new NotFoundHttpException('[contact #1] No Result found for Subscriber with id 1'))->during('remove', [1]);
     }
 
     public function it_throws_while_removing_a_resource_when_the_response_is_not_recognized(
