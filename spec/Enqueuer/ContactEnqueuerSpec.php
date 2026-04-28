@@ -32,7 +32,7 @@ class ContactEnqueuerSpec extends ObjectBehavior
         $customer->getActiveCampaignId()->willReturn(null);
         $customer->getEmail()->willReturn('info@eactivecampaign.com');
 
-        $activeCampaignContactClient->list(['email' => 'info@eactivecampaign.com'])->willReturn($listResourcesResponse);
+        $activeCampaignContactClient->list(['filters[email]' => 'info@eactivecampaign.com'])->willReturn($listResourcesResponse);
 
         $listResourcesResponse->getResourceResponseLists()->willReturn([]);
 

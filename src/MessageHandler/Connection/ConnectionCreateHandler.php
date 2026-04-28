@@ -9,10 +9,12 @@ use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ConnectionMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\ConnectionResponse;
 
 final class ConnectionCreateHandler
 {
@@ -50,17 +52,44 @@ final class ConnectionCreateHandler
 
         $activeCampaignId = $channel->getActiveCampaignId();
         if ($activeCampaignId !== null) {
-            throw new InvalidArgumentException(sprintf('The Channel with id "%s" has been already created on ActiveCampaign on the connection with id "%s"', $channelId, $activeCampaignId));
+            $this->logger?->warning(sprintf(
+                'The Channel with id "%s" has been already created on ActiveCampaign on the connection with id "%s". Skipping creation.',
+                $channelId,
+                $activeCampaignId,
+            ));
+
+            return;
         }
 
         try {
-            $createConnectionResponse = $this->activeCampaignConnectionClient->create($this->connectionMapper->mapFromChannel($channel));
+            $activeCampaignConnectionId = $this->activeCampaignConnectionClient->create($this->connectionMapper->mapFromChannel($channel))->getResourceResponse()->getId();
+            $linkedExistingConnection = false;
+        } catch (UnprocessableEntityHttpException $e) {
+            $searchConnections = $this->activeCampaignConnectionClient->list([
+                'filters[service]' => 'sylius',
+                'filters[externalid]' => (string) $channel->getCode(),
+            ])->getResourceResponseLists();
+            if (count($searchConnections) < 1) {
+                throw $e;
+            }
+            /** @var ConnectionResponse $existingConnection */
+            $existingConnection = reset($searchConnections);
+            $activeCampaignConnectionId = $existingConnection->getId();
+            $linkedExistingConnection = true;
+            $this->logger?->warning(sprintf(
+                'Connection for channel with code "%s" already exists on ActiveCampaign with id "%s". Why it has not been found before?',
+                (string) $channel->getCode(),
+                $activeCampaignConnectionId,
+            ));
         } catch (\Throwable $e) {
             $this->logger?->error($e->getMessage(), $e->getTrace());
 
             throw $e;
         }
-        $channel->setActiveCampaignId($createConnectionResponse->getResourceResponse()->getId());
+        $channel->setActiveCampaignId($activeCampaignConnectionId);
         $this->channelRepository->add($channel);
+        if ($linkedExistingConnection) {
+            $this->activeCampaignConnectionClient->update($activeCampaignConnectionId, $this->connectionMapper->mapFromChannel($channel));
+        }
     }
 }

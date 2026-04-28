@@ -53,7 +53,7 @@ final class ContactEnqueuer implements ContactEnqueuerInterface
         }
         $email = $customer->getEmail();
         Assert::notNull($email, 'The customer email should not be null');
-        $searchContactsForEmail = $this->activeCampaignContactClient->list(['email' => $email])->getResourceResponseLists();
+        $searchContactsForEmail = $this->activeCampaignContactClient->list(['filters[email]' => $email])->getResourceResponseLists();
         if (count($searchContactsForEmail) > 0) {
             /** @var ContactResponse $contact */
             $contact = reset($searchContactsForEmail);

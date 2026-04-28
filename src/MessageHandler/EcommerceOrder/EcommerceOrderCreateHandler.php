@@ -8,11 +8,15 @@ use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\Component\Core\OrderPaymentStates;
 use Sylius\Component\Core\Repository\OrderRepositoryInterface;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\EcommerceOrderMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\EcommerceOrder\EcommerceOrderCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\EcommerceOrderResponse;
+use Webmozart\Assert\Assert;
 
 final class EcommerceOrderCreateHandler
 {
@@ -50,17 +54,55 @@ final class EcommerceOrderCreateHandler
 
         $activeCampaignId = $order->getActiveCampaignId();
         if ($activeCampaignId !== null) {
-            throw new InvalidArgumentException(sprintf('The Order with id "%s" has been already created on ActiveCampaign on the ecommerce order with id "%s"', $orderId, $activeCampaignId));
+            $this->logger?->warning(sprintf(
+                'The Order with id "%s" has been already created on ActiveCampaign on the ecommerce order with id "%s". Skipping creation.',
+                $orderId,
+                $activeCampaignId,
+            ));
+
+            return;
         }
 
         try {
-            $response = $this->activeCampaignEcommerceOrderClient->create($this->ecommerceOrderMapper->mapFromOrder($order, $message->isInRealTime()));
+            $activeCampaignOrderId = $this->activeCampaignEcommerceOrderClient->create($this->ecommerceOrderMapper->mapFromOrder($order, $message->isInRealTime()))->getResourceResponse()->getId();
+            $linkedExistingOrder = false;
+        } catch (UnprocessableEntityHttpException $e) {
+            $channel = $order->getChannel();
+            Assert::isInstanceOf($channel, ActiveCampaignAwareInterface::class);
+            $searchOrders = $this->activeCampaignEcommerceOrderClient->list([
+                'filters[connectionid]' => (string) $channel->getActiveCampaignId(),
+                'filters[' . ($this->isOrderStillACart($order) ? 'externalcheckoutid' : 'externalid') . ']' => (string) $orderId,
+            ])->getResourceResponseLists();
+            if (count($searchOrders) < 1) {
+                throw $e;
+            }
+            /** @var EcommerceOrderResponse $existingOrder */
+            $existingOrder = reset($searchOrders);
+            $activeCampaignOrderId = $existingOrder->getId();
+            $linkedExistingOrder = true;
+            $this->logger?->warning(sprintf(
+                'EcommerceOrder with token "%s" already exists on ActiveCampaign with id "%s". Why it has not been found before?',
+                (string) $order->getTokenValue(),
+                $activeCampaignOrderId,
+            ));
         } catch (\Throwable $e) {
             $this->logger?->error($e->getMessage(), $e->getTrace());
 
             throw $e;
         }
-        $order->setActiveCampaignId($response->getResourceResponse()->getId());
+        $order->setActiveCampaignId($activeCampaignOrderId);
         $this->orderRepository->add($order);
+        if ($linkedExistingOrder) {
+            $this->activeCampaignEcommerceOrderClient->update($activeCampaignOrderId, $this->ecommerceOrderMapper->mapFromOrder($order, $message->isInRealTime()));
+        }
+    }
+
+    private function isOrderStillACart(OrderInterface $order): bool
+    {
+        if ($order->getState() === OrderInterface::STATE_CART) {
+            return true;
+        }
+
+        return $order->getPaymentState() !== OrderPaymentStates::STATE_PAID;
     }
 }

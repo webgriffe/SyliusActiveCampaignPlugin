@@ -67,15 +67,17 @@ class ContactCreateHandlerSpec extends ObjectBehavior
         );
     }
 
-    public function it_throws_if_customer_has_been_already_exported_to_active_campaign(
-        ActiveCampaignAwareInterface $customer
+    public function it_logs_warning_and_returns_if_customer_has_been_already_exported_to_active_campaign(
+        CustomerInterface $customer,
+        ActiveCampaignResourceClientInterface $activeCampaignContactClient,
+        CustomerRepositoryInterface $customerRepository,
     ): void {
-        $customer->getActiveCampaignId()->willReturn('321');
+        $customer->getActiveCampaignId()->willReturn(321);
 
-        $this->shouldThrow(InvalidArgumentException::class)->during(
-            '__invoke',
-            [new ContactCreate(12)]
-        );
+        $activeCampaignContactClient->create(\Prophecy\Argument::any())->shouldNotBeCalled();
+        $customerRepository->add(\Prophecy\Argument::any())->shouldNotBeCalled();
+
+        $this->__invoke(new ContactCreate(12));
     }
 
     public function it_creates_contact_on_active_campaign(
@@ -105,12 +107,13 @@ class ContactCreateHandlerSpec extends ObjectBehavior
     ): void {
         $contactResponse->getId()->willReturn(3423);
         $activeCampaignContactClient->create($contact)->shouldBeCalledOnce()->willThrow(new UnprocessableEntityHttpException());
-        $activeCampaignContactClient->list(['email' => 'email'])->shouldBeCalledOnce()->willReturn($searchContactsForEmail);
+        $activeCampaignContactClient->list(['filters[email]' => 'email'])->shouldBeCalledOnce()->willReturn($searchContactsForEmail);
 
         $searchContactsForEmail->getResourceResponseLists()->willReturn([$contactResponse]);
 
         $customer->setActiveCampaignId(3423)->shouldBeCalledOnce();
         $customerRepository->add($customer)->shouldBeCalledOnce();
+        $activeCampaignContactClient->update(3423, $contact)->shouldBeCalledOnce();
 
         $this->__invoke(new ContactCreate(12));
     }

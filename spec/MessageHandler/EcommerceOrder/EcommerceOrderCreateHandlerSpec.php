@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace spec\Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceOrder;
 
+use Sylius\Component\Core\OrderPaymentStates;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Tests\Webgriffe\SyliusActiveCampaignPlugin\Entity\Channel\ChannelInterface;
 use Tests\Webgriffe\SyliusActiveCampaignPlugin\Entity\Order\OrderInterface;
 use InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
@@ -16,6 +19,8 @@ use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\EcommerceOrder\Ecommerce
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\EcommerceOrderInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\EcommerceOrder\EcommerceOrderResponse;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseInterface;
 
 class EcommerceOrderCreateHandlerSpec extends ObjectBehavior
@@ -25,11 +30,17 @@ class EcommerceOrderCreateHandlerSpec extends ObjectBehavior
         ActiveCampaignResourceClientInterface $activeCampaignEcommerceOrderClient,
         OrderRepositoryInterface $orderRepository,
         OrderInterface $order,
-        EcommerceOrderInterface $ecommerceOrder
+        EcommerceOrderInterface $ecommerceOrder,
+        ChannelInterface $channel,
     ): void {
         $ecommerceOrderMapper->mapFromOrder($order, true)->willReturn($ecommerceOrder);
 
+        $channel->getActiveCampaignId()->willReturn(321);
+
         $order->getActiveCampaignId()->willReturn(null);
+        $order->getChannel()->willReturn($channel);
+        $order->getState()->willReturn(OrderInterface::STATE_NEW);
+        $order->getPaymentState()->willReturn(OrderPaymentStates::STATE_PAID);
 
         $orderRepository->find(54)->willReturn($order);
 
@@ -64,15 +75,40 @@ class EcommerceOrderCreateHandlerSpec extends ObjectBehavior
         );
     }
 
-    public function it_throws_if_order_has_been_already_exported_to_active_campaign(
-        ActiveCampaignAwareInterface $order
+    public function it_logs_warning_and_returns_if_order_has_been_already_exported_to_active_campaign(
+        OrderInterface $order,
+        ActiveCampaignResourceClientInterface $activeCampaignEcommerceOrderClient,
+        OrderRepositoryInterface $orderRepository,
     ): void {
         $order->getActiveCampaignId()->willReturn(65);
 
-        $this->shouldThrow(new InvalidArgumentException('The Order with id "54" has been already created on ActiveCampaign on the ecommerce order with id "65"'))->during(
-            '__invoke',
-            [new EcommerceOrderCreate(54, true)]
-        );
+        $activeCampaignEcommerceOrderClient->create(\Prophecy\Argument::any())->shouldNotBeCalled();
+        $orderRepository->add(\Prophecy\Argument::any())->shouldNotBeCalled();
+
+        $this->__invoke(new EcommerceOrderCreate(54, true));
+    }
+
+    public function it_links_existing_ecommerce_order_on_active_campaign_when_creation_returns_unprocessable_entity(
+        EcommerceOrderInterface $ecommerceOrder,
+        ActiveCampaignResourceClientInterface $activeCampaignEcommerceOrderClient,
+        OrderInterface $order,
+        OrderRepositoryInterface $orderRepository,
+        ListResourcesResponseInterface $searchOrdersResponse,
+    ): void {
+        $order->getTokenValue()->willReturn('TOKEN123');
+        $existingOrderResponse = new EcommerceOrderResponse(777);
+        $activeCampaignEcommerceOrderClient->create($ecommerceOrder)->shouldBeCalledOnce()->willThrow(new UnprocessableEntityHttpException());
+        $activeCampaignEcommerceOrderClient->list([
+            'filters[connectionid]' => 321,
+            'filters[externalid]' => 54,
+        ])->shouldBeCalledOnce()->willReturn($searchOrdersResponse);
+        $searchOrdersResponse->getResourceResponseLists()->willReturn([$existingOrderResponse]);
+
+        $order->setActiveCampaignId(777)->shouldBeCalledOnce();
+        $orderRepository->add($order)->shouldBeCalledOnce();
+        $activeCampaignEcommerceOrderClient->update(777, $ecommerceOrder)->shouldBeCalledOnce();
+
+        $this->__invoke(new EcommerceOrderCreate(54, true));
     }
 
     public function it_creates_ecommerce_order_on_active_campaign(

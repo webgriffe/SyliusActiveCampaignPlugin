@@ -52,21 +52,30 @@ final class ContactCreateHandler
 
         $activeCampaignId = $customer->getActiveCampaignId();
         if ($activeCampaignId !== null) {
-            throw new InvalidArgumentException(sprintf('The Customer with id "%s" has been already created on ActiveCampaign on the contact with id "%s"', $customerId, $activeCampaignId));
+            $this->logger?->warning(sprintf(
+                'The Customer with id "%s" has been already created on ActiveCampaign on the contact with id "%s". Skipping creation.',
+                $customerId,
+                $activeCampaignId,
+            ));
+
+            return;
         }
 
         try {
-            $createContactResponse = $this->activeCampaignContactClient->create($this->contactMapper->mapFromCustomer($customer));
-            $activeCampaignContactId = $createContactResponse->getResourceResponse()->getId();
+            $activeCampaignContactId = $this->activeCampaignContactClient->create($this->contactMapper->mapFromCustomer($customer))->getResourceResponse()->getId();
+            $linkedExistingContact = false;
         } catch (UnprocessableEntityHttpException $e) {
             // If validation fails try to check if contact already exists
-            $searchContactsForEmail = $this->activeCampaignContactClient->list(['email' => (string) $customer->getEmail()])->getResourceResponseLists();
+            $searchContactsForEmail = $this->activeCampaignContactClient->list([
+                'filters[email]' => (string) $customer->getEmail(),
+            ])->getResourceResponseLists();
             if (count($searchContactsForEmail) < 1) {
                 throw $e;
             }
             /** @var ContactResponse $contact */
             $contact = reset($searchContactsForEmail);
             $activeCampaignContactId = $contact->getId();
+            $linkedExistingContact = true;
             $this->logger?->warning(sprintf(
                 'Contact with email "%s" already exists on ActiveCampaign with id "%s". Why it has not been found before?',
                 (string) $customer->getEmail(),
@@ -79,5 +88,8 @@ final class ContactCreateHandler
         }
         $customer->setActiveCampaignId($activeCampaignContactId);
         $this->customerRepository->add($customer);
+        if ($linkedExistingContact) {
+            $this->activeCampaignContactClient->update($activeCampaignContactId, $this->contactMapper->mapFromCustomer($customer));
+        }
     }
 }

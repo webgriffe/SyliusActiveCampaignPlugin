@@ -9,13 +9,16 @@ use InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
 use Sylius\Component\Core\Model\ChannelInterface as SyliusChannelInterface;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ConnectionMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Connection\ConnectionCreate;
 use Webgriffe\SyliusActiveCampaignPlugin\MessageHandler\Connection\ConnectionCreateHandler;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaign\ConnectionInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Model\ActiveCampaignAwareInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\Connection\ConnectionResponse;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\CreateResourceResponseInterface;
+use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ListResourcesResponseInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\ValueObject\Response\ResourceResponseInterface;
 
 class ConnectionCreateHandlerSpec extends ObjectBehavior
@@ -64,15 +67,40 @@ class ConnectionCreateHandlerSpec extends ObjectBehavior
         );
     }
 
-    public function it_throws_if_channel_has_been_already_exported_to_active_campaign(
-        ActiveCampaignAwareInterface $channel
+    public function it_logs_warning_and_returns_if_channel_has_been_already_exported_to_active_campaign(
+        ChannelInterface $channel,
+        ActiveCampaignResourceClientInterface $activeCampaignConnectionClient,
+        ChannelRepositoryInterface $channelRepository,
     ): void {
         $channel->getActiveCampaignId()->willReturn(12);
 
-        $this->shouldThrow(new InvalidArgumentException('The Channel with id "1" has been already created on ActiveCampaign on the connection with id "12"'))->during(
-            '__invoke',
-            [new ConnectionCreate(1)]
-        );
+        $activeCampaignConnectionClient->create(\Prophecy\Argument::any())->shouldNotBeCalled();
+        $channelRepository->add(\Prophecy\Argument::any())->shouldNotBeCalled();
+
+        $this->__invoke(new ConnectionCreate(1));
+    }
+
+    public function it_links_existing_connection_on_active_campaign_when_creation_returns_unprocessable_entity(
+        ConnectionInterface $connection,
+        ActiveCampaignResourceClientInterface $activeCampaignConnectionClient,
+        ChannelInterface $channel,
+        ChannelRepositoryInterface $channelRepository,
+        ListResourcesResponseInterface $searchConnectionsResponse,
+    ): void {
+        $channel->getCode()->willReturn('CHANNEL_CODE');
+        $existingConnectionResponse = new ConnectionResponse(55);
+        $activeCampaignConnectionClient->create($connection)->shouldBeCalledOnce()->willThrow(new UnprocessableEntityHttpException());
+        $activeCampaignConnectionClient->list([
+            'filters[service]' => 'sylius',
+            'filters[externalid]' => 'CHANNEL_CODE',
+        ])->shouldBeCalledOnce()->willReturn($searchConnectionsResponse);
+        $searchConnectionsResponse->getResourceResponseLists()->willReturn([$existingConnectionResponse]);
+
+        $channel->setActiveCampaignId(55)->shouldBeCalledOnce();
+        $channelRepository->add($channel)->shouldBeCalledOnce();
+        $activeCampaignConnectionClient->update(55, $connection)->shouldBeCalledOnce();
+
+        $this->__invoke(new ConnectionCreate(1));
     }
 
     public function it_creates_connection_on_active_campaign(

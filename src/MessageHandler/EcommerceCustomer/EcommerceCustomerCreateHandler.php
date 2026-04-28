@@ -90,6 +90,7 @@ final class EcommerceCustomerCreateHandler
         try {
             $response = $this->activeCampaignClient->create($this->ecommerceCustomerMapper->mapFromCustomerAndChannel($customer, $channel));
             $activeCampaignEcommerceCustomerId = $response->getResourceResponse()->getId();
+            $linkedExistingEcommerceCustomer = false;
         } catch (UnprocessableEntityHttpException $e) {
             $searchEcommerceCustomers = $this->activeCampaignClient->list([
                 'filters[email]' => (string) $customer->getEmail(),
@@ -101,6 +102,7 @@ final class EcommerceCustomerCreateHandler
             /** @var EcommerceCustomerResponse $ecommerceCustomer */
             $ecommerceCustomer = reset($searchEcommerceCustomers);
             $activeCampaignEcommerceCustomerId = $ecommerceCustomer->getId();
+            $linkedExistingEcommerceCustomer = true;
             $this->logger?->warning(sprintf(
                 'EcommerceCustomer with email "%s" already exists on ActiveCampaign with id "%s". Why it has not been found before?',
                 (string) $customer->getEmail(),
@@ -118,5 +120,8 @@ final class EcommerceCustomerCreateHandler
         $this->entityManager->persist($channelCustomer);
         $customer->addChannelCustomer($channelCustomer);
         $this->customerRepository->add($customer);
+        if ($linkedExistingEcommerceCustomer) {
+            $this->activeCampaignClient->update($activeCampaignEcommerceCustomerId, $this->ecommerceCustomerMapper->mapFromCustomerAndChannel($customer, $channel));
+        }
     }
 }

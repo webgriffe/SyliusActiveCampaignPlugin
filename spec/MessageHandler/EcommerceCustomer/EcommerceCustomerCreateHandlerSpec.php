@@ -149,6 +149,7 @@ final class EcommerceCustomerCreateHandlerSpec extends ObjectBehavior
         $customer->addChannelCustomer($channelCustomer)->shouldBeCalledOnce();
         $entityManager->persist($channelCustomer)->shouldBeCalledOnce();
         $customerRepository->add($customer)->shouldBeCalledOnce();
+        $activeCampaignClient->update(9999, $ecommerceCustomer)->shouldBeCalledOnce();
 
         $this->__invoke(new EcommerceCustomerCreate(12, 1));
     }
