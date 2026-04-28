@@ -10,6 +10,7 @@ use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Webgriffe\SyliusActiveCampaignPlugin\Client\ActiveCampaignResourceClientInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Mapper\ContactMapperInterface;
 use Webgriffe\SyliusActiveCampaignPlugin\Message\Contact\ContactUpdate;
@@ -61,6 +62,13 @@ final class ContactUpdateHandler
                 'Contact with ActiveCampaign id "%s" (customer id "%s") was not found on ActiveCampaign during update. The contact may have been deleted on ActiveCampaign side.',
                 $message->getActiveCampaignId(),
                 $customerId,
+            ));
+        } catch (UnprocessableEntityHttpException $e) {
+            $this->logger?->error(sprintf(
+                'Failed to update contact with ActiveCampaign id "%s" (customer id "%s"): %s',
+                $message->getActiveCampaignId(),
+                $customerId,
+                $e->getMessage(),
             ));
         } catch (\Throwable $e) {
             $this->logger?->error($e->getMessage(), $e->getTrace());
