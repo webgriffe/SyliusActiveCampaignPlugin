@@ -235,6 +235,28 @@ the contact which is using the website, to retrieve this email the plugin use th
 one provide always the email if the user is logged in, otherwise it will provide the email only after a guest login for
 example.
 
+By default the script tracks every visitor as soon as the page loads. If your store needs the visitor's consent before
+tracking (e.g. for GDPR), disable the default tracking:
+
+```yaml
+webgriffe_sylius_active_campaign:
+    tracking:
+        track_by_default: false
+```
+
+Then call `vgo('process', 'allowTracking')` from your consent management platform when the visitor accepts marketing
+cookies. For example, with Cookiebot:
+
+```html
+<script>
+    window.addEventListener('CookiebotOnAccept', function () {
+        if (Cookiebot.consent.marketing && typeof vgo === 'function') {
+            vgo('process', 'allowTracking');
+        }
+    });
+</script>
+```
+
 ### Start with Sylius ActiveCampaign plugin
 
 Here are some points/actions to do or to take inspiration from to start using the plugin:

@@ -32,6 +32,7 @@ final class Configuration implements ConfigurationInterface
         $this->buildApiClientNode($rootNode);
         $this->buildMapperNode($rootNode);
         $this->buildSendUnpaidOrdersNode($rootNode);
+        $this->buildTrackingNode($rootNode);
         $this->buildResourcesNode($rootNode);
 
         return $treeBuilder;
@@ -85,6 +86,23 @@ final class Configuration implements ConfigurationInterface
                     ->defaultTrue()
                     ->info('If true, unpaid orders will be sent to ActiveCampaign.')
                 ->end()
+            ->end()
+        ;
+    }
+
+    private function buildTrackingNode(ArrayNodeDefinition $rootNode): void
+    {
+        /** @psalm-suppress PossiblyNullReference, UndefinedInterfaceMethod, MixedMethodCall, UnusedMethodCall */
+        $rootNode
+            ->children()
+                ->arrayNode('tracking')
+                ->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('track_by_default')
+                            ->defaultTrue()
+                            ->info('If false, site tracking starts only when the store calls vgo(\'process\', \'allowTracking\'), e.g. after the visitor gives cookie consent.')
+                        ->end()
+                    ->end()
             ->end()
         ;
     }

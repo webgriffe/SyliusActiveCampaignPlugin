@@ -40,6 +40,11 @@ final class WebgriffeSyliusActiveCampaignExtension extends AbstractResourceExten
         Assert::string($key, 'You must configure the Active Campaign API key. Take a look at the documentation for more details.');
         $container->setParameter('webgriffe_sylius_active_campaign.api_client.key', $key);
 
+        /** @psalm-suppress MixedArrayAccess */
+        $trackByDefault = $config['tracking']['track_by_default'] ?? true;
+        Assert::boolean($trackByDefault);
+        $container->setParameter('webgriffe_sylius_active_campaign.tracking.track_by_default', $trackByDefault);
+
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
         $loader->load('services.php');
 
